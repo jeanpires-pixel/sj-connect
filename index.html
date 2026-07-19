@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SJ Connect | Sandra Júlia Cabelo & Maquiagem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   SANDRA JÚLIA — DESIGN TOKENS
+   Palette: nude / rosa quartzo / dourado / branco / preto
+   Display: Cormorant Garamond (editorial serif, salon-invitation feel)
+   Body/UI: Manrope (clean geometric sans for data-dense screens)
+   Signature element: the "fita dourada" (golden ribbon) — a thin gradient
+   underline that sweeps in under active nav items, headings and the
+   logo mark, echoing a hair ribbon / ribbon on a beauty product box.
+   ========================================================================== */
+:root{
+  --nude-50:#FBF7F2;
+  --nude-100:#F3E9DE;
+  --nude-200:#E9D9C7;
+  --quartz-300:#E7BFC3;
+  --quartz-500:#D69AA0;
+  --quartz-700:#B06E76;
+  --gold-400:#D4B15A;
+  --gold-600:#B8892E;
+  --gold-800:#8A6317;
+  --ink-900:#241E1C;
+  --ink-700:#463D39;
+  --ink-500:#7A6E68;
+  --white:#FFFFFF;
+  --success:#5B8C6E;
+  --warn:#C99A3A;
+  --danger:#B4544A;
+  --info:#5D7EA6;
+
+  --font-display:'Cormorant Garamond', serif;
+  --font-body:'Manrope', sans-serif;
+
+  --shadow-sm:0 1px 2px rgba(36,30,28,.06);
+  --shadow-md:0 6px 20px rgba(36,30,28,.08);
+  --shadow-lg:0 16px 40px rgba(36,30,28,.14);
+  --radius:14px;
+  --radius-sm:8px;
+  --sidebar-w:264px;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  font-family:var(--font-body);
+  background:var(--nude-50);
+  color:var(--ink-900);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-display); font-weight:600; margin:0; color:var(--ink-900);}
+a{color:inherit;}
+button{font-family:inherit;}
+::selection{background:var(--quartz-300); color:var(--ink-900);}
+::-webkit-scrollbar{width:9px; height:9px;}
+::-webkit-scrollbar-thumb{background:var(--nude-200); border-radius:10px;}
+::-webkit-scrollbar-thumb:hover{background:var(--quartz-500);}
+
+.ribbon{
+  height:3px; width:46px; border-radius:3px; margin-top:6px;
+  background:linear-gradient(90deg, var(--gold-600), var(--quartz-500));
+}
+.hidden{display:none !important;}
+
+/* ---------------------------------- LOGIN ---------------------------------- */
+#login-screen{
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(212,177,90,.14), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(214,154,160,.18), transparent 45%),
+    var(--ink-900);
+  padding:24px;
+}
+.login-card{
+  width:100%; max-width:400px; background:var(--white);
+  border-radius:20px; box-shadow:var(--shadow-lg);
+  padding:44px 38px 36px; text-align:center; position:relative; overflow:hidden;
+}
+.login-card::before{
+  content:""; position:absolute; inset:0 0 auto 0; height:6px;
+  background:linear-gradient(90deg, var(--gold-400), var(--quartz-500), var(--gold-600));
+}
+.brand-mark{
+  width:78px; height:78px; margin:0 auto 10px; border-radius:50%;
+  background:linear-gradient(150deg, var(--ink-900), var(--ink-700));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--shadow-md); padding:14px;
+}
+.brand-mark svg{width:100%; height:100%; color:var(--gold-400);}
+.app-name{
+  font-size:11px; letter-spacing:3px; text-transform:uppercase; font-weight:800;
+  color:var(--ink-500); margin-bottom:2px;
+}
+.app-name b{color:var(--gold-600);}
+.login-card h1{font-size:26px; letter-spacing:.3px; margin-top:2px;}
+.login-card .subtitle{
+  font-size:11.5px; letter-spacing:2.5px; text-transform:uppercase;
+  color:var(--gold-600); margin-top:6px; font-weight:700;
+}
+.login-card .ribbon{margin:14px auto 26px;}
+.field{text-align:left; margin-bottom:16px;}
+.field label{
+  display:block; font-size:12px; font-weight:700; color:var(--ink-500);
+  text-transform:uppercase; letter-spacing:.6px; margin-bottom:6px;
+}
+.field input, .field select{
+  width:100%; padding:12px 14px; border-radius:10px; border:1.5px solid var(--nude-200);
+  background:var(--nude-50); font-size:14.5px; font-family:inherit; color:var(--ink-900);
+  transition:.15s;
+}
+.field input:focus, .field select:focus{
+  outline:none; border-color:var(--quartz-500); background:var(--white);
+  box-shadow:0 0 0 3px rgba(214,154,160,.18);
+}
+.btn{
+  border:none; cursor:pointer; border-radius:10px; font-weight:700; font-size:14px;
+  padding:12px 20px; transition:.15s; font-family:inherit; letter-spacing:.2px;
+}
+.btn-primary{
+  width:100%; background:linear-gradient(90deg, var(--ink-900), var(--ink-700));
+  color:var(--white); position:relative; overflow:hidden;
+}
+.btn-primary::after{
+  content:""; position:absolute; left:0; right:0; bottom:0; height:2.5px;
+  background:linear-gradient(90deg, var(--gold-400), var(--quartz-500));
+}
+.btn-primary:hover{transform:translateY(-1px); box-shadow:var(--shadow-md);}
+.btn-primary:active{transform:translateY(0);}
+.login-links{margin-top:16px; font-size:12.5px;}
+.login-links a{color:var(--quartz-700); text-decoration:none; font-weight:600; cursor:pointer;}
+.login-links a:hover{text-decoration:underline;}
+.login-error{
+  background:#FBEAE8; color:var(--danger); font-size:12.5px; font-weight:600;
+  padding:9px 12px; border-radius:8px; margin-bottom:14px; text-align:left; display:none;
+}
+
+/* ---------------------------------- APP SHELL ---------------------------------- */
+#app{display:flex; min-height:100vh;}
+.sidebar{
+  width:var(--sidebar-w); flex-shrink:0; background:var(--ink-900); color:var(--nude-100);
+  padding:26px 18px; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;
+  z-index:40;
+}
+.sidebar-brand{display:flex; align-items:center; gap:12px; padding:0 8px 22px; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:18px;}
+.sidebar-brand .mark{
+  width:42px; height:42px; border-radius:50%; flex-shrink:0; padding:7px;
+  background:rgba(255,255,255,.04); border:1px solid rgba(212,177,90,.35);
+  display:flex; align-items:center; justify-content:center;
+}
+.sidebar-brand .mark svg{width:100%; height:100%; color:var(--gold-400);}
+.sidebar-brand .name{font-family:var(--font-display); font-size:16.5px; line-height:1.15; color:var(--white);}
+.sidebar-brand .tagline{font-size:9.5px; letter-spacing:1.6px; text-transform:uppercase; color:var(--gold-400); font-weight:700;}
+.nav-group-label{font-size:10.5px; letter-spacing:1.6px; text-transform:uppercase; color:var(--ink-500); font-weight:700; padding:14px 10px 8px;}
+.nav-item{
+  display:flex; align-items:center; gap:11px; padding:10.5px 12px; border-radius:10px;
+  cursor:pointer; font-size:14px; font-weight:600; color:var(--nude-100); margin-bottom:2px;
+  transition:.15s; position:relative;
+}
+.nav-item .ico{width:18px; text-align:center; font-size:15px; opacity:.85;}
+.nav-item:hover{background:rgba(255,255,255,.06);}
+.nav-item.active{background:rgba(212,177,90,.14); color:var(--gold-400);}
+.nav-item.active::before{
+  content:""; position:absolute; left:-18px; top:8px; bottom:8px; width:3px; border-radius:3px;
+  background:linear-gradient(180deg, var(--gold-400), var(--quartz-500));
+}
+.sidebar-footer{margin-top:auto; padding-top:14px; border-top:1px solid rgba(255,255,255,.08);}
+.user-chip{display:flex; align-items:center; gap:10px; padding:8px; border-radius:10px;}
+.user-chip .avatar{
+  width:34px; height:34px; border-radius:50%; background:var(--quartz-500); color:var(--white);
+  display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex-shrink:0;
+}
+.user-chip .info{font-size:12.5px; line-height:1.3; overflow:hidden;}
+.user-chip .info .role{color:var(--gold-400); font-size:10.5px; text-transform:uppercase; letter-spacing:.6px; font-weight:700;}
+.logout-btn{
+  width:100%; margin-top:10px; background:transparent; border:1px solid rgba(255,255,255,.14);
+  color:var(--nude-100); padding:9px; border-radius:9px; font-size:12.5px; font-weight:700; cursor:pointer;
+}
+.logout-btn:hover{background:rgba(255,255,255,.06); border-color:var(--quartz-500);}
+
+.main{flex:1; min-width:0; display:flex; flex-direction:column;}
+.topbar{
+  height:68px; flex-shrink:0; background:var(--white); border-bottom:1px solid var(--nude-200);
+  display:flex; align-items:center; justify-content:space-between; padding:0 28px; position:sticky; top:0; z-index:30;
+}
+.topbar .page-title{font-size:21px;}
+.topbar .page-sub{font-size:12px; color:var(--ink-500); margin-top:1px;}
+.hamburger{display:none; background:none; border:none; font-size:20px; cursor:pointer; color:var(--ink-900); margin-right:12px;}
+.topbar-right{display:flex; align-items:center; gap:14px;}
+.icon-btn{
+  width:38px; height:38px; border-radius:50%; border:1px solid var(--nude-200); background:var(--white);
+  cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:15px; position:relative;
+}
+.icon-btn:hover{background:var(--nude-100);}
+.badge-dot{position:absolute; top:6px; right:7px; width:7px; height:7px; border-radius:50%; background:var(--quartz-700); border:1.5px solid var(--white);}
+.content{flex:1; padding:26px 28px 60px; overflow-x:hidden;}
+.view{display:none; animation:fadeIn .25s ease;}
+.view.active{display:block;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+/* ---------------------------------- COMPONENTS ---------------------------------- */
+.section-head{display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px;}
+.section-head .ribbon{margin-top:8px;}
+.card{background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow-sm); border:1px solid var(--nude-200);}
+.card-pad{padding:20px 22px;}
+
+.kpi-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:16px; margin-bottom:24px;}
+.kpi{
+  background:var(--white); border-radius:var(--radius); padding:18px 18px 16px; border:1px solid var(--nude-200);
+  box-shadow:var(--shadow-sm); position:relative; overflow:hidden;
+}
+.kpi::after{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--kpi-color, var(--gold-400));}
+.kpi .kpi-label{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--ink-500); font-weight:700;}
+.kpi .kpi-value{font-family:var(--font-display); font-size:30px; margin-top:6px; color:var(--ink-900);}
+.kpi .kpi-note{font-size:11.5px; color:var(--ink-500); margin-top:4px;}
+
+.dash-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:20px;}
+@media (max-width:1100px){.dash-grid{grid-template-columns:1fr;} .kpi-grid{grid-template-columns:repeat(2,1fr);}}
+
+.list-row{display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px dashed var(--nude-200);}
+.list-row:last-child{border-bottom:none;}
+.dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+.dot.livre{background:var(--success);} .dot.confirmado{background:var(--info);}
+.dot.andamento{background:var(--gold-600);} .dot.finalizado{background:var(--ink-500);} .dot.cancelado{background:var(--danger);}
+
+.toolbar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:16px;}
+.search-box{
+  display:flex; align-items:center; gap:8px; background:var(--white); border:1.5px solid var(--nude-200);
+  border-radius:10px; padding:9px 13px; flex:1; min-width:200px;
+}
+.search-box input{border:none; outline:none; background:transparent; font-size:14px; width:100%; font-family:inherit;}
+.select-filter{
+  padding:9px 12px; border-radius:10px; border:1.5px solid var(--nude-200); background:var(--white);
+  font-size:13.5px; font-family:inherit; color:var(--ink-700); cursor:pointer;
+}
+.btn-gold{
+  background:linear-gradient(90deg, var(--gold-600), var(--gold-400)); color:var(--white);
+}
+.btn-gold:hover{filter:brightness(1.05); box-shadow:var(--shadow-md);}
+.btn-outline{background:var(--white); border:1.5px solid var(--nude-200); color:var(--ink-900);}
+.btn-outline:hover{border-color:var(--quartz-500); background:var(--nude-100);}
+.btn-danger-outline{background:var(--white); border:1.5px solid #EAC9C5; color:var(--danger);}
+.btn-danger-outline:hover{background:#FBEAE8;}
+.btn-sm{padding:7px 12px; font-size:12.5px; border-radius:8px;}
+.btn-icon{width:32px; height:32px; padding:0; border-radius:8px; display:inline-flex; align-items:center; justify-content:center;}
+
+.table-wrap{overflow-x:auto; border-radius:var(--radius); border:1px solid var(--nude-200); background:var(--white);}
+table{width:100%; border-collapse:collapse; font-size:13.5px; min-width:640px;}
+thead th{
+  text-align:left; padding:13px 16px; background:var(--nude-100); color:var(--ink-700);
+  font-size:11px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; white-space:nowrap;
+  cursor:pointer; user-select:none;
+}
+thead th:hover{color:var(--gold-600);}
+tbody td{padding:12px 16px; border-top:1px solid var(--nude-200); vertical-align:middle;}
+tbody tr:hover{background:var(--nude-50);}
+.cell-name{font-weight:700; color:var(--ink-900);}
+.cell-sub{font-size:11.5px; color:var(--ink-500);}
+.avatar-mini{
+  width:32px; height:32px; border-radius:50%; background:var(--quartz-300); color:var(--ink-900);
+  display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; margin-right:9px;
+}
+.tag{display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700;}
+.tag-vip{background:#F5E6C8; color:var(--gold-800);}
+.tag-livre{background:#E4F0E7; color:var(--success);}
+.tag-confirmado{background:#E4EBF5; color:var(--info);}
+.tag-andamento{background:#F7EAD2; color:var(--gold-800);}
+.tag-finalizado{background:var(--nude-100); color:var(--ink-500);}
+.tag-cancelado{background:#F8E4E2; color:var(--danger);}
+.row-actions{display:flex; gap:6px;}
+.pagination{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; font-size:12.5px; color:var(--ink-500);}
+.pagination .pages{display:flex; gap:4px;}
+.pagination button{
+  width:28px; height:28px; border-radius:7px; border:1px solid var(--nude-200); background:var(--white);
+  cursor:pointer; font-size:12px; font-weight:700; color:var(--ink-700);
+}
+.pagination button.active{background:var(--ink-900); color:var(--white); border-color:var(--ink-900);}
+.empty-state{padding:50px 20px; text-align:center; color:var(--ink-500);}
+.empty-state .ico{font-size:34px; margin-bottom:10px;}
+
+/* Agenda */
+.agenda-toolbar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; margin-bottom:16px;}
+.agenda-view-toggle{display:flex; background:var(--nude-100); border-radius:10px; padding:3px;}
+.agenda-view-toggle button{
+  border:none; background:transparent; padding:7px 14px; border-radius:8px; font-size:12.5px; font-weight:700; cursor:pointer; color:var(--ink-700);
+}
+.agenda-view-toggle button.active{background:var(--white); box-shadow:var(--shadow-sm); color:var(--ink-900);}
+.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:11.5px; color:var(--ink-700); margin-bottom:14px;}
+.legend span{display:flex; align-items:center; gap:6px;}
+.agenda-day{display:flex; flex-direction:column; gap:8px;}
+.slot{
+  display:flex; align-items:center; gap:14px; padding:12px 16px; border-radius:10px; cursor:pointer;
+  border-left:4px solid; transition:.15s;
+}
+.slot:hover{transform:translateX(2px); box-shadow:var(--shadow-sm);}
+.slot.livre{background:#F1F8F3; border-color:var(--success);}
+.slot.confirmado{background:#EEF3FA; border-color:var(--info);}
+.slot.andamento{background:#FBF3E0; border-color:var(--gold-600);}
+.slot.finalizado{background:var(--nude-100); border-color:var(--ink-500);}
+.slot.cancelado{background:#FBEAE8; border-color:var(--danger);}
+.slot .time{font-weight:800; font-size:13.5px; width:52px; flex-shrink:0;}
+.slot .info{flex:1; min-width:0;}
+.slot .info .cli{font-weight:700; font-size:13.5px;}
+.slot .info .meta{font-size:11.5px; color:var(--ink-500);}
+.week-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:10px;}
+.week-col{background:var(--white); border-radius:10px; border:1px solid var(--nude-200); padding:10px; min-height:220px;}
+.week-col .wd{font-size:11px; text-transform:uppercase; font-weight:800; color:var(--ink-500); text-align:center; margin-bottom:8px;}
+.week-slot{font-size:10.5px; padding:5px 6px; border-radius:6px; margin-bottom:5px; border-left:3px solid;}
+
+/* Estoque/produtos low bar */
+.stock-bar{width:100%; height:6px; border-radius:4px; background:var(--nude-200); overflow:hidden; margin-top:5px;}
+.stock-bar > div{height:100%; border-radius:4px;}
+
+/* Modal */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(36,30,28,.5); display:flex; align-items:center; justify-content:center;
+  z-index:100; padding:20px; backdrop-filter:blur(2px);
+}
+.modal{
+  background:var(--white); border-radius:16px; width:100%; max-width:560px; max-height:90vh; overflow-y:auto;
+  box-shadow:var(--shadow-lg); animation:pop .18s ease;
+}
+@keyframes pop{from{transform:scale(.96); opacity:0;} to{transform:scale(1); opacity:1;}}
+.modal-head{display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid var(--nude-200);}
+.modal-head h3{font-size:20px;}
+.modal-close{background:none; border:none; font-size:20px; cursor:pointer; color:var(--ink-500); width:32px; height:32px; border-radius:8px;}
+.modal-close:hover{background:var(--nude-100);}
+.modal-body{padding:22px 24px;}
+.modal-foot{display:flex; justify-content:flex-end; gap:10px; padding:16px 24px; border-top:1px solid var(--nude-200);}
+.form-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px 16px;}
+.form-grid .full{grid-column:1/-1;}
+@media (max-width:520px){.form-grid{grid-template-columns:1fr;}}
+
+/* Toasts + Loader */
+#toast-container{position:fixed; bottom:22px; right:22px; z-index:200; display:flex; flex-direction:column; gap:10px;}
+.toast{
+  background:var(--ink-900); color:var(--white); padding:13px 18px; border-radius:10px; font-size:13.5px;
+  box-shadow:var(--shadow-lg); display:flex; align-items:center; gap:10px; min-width:240px; animation:slideIn .25s ease;
+  border-left:4px solid var(--gold-400);
+}
+.toast.success{border-color:var(--success);} .toast.error{border-color:var(--danger);}
+@keyframes slideIn{from{transform:translateX(30px); opacity:0;} to{transform:translateX(0); opacity:1;}}
+#loader-overlay{
+  position:fixed; inset:0; background:rgba(251,247,242,.7); z-index:300; display:none; align-items:center; justify-content:center;
+}
+.spinner{width:44px; height:44px; border-radius:50%; border:3px solid var(--nude-200); border-top-color:var(--gold-600); animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Sidebar mobile */
+.sidebar-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:39;}
+@media (max-width:900px){
+  .sidebar{position:fixed; left:-280px; top:0; transition:left .2s ease;}
+  .sidebar.open{left:0;}
+  .sidebar-overlay.show{display:block;}
+  .hamburger{display:block;}
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+  .content{padding:18px;}
+  .topbar{padding:0 16px;}
+  .week-grid{grid-template-columns:repeat(3,1fr);}
+}
+@media (max-width:520px){
+  .kpi-grid{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .week-grid{grid-template-columns:repeat(2,1fr);}
+}
+.helper-text{font-size:11px; color:var(--ink-500); margin-top:4px;}
+.profile-cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px;}
+.prof-card{background:var(--white); border:1px solid var(--nude-200); border-radius:var(--radius); padding:18px; text-align:center; box-shadow:var(--shadow-sm);}
+.prof-card .avatar-lg{
+  width:64px; height:64px; border-radius:50%; margin:0 auto 10px; background:linear-gradient(150deg,var(--quartz-300),var(--gold-400));
+  display:flex; align-items:center; justify-content:center; color:var(--white); font-weight:800; font-size:22px;
+}
+.prof-card h4{font-size:16px;}
+.prof-card .spec{font-size:12px; color:var(--ink-500); margin:2px 0 10px;}
+.prof-card .stats{display:flex; justify-content:space-around; font-size:11.5px; color:var(--ink-700); border-top:1px dashed var(--nude-200); padding-top:10px; margin-top:6px;}
+.prof-card .stats b{display:block; font-family:var(--font-display); font-size:15px; color:var(--ink-900);}
+.tabs{display:flex; gap:4px; background:var(--nude-100); border-radius:10px; padding:3px; margin-bottom:18px; width:fit-content; flex-wrap:wrap;}
+.tabs button{border:none; background:transparent; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:700; color:var(--ink-700); cursor:pointer;}
+.tabs button.active{background:var(--white); color:var(--ink-900); box-shadow:var(--shadow-sm);}
+.report-bar-row{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+.report-bar-row .label{width:170px; font-size:12.5px; font-weight:600; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.report-bar-track{flex:1; background:var(--nude-100); border-radius:6px; height:14px; overflow:hidden;}
+.report-bar-fill{height:100%; border-radius:6px; background:linear-gradient(90deg,var(--gold-400),var(--quartz-500));}
+.report-bar-val{width:56px; text-align:right; font-size:12px; font-weight:700; color:var(--ink-700); flex-shrink:0;}
+.chip-payment{display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:20px; background:var(--nude-100); font-size:12.5px; font-weight:700; margin-right:8px; margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<!-- ============================== LOGIN ============================== -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="app-name">SJ <b>Connect</b></div>
+    <div class="brand-mark" id="login-logo"></div>
+    <h1>Sandra Júlia</h1>
+    <div class="subtitle">Cabelo &amp; Maquiagem · Salão · Spa · Estética</div>
+    <div class="ribbon" style="margin-left:auto;margin-right:auto;"></div>
+    <div class="login-error" id="login-error">Usuário ou senha inválidos.</div>
+    <form id="login-form" onsubmit="return handleLogin(event)">
+      <div class="field">
+        <label>Usuário</label>
+        <input type="text" id="login-user" placeholder="seu.usuario" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label>Senha</label>
+        <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Entrar</button>
+    </form>
+    <div class="login-links">
+      <a onclick="toast('Solicite a redefinição com a administração do salão.','info')">Esqueci minha senha</a>
+    </div>
+    <p style="font-size:10.5px;color:var(--ink-500);margin-top:22px;">
+      Demo: admin/admin · recepcao/recepcao · profissional/profissional
+    </p>
+  </div>
+</div>
+
+<!-- ============================== APP SHELL ============================== -->
+<div id="app" class="hidden">
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar(false)"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="mark" id="sidebar-logo"></div>
+      <div>
+        <div class="name">Sandra Júlia</div>
+        <div class="tagline">Salão · Spa · Estética</div>
+      </div>
+    </div>
+    <nav id="nav-menu"></nav>
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="avatar" id="user-avatar">SJ</div>
+        <div class="info">
+          <div id="user-name" style="font-weight:700;">—</div>
+          <div class="role" id="user-role">—</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="handleLogout()">Sair</button>
+      <div style="text-align:center;font-size:9.5px;letter-spacing:1.5px;color:var(--ink-500);margin-top:12px;text-transform:uppercase;font-weight:700;">SJ Connect</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;">
+        <button class="hamburger" onclick="toggleSidebar(true)">☰</button>
+        <div>
+          <div class="page-title" id="page-title">Dashboard</div>
+          <div class="page-sub" id="page-sub">Visão geral do salão hoje</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" title="Notificações" onclick="toast('Você não tem novas notificações.','info')">🔔<span class="badge-dot"></span></button>
+        <button class="icon-btn" title="Atualizar" onclick="refreshCurrentView()">⟳</button>
+      </div>
+    </header>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<div id="loader-overlay"><div class="spinner"></div></div>
+
+<script>
+/* ==========================================================================
+   SANDRA JÚLIA ERP — APPLICATION SCRIPT
+   Sections:
+     1. API LAYER (Google Apps Script bridge + local demo fallback)
+     2. STATE & AUTH
+     3. NAVIGATION / MENU BY PROFILE
+     4. UTIL (masks, toasts, loader, modal helpers, table helpers)
+     5. VIEW RENDERERS (Dashboard, Agenda, Clientes, Profissionais, Serviços,
+        Produtos, Fornecedores, Financeiro, Relatórios, Configurações, Usuários)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. API LAYER
+   Every data operation goes through `api(action, payload)`. It calls the
+   Apps Script Web App (deployed as a JSON API — see APPS_SCRIPT_URL below)
+   via fetch(), e.g. action "listarClientes" -> Code.gs function listarClientes().
+   This intentionally does NOT use google.script.run: that requires the page
+   to be served BY Apps Script's HtmlService, which triggers an in-browser
+   OAuth consent iframe that can break in some browsers/accounts. fetch()
+   avoids that entirely — this file can run as a local file or be hosted
+   anywhere, and simply talks to the Apps Script URL over plain HTTP.
+   With no APPS_SCRIPT_URL configured, it falls back to an in-memory demo
+   dataset so the interface can be reviewed without a live backend.
+-------------------------------------------------------------------------- */
+// Rede de segurança: qualquer erro não tratado aparece na tela (e no console)
+// em vez de deixar a aplicação em branco silenciosamente.
+window.addEventListener('error', function(e){
+  console.error('Erro não tratado:', e.error || e.message);
+  const content = document.getElementById('content');
+  const app = document.getElementById('app');
+  if(content && app && !app.classList.contains('hidden')){
+    content.innerHTML = `<div class="empty-state"><div class="ico">⚠</div>Ocorreu um erro inesperado: `
+      + `${(e.error&&e.error.message)||e.message||'ver console (F12) para detalhes'}</div>`;
+  }
+});
+
+// Emblema da marca — lótus minimalista em traço único, inspirado na identidade
+// visual do salão (SPA Sandra Julia), redesenhado em SVG para reaproveitar as
+// cores do sistema (dourado/nude) em qualquer fundo, claro ou escuro.
+const LOGO_SVG = `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M50,92 C38,66 38,24 50,8 C62,24 62,66 50,92 Z" transform="rotate(-60 50 92)"/>
+  <path d="M50,92 C38,66 38,24 50,8 C62,24 62,66 50,92 Z" transform="rotate(-30 50 92)"/>
+  <path d="M50,92 C38,66 38,24 50,8 C62,24 62,66 50,92 Z"/>
+  <path d="M50,92 C38,66 38,24 50,8 C62,24 62,66 50,92 Z" transform="rotate(30 50 92)"/>
+  <path d="M50,92 C38,66 38,24 50,8 C62,24 62,66 50,92 Z" transform="rotate(60 50 92)"/>
+  <circle cx="50" cy="90" r="3" fill="currentColor" stroke="none"/>
+</svg>`;
+['login-logo','sidebar-logo'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML = LOGO_SVG; });
+
+/* --------------------------------------------------------------------------
+   CONFIGURAÇÃO DA API
+   Cole aqui a URL do seu Apps Script implantado como "App da Web" (termina em
+   /exec). Enquanto estiver com o valor padrão abaixo, o sistema roda em modo
+   demonstração, usando dados fictícios em memória — útil para conferir a
+   interface antes de ligar ao backend real.
+
+   Por que fetch() e não google.script.run? Porque google.script.run só
+   funciona quando a própria página é servida pelo Apps Script (HtmlService),
+   o que nesse caso tem gerado uma tela de autorização quebrada em alguns
+   navegadores/contas. Com fetch(), o index.html roda fora do Apps Script
+   (local ou hospedado em qualquer lugar) e conversa com o backend por uma
+   chamada HTTP comum — sem qualquer tela de login/consentimento no meio.
+-------------------------------------------------------------------------- */
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdahgE00oDzfved_T4AlYT2x7Xww8fp1zwkbMaNRnFJOOmh7vlE_l_-BfxqGZaJZTn4w/exec'; // ex.: https://script.google.com/macros/s/AKfycb.../exec
+// URL pública onde o anamnese.html está hospedado (mesmo lugar do index.html),
+// usada para montar o link enviado ao cliente pelo WhatsApp.
+const ANAMNESE_FORM_URL = 'file:///C:/Users/x98628640100/OneDrive%20-%20Tribunal%20de%20Contas%20da%20Uni%C3%A3o/%C3%81rea%20de%20Trabalho/SJ/anamnese.html'; // ex.: https://seusite.netlify.app/anamnese.html
+const USE_REMOTE_API = /^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(APPS_SCRIPT_URL);
+
+function api(action, payload){
+  if(USE_REMOTE_API){
+    // Envia como text/plain para evitar o preflight OPTIONS do CORS, que o
+    // Apps Script Web App não responde. O corpo continua sendo um JSON válido;
+    // só o content-type da requisição é "simples" aos olhos do navegador.
+    return fetch(APPS_SCRIPT_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({action, payload})
+    })
+    .then(r=>{
+      if(!r.ok) throw new Error('Falha de rede ao contatar a API (HTTP '+r.status+').');
+      return r.json();
+    })
+    .then(json=>{
+      if(!json.ok) throw new Error(json.error || 'Erro desconhecido retornado pela API.');
+      return json.data;
+    });
+  }
+  // ---- MODO DEMONSTRAÇÃO (sem APPS_SCRIPT_URL configurada) ----
+  return new Promise((resolve, reject)=>{
+    setTimeout(()=>{
+      try{ resolve(demoAPI(action, payload)); }catch(e){ reject(e); }
+    }, 180 + Math.random()*220);
+  });
+}
+
+/* --------------------------------------------------------------------------
+   DEMO DATA — replicates the shape of what each Sheets-backed function
+   should return, purely so this file is explorable standalone. Everything
+   here is created dynamically (no data baked into the rendered UI markup);
+   once connected to Apps Script, api() bypasses this entirely.
+-------------------------------------------------------------------------- */
+let DB = null;
+function seedDB(){
+  if(DB) return;
+  const hoje = new Date();
+  const iso = d => d.toISOString().slice(0,10);
+  DB = {
+    usuarios:[
+      {id:'u1', nome:'Sandra Júlia', usuario:'admin', senha:'admin', perfil:'Administrador', ativo:true},
+      {id:'u2', nome:'Bianca Souza', usuario:'recepcao', senha:'recepcao', perfil:'Recepcionista', ativo:true},
+      {id:'u3', nome:'Marcos Lima', usuario:'profissional', senha:'profissional', perfil:'Profissional', profissionalId:'p1', ativo:true},
+    ],
+    clientes:[
+      {id:'c1', nome:'Juliana Prado', telefone:'(61) 99123-4567', cpf:'123.456.789-00', aniversario:'07-18', vip:true, ultimaVisita:'2026-07-02', observacoes:'Prefere tintura sem amônia.'},
+      {id:'c2', nome:'Renata Alves', telefone:'(61) 98844-2231', cpf:'234.567.890-11', aniversario:'07-15', vip:false, ultimaVisita:'2026-06-28', observacoes:''},
+      {id:'c3', nome:'Camila Duarte', telefone:'(61) 99911-0022', cpf:'345.678.901-22', aniversario:'11-02', vip:true, ultimaVisita:'2026-07-10', observacoes:'Alergia a alguns esmaltes.'},
+      {id:'c4', nome:'Patrícia Nunes', telefone:'(61) 99700-1234', cpf:'456.789.012-33', aniversario:'07-15', vip:false, ultimaVisita:'2026-05-20', observacoes:''},
+      {id:'c5', nome:'Fernanda Ribeiro', telefone:'(61) 98123-9988', cpf:'567.890.123-44', aniversario:'03-09', vip:false, ultimaVisita:'2026-07-08', observacoes:''},
+    ],
+    profissionais:[
+      {id:'p1', nome:'Marcos Lima', especialidade:'Colorista', comissao:35, ativo:true, atendimentosMes:64},
+      {id:'p2', nome:'Ana Beatriz', especialidade:'Maquiadora', comissao:40, ativo:true, atendimentosMes:51},
+      {id:'p3', nome:'Diego Ferreira', especialidade:'Barbeiro / Cortes', comissao:30, ativo:true, atendimentosMes:58},
+    ],
+    servicos:[
+      {id:'s1', nome:'Corte Feminino', categoria:'Cabelo', duracao:45, preco:90},
+      {id:'s2', nome:'Coloração', categoria:'Cabelo', duracao:120, preco:220},
+      {id:'s3', nome:'Maquiagem Social', categoria:'Maquiagem', duracao:60, preco:150},
+      {id:'s4', nome:'Design de Sobrancelha', categoria:'Estética', duracao:30, preco:60},
+      {id:'s5', nome:'Manicure + Pedicure', categoria:'Unhas', duracao:75, preco:85},
+    ],
+    produtos:[
+      {id:'pr1', nome:'Shampoo Reconstrução', categoria:'Cabelo', estoque:4, minimo:8, preco:65, fornecedorId:'f1'},
+      {id:'pr2', nome:'Base Líquida HD', categoria:'Maquiagem', estoque:12, minimo:5, preco:98, fornecedorId:'f2'},
+      {id:'pr3', nome:'Esmalte Nude Premium', categoria:'Unhas', estoque:3, minimo:10, preco:22, fornecedorId:'f3'},
+      {id:'pr4', nome:'Ampola de Tratamento', categoria:'Cabelo', estoque:20, minimo:6, preco:35, fornecedorId:'f1'},
+    ],
+    fornecedores:[
+      {id:'f1', nome:'BeautyLine Distribuidora', contato:'(61) 3222-1010', categoria:'Cabelo'},
+      {id:'f2', nome:'MakeUp Brasil', contato:'(61) 3222-2020', categoria:'Maquiagem'},
+      {id:'f3', nome:'Nail Import', contato:'(61) 3222-3030', categoria:'Unhas'},
+    ],
+    agenda:[
+      {id:'a1', clienteId:'c1', profissionalId:'p1', servicoId:'s2', data:iso(hoje), hora:'09:00', duracao:120, status:'confirmado', valor:220, obs:''},
+      {id:'a2', clienteId:'c2', profissionalId:'p3', servicoId:'s1', data:iso(hoje), hora:'10:00', duracao:45, status:'andamento', valor:90, obs:''},
+      {id:'a3', clienteId:'c3', profissionalId:'p2', servicoId:'s3', data:iso(hoje), hora:'11:30', duracao:60, status:'livre', valor:150, obs:'Confirmar horário com cliente.'},
+      {id:'a4', clienteId:'c4', profissionalId:'p1', servicoId:'s1', data:iso(hoje), hora:'14:00', duracao:45, status:'finalizado', valor:90, obs:''},
+      {id:'a5', clienteId:'c5', profissionalId:'p3', servicoId:'s5', data:iso(hoje), hora:'15:30', duracao:75, status:'cancelado', valor:85, obs:'Cliente remarcou.'},
+      {id:'a6', clienteId:'c1', profissionalId:'p2', servicoId:'s4', data:iso(hoje), hora:'16:30', duracao:30, status:'confirmado', valor:60, obs:''},
+    ],
+    financeiro:[
+      {id:'fi1', data:iso(hoje), tipo:'entrada', forma:'pix', valor:220, descricao:'Coloração - Juliana Prado'},
+      {id:'fi2', data:iso(hoje), tipo:'entrada', forma:'credito', valor:90, descricao:'Corte - Patrícia Nunes'},
+      {id:'fi3', data:iso(hoje), tipo:'entrada', forma:'dinheiro', valor:60, descricao:'Sobrancelha - Juliana Prado'},
+      {id:'fi4', data:iso(hoje), tipo:'saida', forma:'pix', valor:180, descricao:'Compra de produtos - BeautyLine'},
+    ],
+    recibos:[],
+    movimentacoes:[],
+    anamneses:[],
+  };
+}
+function uid(prefix){ return prefix + Math.random().toString(36).slice(2,9); }
+
+function demoAPI(action, payload){
+  seedDB();
+  const clone = o => JSON.parse(JSON.stringify(o));
+  switch(action){
+    case 'autenticar': {
+      const u = DB.usuarios.find(x=>x.usuario===payload.usuario && x.senha===payload.senha && x.ativo);
+      if(!u) throw new Error('Credenciais inválidas');
+      return clone(u);
+    }
+    case 'listarClientes': return clone(DB.clientes);
+    case 'salvarCliente': {
+      if(payload.id){ const i=DB.clientes.findIndex(c=>c.id===payload.id); DB.clientes[i]=payload; }
+      else { payload.id = uid('c'); DB.clientes.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirCliente': DB.clientes = DB.clientes.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'listarProfissionais': return clone(DB.profissionais);
+    case 'salvarProfissional': {
+      if(payload.id){ const i=DB.profissionais.findIndex(c=>c.id===payload.id); DB.profissionais[i]=payload; }
+      else { payload.id = uid('p'); payload.atendimentosMes = 0; DB.profissionais.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirProfissional': DB.profissionais = DB.profissionais.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'listarServicos': return clone(DB.servicos);
+    case 'salvarServico': {
+      if(payload.id){ const i=DB.servicos.findIndex(c=>c.id===payload.id); DB.servicos[i]=payload; }
+      else { payload.id = uid('s'); DB.servicos.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirServico': DB.servicos = DB.servicos.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'listarProdutos': return clone(DB.produtos);
+    case 'salvarProduto': {
+      if(payload.id){ const i=DB.produtos.findIndex(c=>c.id===payload.id); DB.produtos[i]=payload; }
+      else { payload.id = uid('pr'); DB.produtos.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirProduto': DB.produtos = DB.produtos.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'listarFornecedores': return clone(DB.fornecedores);
+    case 'salvarFornecedor': {
+      if(payload.id){ const i=DB.fornecedores.findIndex(c=>c.id===payload.id); DB.fornecedores[i]=payload; }
+      else { payload.id = uid('f'); DB.fornecedores.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirFornecedor': DB.fornecedores = DB.fornecedores.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'listarAgenda': return clone(DB.agenda);
+    case 'salvarAgendamento': {
+      if(payload.id){ const i=DB.agenda.findIndex(c=>c.id===payload.id); DB.agenda[i]=payload; }
+      else { payload.id = uid('a'); DB.agenda.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirAgendamento': DB.agenda = DB.agenda.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'listarFinanceiro': return clone(DB.financeiro);
+    case 'salvarLancamentoFinanceiro': {
+      payload.id = uid('fi'); DB.financeiro.push(payload); return clone(payload);
+    }
+
+    case 'listarRecibos': return clone(DB.recibos);
+    case 'salvarRecibo': { payload.id = uid('rc'); DB.recibos.push(payload); return clone(payload); }
+
+    case 'listarMovimentacoesEstoque': return clone(DB.movimentacoes);
+    case 'registrarMovimentacaoEstoque': {
+      const prod = DB.produtos.find(p=>p.id===payload.produtoId);
+      if(!prod) throw new Error('Produto não encontrado.');
+      prod.estoque = payload.tipo==='entrada' ? prod.estoque + payload.quantidade : prod.estoque - payload.quantidade;
+      payload.id = uid('mv');
+      DB.movimentacoes.push(payload);
+      return {ok:true, produto:clone(prod)};
+    }
+
+    case 'obterClienteParaAnamnese': {
+      const c = DB.clientes.find(x=>x.id===payload.id);
+      if(!c) throw new Error('Cliente não encontrado.');
+      return {id:c.id, nome:c.nome};
+    }
+    case 'salvarAnamnese': { payload.id = uid('an'); DB.anamneses.push(payload); return clone(payload); }
+    case 'listarAnamneses': return clone(DB.anamneses);
+
+    case 'listarUsuarios': return clone(DB.usuarios);
+    case 'salvarUsuario': {
+      if(payload.id){ const i=DB.usuarios.findIndex(c=>c.id===payload.id); DB.usuarios[i]=payload; }
+      else { payload.id = uid('u'); DB.usuarios.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirUsuario': DB.usuarios = DB.usuarios.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'obterDashboard': {
+      const hojeStr = iso_(new Date());
+      const ag = DB.agenda.filter(a=>a.data===hojeStr);
+      const faturamentoHoje = DB.financeiro.filter(f=>f.data===hojeStr && f.tipo==='entrada').reduce((s,f)=>s+f.valor,0);
+      const baixos = DB.produtos.filter(p=>p.estoque<=p.minimo).length;
+      const mmdd = d => d.slice(5);
+      const hojeMD = mmdd(hojeStr);
+      const aniversariantes = DB.clientes.filter(c=>c.aniversario===hojeMD || Math.abs(diffDay(c.aniversario,hojeMD))<=3);
+      return { agendamentosHoje: ag.length, clientesHoje: new Set(ag.map(a=>a.clienteId)).size,
+        aniversariantes: aniversariantes.length, faturamentoHoje, produtosBaixos: baixos, agendaHoje: clone(ag) };
+    }
+    default: throw new Error('Ação desconhecida: '+action);
+  }
+}
+function iso_(d){ return d.toISOString().slice(0,10); }
+function diffDay(a,b){ return 999; }
+
+/* --------------------------------------------------------------------------
+   2. STATE & AUTH
+-------------------------------------------------------------------------- */
+const STATE = {
+  user:null,
+  currentView:'dashboard',
+  cache:{ clientes:[], profissionais:[], servicos:[], produtos:[], fornecedores:[], agenda:[], usuarios:[], financeiro:[] },
+  table:{ // per-table UI state: search, sort, page
+  }
+};
+
+function tableState(name){
+  if(!STATE.table[name]) STATE.table[name] = {search:'', sortKey:null, sortDir:1, page:1, pageSize:6, filter:''};
+  return STATE.table[name];
+}
+
+async function handleLogin(e){
+  e.preventDefault();
+  const usuario = document.getElementById('login-user').value.trim();
+  const senha = document.getElementById('login-pass').value;
+  const errBox = document.getElementById('login-error');
+  errBox.style.display='none';
+  showLoader(true);
+  try{
+    const user = await api('autenticar', {usuario, senha});
+    STATE.user = user;
+    showLoader(false);
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    bootApp();
+  }catch(err){
+    showLoader(false);
+    errBox.textContent = 'Usuário ou senha inválidos.';
+    errBox.style.display='block';
+  }
+  return false;
+}
+function handleLogout(){
+  STATE.user = null;
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('login-form').reset();
+}
+
+/* --------------------------------------------------------------------------
+   3. NAVIGATION / MENU BY PROFILE
+-------------------------------------------------------------------------- */
+const MENUS = {
+  'Administrador':[
+    {view:'dashboard', label:'Dashboard', ico:'◆'},
+    {view:'agenda', label:'Agenda', ico:'📅'},
+    {view:'clientes', label:'Clientes', ico:'👤'},
+    {view:'profissionais', label:'Profissionais', ico:'💇'},
+    {view:'recibos', label:'Recibo', ico:'🧾'},
+    {view:'servicos', label:'Serviços', ico:'✂'},
+    {view:'produtos', label:'Produtos', ico:'🧴'},
+    {view:'fornecedores', label:'Fornecedores', ico:'🚚'},
+    {view:'financeiro', label:'Financeiro', ico:'💰'},
+    {view:'relatorios', label:'Relatórios', ico:'📊'},
+    {view:'configuracoes', label:'Configurações', ico:'⚙'},
+    {view:'usuarios', label:'Usuários', ico:'🔑'},
+  ],
+  'Recepcionista':[
+    {view:'dashboard', label:'Dashboard', ico:'◆'},
+    {view:'agenda', label:'Agenda', ico:'📅'},
+    {view:'clientes', label:'Clientes', ico:'👤'},
+    {view:'profissionais', label:'Profissionais', ico:'💇'},
+    {view:'servicos', label:'Serviços', ico:'✂'},
+    {view:'produtos', label:'Produtos', ico:'🧴', readonly:true},
+  ],
+  'Profissional':[
+    {view:'minhaagenda', label:'Minha Agenda', ico:'📅'},
+    {view:'agendasemanal', label:'Agenda Semanal', ico:'🗓'},
+    {view:'meuperfil', label:'Meu Perfil', ico:'👤'},
+  ],
+};
+const PAGE_META = {
+  dashboard:['Dashboard','Visão geral do salão hoje'],
+  agenda:['Agenda','Calendário de atendimentos'],
+  clientes:['Clientes','Base de clientes do salão'],
+  profissionais:['Profissionais','Equipe e especialidades'],
+  recibos:['Recibo','Comprovantes de atendimento'],
+  servicos:['Serviços','Catálogo de serviços e preços'],
+  produtos:['Produtos','Controle de estoque'],
+  fornecedores:['Fornecedores','Parceiros e contatos'],
+  financeiro:['Financeiro','Fluxo de caixa do salão'],
+  relatorios:['Relatórios','Indicadores e desempenho'],
+  configuracoes:['Configurações','Preferências do sistema'],
+  usuarios:['Usuários','Contas de acesso ao sistema'],
+  minhaagenda:['Minha Agenda','Seus atendimentos de hoje'],
+  agendasemanal:['Agenda Semanal','Sua semana de atendimentos'],
+  meuperfil:['Meu Perfil','Seus dados profissionais'],
+};
+
+// Aceita variações de acentuação/maiúsculas vindas da planilha (ex.: "administrador",
+// "ADMINISTRADOR ", "Administrador") e sempre resolve para uma das 3 chaves de MENUS.
+function normalizePerfil(raw){
+  const s = String(raw||'').trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,''); // remove acentos
+  if(s.startsWith('admin')) return 'Administrador';
+  if(s.startsWith('recep')) return 'Recepcionista';
+  if(s.startsWith('profis')) return 'Profissional';
+  return null;
+}
+
+function bootApp(){
+  try{
+    const perfil = normalizePerfil(STATE.user.perfil);
+    if(!perfil){
+      throw new Error('Perfil de usuário "'+STATE.user.perfil+'" não reconhecido. '+
+        'Use exatamente Administrador, Recepcionista ou Profissional na coluna "perfil" da aba Usuarios.');
+    }
+    STATE.user.perfil = perfil;
+    document.getElementById('user-name').textContent = STATE.user.nome || '—';
+    document.getElementById('user-role').textContent = perfil;
+    document.getElementById('user-avatar').textContent = initials(STATE.user.nome || '?');
+    renderMenu();
+    const firstItem = MENUS[perfil][0];
+    navigate(firstItem.view);
+  }catch(err){
+    console.error('Erro ao iniciar o sistema:', err);
+    document.getElementById('content').innerHTML =
+      `<div class="empty-state"><div class="ico">⚠</div>${escapeHtml(err.message||String(err))}</div>`;
+    document.getElementById('nav-menu').innerHTML = '';
+  }
+}
+function initials(name){ return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
+
+function renderMenu(){
+  const nav = document.getElementById('nav-menu');
+  const items = MENUS[STATE.user.perfil] || [];
+  nav.innerHTML = items.map(it=>`
+    <div class="nav-item" data-view="${it.view}" onclick="navigate('${it.view}')">
+      <span class="ico">${it.ico}</span><span>${it.label}</span>
+    </div>`).join('');
+}
+function setActiveNav(view){
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    el.classList.toggle('active', el.dataset.view===view);
+  });
+}
+async function navigate(view){
+  STATE.currentView = view;
+  setActiveNav(view);
+  const meta = PAGE_META[view] || [view,''];
+  document.getElementById('page-title').textContent = meta[0];
+  document.getElementById('page-sub').textContent = meta[1];
+  toggleSidebar(false);
+  const content = document.getElementById('content');
+  content.innerHTML = `<div class="empty-state"><div class="spinner" style="margin:0 auto;"></div></div>`;
+  try{
+    const html = await RENDERERS[view]();
+    content.innerHTML = html;
+    if(POST_RENDER[view]) POST_RENDER[view]();
+  }catch(err){
+    content.innerHTML = `<div class="empty-state">Erro ao carregar: ${escapeHtml(err.message||String(err))}</div>`;
+  }
+}
+function refreshCurrentView(){ navigate(STATE.currentView); }
+function toggleSidebar(open){
+  document.getElementById('sidebar').classList.toggle('open', !!open);
+  document.getElementById('sidebar-overlay').classList.toggle('show', !!open);
+}
+
+/* --------------------------------------------------------------------------
+   4. UTIL
+-------------------------------------------------------------------------- */
+function showLoader(v){ document.getElementById('loader-overlay').style.display = v ? 'flex' : 'none'; }
+function toast(msg, type='info'){
+  const c = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = `<span>${type==='success'?'✓':type==='error'?'✕':'ℹ'}</span><span>${escapeHtml(msg)}</span>`;
+  c.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='.3s'; setTimeout(()=>el.remove(),300); }, 3200);
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function fmtMoney(v){ return (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+function fmtDate(iso){ if(!iso) return '—'; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
+function maskCPF(v){
+  return v.replace(/\D/g,'').slice(0,11)
+    .replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+}
+function maskPhone(v){
+  v = v.replace(/\D/g,'').slice(0,11);
+  if(v.length>10) return v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3');
+  return v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
+}
+function attachMasks(root){
+  root.querySelectorAll('[data-mask="cpf"]').forEach(inp=>inp.addEventListener('input',()=>inp.value=maskCPF(inp.value)));
+  root.querySelectorAll('[data-mask="phone"]').forEach(inp=>inp.addEventListener('input',()=>inp.value=maskPhone(inp.value)));
+}
+function openModal(html){
+  const overlay = document.createElement('div');
+  overlay.className='modal-overlay'; overlay.id='active-modal-overlay';
+  overlay.innerHTML = `<div class="modal">${html}</div>`;
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) closeModal(); });
+  document.body.appendChild(overlay);
+  attachMasks(overlay);
+  return overlay;
+}
+function closeModal(){ const el=document.getElementById('active-modal-overlay'); if(el) el.remove(); }
+
+/* Generic sortable/searchable table controller.
+   config = { data, columns:[{key,label,render?}], searchKeys:[...], onSearch, rowActions(row) } */
+function applyTableControls(name, rawData, opts){
+  const st = tableState(name);
+  let data = rawData.slice();
+  if(opts.customFilter) data = opts.customFilter(data, st);
+  if(st.search && opts.searchKeys){
+    const q = st.search.toLowerCase();
+    data = data.filter(row => opts.searchKeys.some(k => String(row[k]||'').toLowerCase().includes(q)));
+  }
+  if(st.sortKey){
+    data.sort((a,b)=>{
+      const av=a[st.sortKey], bv=b[st.sortKey];
+      if(typeof av==='number') return (av-bv)*st.sortDir;
+      return String(av||'').localeCompare(String(bv||''))*st.sortDir;
+    });
+  }
+  const total = data.length;
+  const pages = Math.max(1, Math.ceil(total/st.pageSize));
+  st.page = Math.min(st.page, pages);
+  const start = (st.page-1)*st.pageSize;
+  const pageData = data.slice(start, start+st.pageSize);
+  return {pageData, total, pages};
+}
+function paginationHtml(name, total, pages){
+  const st = tableState(name);
+  let btns='';
+  for(let i=1;i<=pages;i++){
+    btns += `<button class="${i===st.page?'active':''}" onclick="gotoPage('${name}',${i})">${i}</button>`;
+  }
+  return `<div class="pagination">
+    <span>${total} registro${total===1?'':'s'}</span>
+    <div class="pages">${btns}</div>
+  </div>`;
+}
+function gotoPage(name, page){ tableState(name).page = page; navigate(STATE.currentView); }
+function sortTable(name, key){
+  const st = tableState(name);
+  if(st.sortKey===key) st.sortDir *= -1; else { st.sortKey=key; st.sortDir=1; }
+  navigate(STATE.currentView);
+}
+function searchTable(name, val){ tableState(name).search = val; tableState(name).page=1; navigate(STATE.currentView); }
+function filterTable(name, val){ tableState(name).filter = val; tableState(name).page=1; navigate(STATE.currentView); }
+
+/* --------------------------------------------------------------------------
+   5. RENDERERS
+-------------------------------------------------------------------------- */
+const RENDERERS = {};
+const POST_RENDER = {}; // optional hooks to bind events after innerHTML set
+
+/* ---------- DASHBOARD ---------- */
+RENDERERS.dashboard = async function(){
+  const d = await api('obterDashboard');
+  const profs = await api('listarProfissionais');
+  const clientes = await api('listarClientes');
+  const nomeProf = id => (profs.find(p=>p.id===id)||{}).nome || '—';
+  const nomeCli = id => (clientes.find(c=>c.id===id)||{}).nome || '—';
+
+  const kpis = [
+    {label:'Agendamentos Hoje', value:d.agendamentosHoje, note:'atendimentos marcados', color:'var(--gold-400)'},
+    {label:'Clientes Hoje', value:d.clientesHoje, note:'clientes distintos', color:'var(--quartz-500)'},
+    {label:'Aniversariantes', value:d.aniversariantes, note:'nesta semana', color:'var(--info)'},
+    {label:'Faturamento', value:fmtMoney(d.faturamentoHoje), note:'previsto para hoje', color:'var(--success)'},
+    {label:'Produtos Baixos', value:d.produtosBaixos, note:'abaixo do mínimo', color:'var(--danger)'},
+    {label:'Próximo Horário', value:(d.agendaHoje[0]?d.agendaHoje[0].hora:'—'), note:'próximo atendimento', color:'var(--gold-600)'},
+  ];
+  return `
+    <div class="kpi-grid">
+      ${kpis.map(k=>`
+        <div class="kpi" style="--kpi-color:${k.color}">
+          <div class="kpi-label">${k.label}</div>
+          <div class="kpi-value">${k.value}</div>
+          <div class="kpi-note">${k.note}</div>
+        </div>`).join('')}
+    </div>
+    <div class="dash-grid">
+      <div class="card card-pad">
+        <div class="section-head"><div><h3>Agenda do Dia</h3><div class="ribbon"></div></div>
+          <button class="btn btn-outline btn-sm" onclick="navigate('agenda')">Ver agenda completa</button>
+        </div>
+        ${d.agendaHoje.length ? d.agendaHoje.sort((a,b)=>a.hora.localeCompare(b.hora)).map(a=>`
+          <div class="list-row">
+            <span class="dot ${a.status}"></span>
+            <div style="flex:1;">
+              <div style="font-weight:700;font-size:13.5px;">${a.hora} · ${nomeCli(a.clienteId)}</div>
+              <div class="cell-sub">com ${nomeProf(a.profissionalId)}</div>
+            </div>
+            <span class="tag tag-${a.status}">${capitalize(a.status)}</span>
+          </div>`).join('') : `<div class="empty-state"><div class="ico">🗓</div>Nenhum atendimento agendado para hoje.</div>`}
+      </div>
+      <div class="card card-pad">
+        <div class="section-head"><div><h3>Aniversariantes &amp; Alertas</h3><div class="ribbon"></div></div></div>
+        <div class="list-row"><span class="dot livre"></span><div style="flex:1;">
+          <div style="font-weight:700;font-size:13.5px;">Estoque baixo</div>
+          <div class="cell-sub">${d.produtosBaixos} produto(s) precisam de reposição</div></div>
+          <button class="btn btn-outline btn-sm" onclick="navigate('produtos')">Ver</button>
+        </div>
+        <div class="list-row"><span class="dot confirmado"></span><div style="flex:1;">
+          <div style="font-weight:700;font-size:13.5px;">Aniversariantes da semana</div>
+          <div class="cell-sub">${d.aniversariantes} cliente(s) — envie uma lembrança</div></div>
+          <button class="btn btn-outline btn-sm" onclick="navigate('clientes')">Ver</button>
+        </div>
+        <div class="list-row"><span class="dot andamento"></span><div style="flex:1;">
+          <div style="font-weight:700;font-size:13.5px;">Faturamento previsto hoje</div>
+          <div class="cell-sub">${fmtMoney(d.faturamentoHoje)} em atendimentos confirmados/finalizados</div></div>
+        </div>
+      </div>
+    </div>`;
+};
+function capitalize(s){ return s ? s[0].toUpperCase()+s.slice(1) : s; }
+
+/* ---------- AGENDA (shared by Administrador/Recepcionista "agenda",
+   and Profissional "minhaagenda" / "agendasemanal") ---------- */
+async function loadAgendaContext(){
+  const [agenda, profs, servicos, clientes] = await Promise.all([
+    api('listarAgenda'), api('listarProfissionais'), api('listarServicos'), api('listarClientes')
+  ]);
+  return {agenda, profs, servicos, clientes};
+}
+const STATUS_LIST = ['livre','confirmado','andamento','finalizado','cancelado'];
+const STATUS_LABEL = {livre:'Livre', confirmado:'Confirmado', andamento:'Em Atendimento', finalizado:'Finalizado', cancelado:'Cancelado'};
+// Profissionais com estas especialidades têm o horário travado: não é possível
+// marcar dois atendimentos no mesmo horário para a mesma pessoa. Os demais
+// profissionais não sofrem esse bloqueio e podem atender mais de um serviço
+// no mesmo horário (ex.: cliente em coloração enquanto outra recebe make).
+const ESPECIALIDADES_COM_BLOQUEIO = ['manicure', 'pedicure', 'nail design'];
+function especialidadeTemBloqueio(especialidade){
+  const s = String(especialidade||'').toLowerCase();
+  return ESPECIALIDADES_COM_BLOQUEIO.some(e => s.includes(e));
+}
+function horaParaMinutos(hora){ const [h,m] = String(hora).split(':').map(Number); return h*60+(m||0); }
+// Verifica se um novo agendamento colide com outro já existente para o mesmo
+// profissional/data, considerando início e duração. excludeId ignora o próprio
+// registro quando estamos editando um agendamento existente.
+function encontrarConflitoAgenda(agendaList, profissionalId, data, hora, duracao, excludeId){
+  const inicio = horaParaMinutos(hora), fim = inicio + Number(duracao||0);
+  return agendaList.find(a=>{
+    if(a.id===excludeId) return false;
+    if(a.profissionalId!==profissionalId || a.data!==data) return false;
+    if(a.status==='cancelado') return false;
+    const aInicio = horaParaMinutos(a.hora), aFim = aInicio + Number(a.duracao||0);
+    return inicio < aFim && aInicio < fim;
+  });
+}
+
+RENDERERS.agenda = async function(){
+  const ctx = await loadAgendaContext();
+  const st = tableState('agenda');
+  if(!st.profFilter) st.profFilter=''; if(!st.servFilter) st.servFilter='';
+  const todayISO = new Date().toISOString().slice(0,10);
+  let list = ctx.agenda.filter(a=>a.data===todayISO);
+  if(st.profFilter) list = list.filter(a=>a.profissionalId===st.profFilter);
+  if(st.servFilter) list = list.filter(a=>a.servicoId===st.servFilter);
+  if(st.search){
+    const q=st.search.toLowerCase();
+    list = list.filter(a=>{
+      const c = ctx.clientes.find(x=>x.id===a.clienteId);
+      return c && c.nome.toLowerCase().includes(q);
+    });
+  }
+  list.sort((a,b)=>a.hora.localeCompare(b.hora));
+  const nomeCli=id=>(ctx.clientes.find(c=>c.id===id)||{}).nome||'—';
+  const nomeProf=id=>(ctx.profs.find(c=>c.id===id)||{}).nome||'—';
+  const nomeServ=id=>(ctx.servicos.find(c=>c.id===id)||{}).nome||'—';
+
+  return `
+    <div class="agenda-toolbar">
+      <div class="toolbar" style="margin-bottom:0;">
+        <div class="search-box"><span>🔎</span><input placeholder="Pesquisar cliente..." value="${st.search||''}" oninput="searchTable('agenda',this.value)"></div>
+        <select class="select-filter" onchange="setAgendaFilter('prof',this.value)">
+          <option value="">Todos profissionais</option>
+          ${ctx.profs.map(p=>`<option value="${p.id}" ${st.profFilter===p.id?'selected':''}>${p.nome}</option>`).join('')}
+        </select>
+        <select class="select-filter" onchange="setAgendaFilter('serv',this.value)">
+          <option value="">Todos serviços</option>
+          ${ctx.servicos.map(s=>`<option value="${s.id}" ${st.servFilter===s.id?'selected':''}>${s.nome}</option>`).join('')}
+        </select>
+      </div>
+      <button class="btn btn-gold" onclick="openAgendaModal()">+ Novo Agendamento</button>
+    </div>
+    <div class="legend">
+      <span><span class="dot livre"></span>Livre</span>
+      <span><span class="dot confirmado"></span>Confirmado</span>
+      <span><span class="dot andamento"></span>Em atendimento</span>
+      <span><span class="dot finalizado"></span>Finalizado</span>
+      <span><span class="dot cancelado"></span>Cancelado</span>
+    </div>
+    <div class="card card-pad">
+      <div class="agenda-day">
+        ${list.length ? list.map(a=>`
+          <div class="slot ${a.status}" onclick="openAgendaModal('${a.id}')">
+            <div class="time">${a.hora}</div>
+            <div class="info">
+              <div class="cli">${nomeCli(a.clienteId)} · ${nomeServ(a.servicoId)}</div>
+              <div class="meta">com ${nomeProf(a.profissionalId)} · ${a.duracao}min · ${fmtMoney(a.valor)}</div>
+            </div>
+            <span class="tag tag-${a.status}">${STATUS_LABEL[a.status]}</span>
+          </div>`).join('') : `<div class="empty-state"><div class="ico">📅</div>Nenhum horário encontrado para os filtros selecionados.</div>`}
+      </div>
+    </div>`;
+};
+function setAgendaFilter(kind,val){
+  const st=tableState('agenda');
+  if(kind==='prof') st.profFilter=val; else st.servFilter=val;
+  navigate(STATE.currentView);
+}
+
+RENDERERS.minhaagenda = async function(){
+  const ctx = await loadAgendaContext();
+  const myId = STATE.user.profissionalId;
+  const todayISO = new Date().toISOString().slice(0,10);
+  const list = ctx.agenda.filter(a=>a.profissionalId===myId && a.data===todayISO).sort((a,b)=>a.hora.localeCompare(b.hora));
+  const nomeCli=id=>(ctx.clientes.find(c=>c.id===id)||{}).nome||'—';
+  const nomeServ=id=>(ctx.servicos.find(c=>c.id===id)||{}).nome||'—';
+  return `
+    <div class="legend">
+      <span><span class="dot livre"></span>Livre</span><span><span class="dot confirmado"></span>Confirmado</span>
+      <span><span class="dot andamento"></span>Em atendimento</span><span><span class="dot finalizado"></span>Finalizado</span>
+      <span><span class="dot cancelado"></span>Cancelado</span>
+    </div>
+    <div class="card card-pad"><div class="agenda-day">
+      ${list.length ? list.map(a=>`
+        <div class="slot ${a.status}">
+          <div class="time">${a.hora}</div>
+          <div class="info"><div class="cli">${nomeCli(a.clienteId)} · ${nomeServ(a.servicoId)}</div>
+          <div class="meta">${a.duracao}min · ${fmtMoney(a.valor)}</div></div>
+          <span class="tag tag-${a.status}">${STATUS_LABEL[a.status]}</span>
+        </div>`).join('') : `<div class="empty-state"><div class="ico">📅</div>Nenhum atendimento hoje. Aproveite para revisar sua agenda semanal.</div>`}
+    </div></div>`;
+};
+RENDERERS.agendasemanal = async function(){
+  const ctx = await loadAgendaContext();
+  const myId = STATE.user.profissionalId;
+  const base = new Date(); base.setDate(base.getDate()-base.getDay());
+  const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const cols = [];
+  for(let i=0;i<7;i++){
+    const d = new Date(base); d.setDate(base.getDate()+i);
+    const iso = d.toISOString().slice(0,10);
+    cols.push({label:dias[i], date:d.getDate(), items: ctx.agenda.filter(a=>a.profissionalId===myId && a.data===iso).sort((a,b)=>a.hora.localeCompare(b.hora))});
+  }
+  const nomeCli=id=>(ctx.clientes.find(c=>c.id===id)||{}).nome||'—';
+  return `<div class="week-grid">
+    ${cols.map(c=>`
+      <div class="week-col">
+        <div class="wd">${c.label} ${c.date}</div>
+        ${c.items.length? c.items.map(a=>`
+          <div class="week-slot ${a.status}" style="border-color:var(--${a.status==='livre'?'success':a.status==='confirmado'?'info':a.status==='andamento'?'gold-600':a.status==='finalizado'?'ink-500':'danger'});background:var(--nude-50);">
+            <b>${a.hora}</b> ${nomeCli(a.clienteId)}
+          </div>`).join('') : `<div style="font-size:11px;color:var(--ink-500);text-align:center;padding-top:20px;">—</div>`}
+      </div>`).join('')}
+  </div>`;
+};
+RENDERERS.meuperfil = async function(){
+  const profs = await api('listarProfissionais');
+  const me = profs.find(p=>p.id===STATE.user.profissionalId) || {};
+  return `
+    <div class="card card-pad" style="max-width:480px;">
+      <div style="text-align:center;">
+        <div class="avatar-lg" style="margin:0 auto 12px;">${initials(STATE.user.nome)}</div>
+        <h3>${STATE.user.nome}</h3>
+        <div class="cell-sub">${me.especialidade||'—'}</div>
+      </div>
+      <div class="prof-card stats" style="margin-top:18px;border-top:1px dashed var(--nude-200);padding-top:14px;">
+        <div><b>${me.comissao||0}%</b>comissão</div>
+        <div><b>${me.atendimentosMes||0}</b>atend. no mês</div>
+      </div>
+    </div>`;
+};
+
+/* Agenda modal (create/edit) */
+async function openAgendaModal(id){
+  const ctx = await loadAgendaContext();
+  const item = id ? ctx.agenda.find(a=>a.id===id) : null;
+  const overlay = openModal(`
+    <div class="modal-head"><h3>${item?'Editar Agendamento':'Novo Agendamento'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field full"><label>Cliente</label>
+          <select id="ag-cliente">${ctx.clientes.map(c=>`<option value="${c.id}" ${item&&item.clienteId===c.id?'selected':''}>${c.nome}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>Serviço</label>
+          <select id="ag-servico" onchange="onAgendaServicoChange()">${ctx.servicos.map(s=>`<option value="${s.id}" data-preco="${s.preco}" data-duracao="${s.duracao}" ${item&&item.servicoId===s.id?'selected':''}>${s.nome}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>Profissional</label>
+          <select id="ag-profissional">${ctx.profs.map(p=>`<option value="${p.id}" ${item&&item.profissionalId===p.id?'selected':''}>${p.nome}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>Data</label><input type="date" id="ag-data" value="${item?item.data:new Date().toISOString().slice(0,10)}"></div>
+        <div class="field"><label>Hora</label><input type="time" id="ag-hora" value="${item?item.hora:'09:00'}"></div>
+        <div class="field"><label>Duração (min)</label><input type="number" id="ag-duracao" value="${item?item.duracao:45}"></div>
+        <div class="field"><label>Valor (R$)</label><input type="number" step="0.01" id="ag-valor" value="${item?item.valor:90}"></div>
+        <div class="field full"><label>Status</label>
+          <select id="ag-status">${STATUS_LIST.map(s=>`<option value="${s}" ${item&&item.status===s?'selected':(!item&&s==='confirmado'?'selected':'')}>${STATUS_LABEL[s]}</option>`).join('')}</select>
+        </div>
+        <div class="field full"><label>Observações</label><input type="text" id="ag-obs" value="${item?escapeHtml(item.obs||''):''}"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteAgenda('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveAgenda('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+function onAgendaServicoChange(){
+  const sel = document.getElementById('ag-servico');
+  const opt = sel.selectedOptions[0];
+  document.getElementById('ag-valor').value = opt.dataset.preco;
+  document.getElementById('ag-duracao').value = opt.dataset.duracao;
+}
+async function saveAgenda(id){
+  const payload = {
+    id: id||undefined,
+    clienteId: document.getElementById('ag-cliente').value,
+    servicoId: document.getElementById('ag-servico').value,
+    profissionalId: document.getElementById('ag-profissional').value,
+    data: document.getElementById('ag-data').value,
+    hora: document.getElementById('ag-hora').value,
+    duracao: Number(document.getElementById('ag-duracao').value),
+    valor: Number(document.getElementById('ag-valor').value),
+    status: document.getElementById('ag-status').value,
+    obs: document.getElementById('ag-obs').value,
+  };
+  const [profs, agendaAtual] = await Promise.all([api('listarProfissionais'), api('listarAgenda')]);
+  const prof = profs.find(p=>p.id===payload.profissionalId);
+  if(prof && especialidadeTemBloqueio(prof.especialidade)){
+    const conflito = encontrarConflitoAgenda(agendaAtual, payload.profissionalId, payload.data, payload.hora, payload.duracao, id);
+    if(conflito){
+      toast(`Horário indisponível: ${prof.nome} já tem um atendimento marcado nesse período.`,'error');
+      return;
+    }
+  }
+  showLoader(true);
+  try{ await api('salvarAgendamento', payload); showLoader(false); closeModal(); toast('Agendamento salvo com sucesso.','success'); navigate('agenda'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar agendamento.','error'); }
+}
+async function deleteAgenda(id){
+  if(!confirm('Excluir este agendamento?')) return;
+  showLoader(true);
+  try{ await api('excluirAgendamento',{id}); showLoader(false); closeModal(); toast('Agendamento excluído.','success'); navigate('agenda'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+
+/* ---------- CLIENTES ---------- */
+RENDERERS.clientes = async function(){
+  const raw = await api('listarClientes');
+  const st = tableState('clientes');
+  const {pageData, total, pages} = applyTableControls('clientes', raw, {
+    searchKeys:['nome','telefone','cpf'],
+    customFilter:(data,st)=> st.filter==='vip' ? data.filter(c=>c.vip) : data
+  });
+  return `
+    <div class="toolbar">
+      <div class="search-box"><span>🔎</span><input placeholder="Pesquisar por nome, telefone ou CPF..." value="${st.search||''}" oninput="searchTable('clientes',this.value)"></div>
+      <select class="select-filter" onchange="filterTable('clientes',this.value)">
+        <option value="">Todos os clientes</option>
+        <option value="vip" ${st.filter==='vip'?'selected':''}>Grupo VIP</option>
+      </select>
+      <button class="btn btn-gold" onclick="openClienteModal()">+ Novo Cliente</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th onclick="sortTable('clientes','nome')">Cliente</th>
+          <th onclick="sortTable('clientes','telefone')">Telefone</th>
+          <th onclick="sortTable('clientes','ultimaVisita')">Última Visita</th>
+          <th>Status</th><th style="text-align:right;">Ações</th>
+        </tr></thead>
+        <tbody>
+          ${pageData.length ? pageData.map(c=>`
+            <tr>
+              <td><span class="avatar-mini">${initials(c.nome)}</span><span class="cell-name">${c.nome}</span></td>
+              <td>${c.telefone}</td>
+              <td>${fmtDate(c.ultimaVisita)}</td>
+              <td>${c.vip?'<span class="tag tag-vip">VIP</span>':'<span class="cell-sub">Regular</span>'}</td>
+              <td><div class="row-actions" style="justify-content:flex-end;">
+                <button class="btn btn-outline btn-icon btn-sm" title="WhatsApp" onclick="sendWhatsApp('${c.id}')">💬</button>
+                <button class="btn btn-outline btn-icon btn-sm" title="Anamnese" onclick="sendAnamnese('${c.id}')">📋</button>
+                <button class="btn btn-outline btn-icon btn-sm" title="Histórico" onclick="openHistorico('${c.id}')">🕒</button>
+                <button class="btn btn-outline btn-icon btn-sm" title="Editar" onclick="openClienteModal('${c.id}')">✎</button>
+                <button class="btn btn-danger-outline btn-icon btn-sm" title="Excluir" onclick="deleteCliente('${c.id}')">🗑</button>
+              </div></td>
+            </tr>`).join('') : `<tr><td colspan="5"><div class="empty-state"><div class="ico">👤</div>Nenhum cliente encontrado.</div></td></tr>`}
+        </tbody>
+      </table>
+      ${paginationHtml('clientes', total, pages)}
+    </div>`;
+};
+async function openClienteModal(id){
+  const list = await api('listarClientes');
+  const item = id ? list.find(c=>c.id===id) : null;
+  openModal(`
+    <div class="modal-head"><h3>${item?'Editar Cliente':'Novo Cliente'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field full"><label>Nome completo</label><input id="cl-nome" value="${item?escapeHtml(item.nome):''}"></div>
+        <div class="field"><label>Telefone</label><input id="cl-telefone" data-mask="phone" value="${item?item.telefone:''}" placeholder="(00) 00000-0000"></div>
+        <div class="field"><label>CPF</label><input id="cl-cpf" data-mask="cpf" value="${item?item.cpf:''}" placeholder="000.000.000-00"></div>
+        <div class="field"><label>Aniversário (MM-DD)</label><input id="cl-aniversario" value="${item?item.aniversario:''}" placeholder="07-15"></div>
+        <div class="field"><label>Grupo</label>
+          <select id="cl-vip"><option value="false" ${item&&!item.vip?'selected':''}>Regular</option><option value="true" ${item&&item.vip?'selected':''}>VIP</option></select>
+        </div>
+        <div class="field full"><label>Observações / Anamnese</label><input id="cl-obs" value="${item?escapeHtml(item.observacoes||''):''}"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteCliente('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveCliente('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+async function saveCliente(id){
+  const payload = {
+    id: id||undefined,
+    nome: document.getElementById('cl-nome').value.trim(),
+    telefone: document.getElementById('cl-telefone').value,
+    cpf: document.getElementById('cl-cpf').value,
+    aniversario: document.getElementById('cl-aniversario').value,
+    vip: document.getElementById('cl-vip').value==='true',
+    observacoes: document.getElementById('cl-obs').value,
+    ultimaVisita: (await api('listarClientes')).find(c=>c.id===id)?.ultimaVisita || new Date().toISOString().slice(0,10),
+  };
+  if(!payload.nome){ toast('Informe o nome do cliente.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarCliente',payload); showLoader(false); closeModal(); toast('Cliente salvo com sucesso.','success'); navigate('clientes'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar cliente.','error'); }
+}
+async function deleteCliente(id){
+  if(!confirm('Excluir este cliente?')) return;
+  showLoader(true);
+  try{ await api('excluirCliente',{id}); showLoader(false); closeModal(); toast('Cliente excluído.','success'); navigate('clientes'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+async function sendWhatsApp(id){
+  const c = (await api('listarClientes')).find(x=>x.id===id);
+  const phone = (c.telefone||'').replace(/\D/g,'');
+  window.open(`https://wa.me/55${phone}`,'_blank');
+}
+async function sendAnamnese(id){
+  const isConfigured = /^https?:\/\/.+/.test(ANAMNESE_FORM_URL) && !ANAMNESE_FORM_URL.startsWith('COLE_AQUI');
+  if(!isConfigured){
+    toast('Configure a constante ANAMNESE_FORM_URL no topo do index.html com o link do anamnese.html publicado.','error');
+    return;
+  }
+  const c = (await api('listarClientes')).find(x=>x.id===id);
+  const phone = (c.telefone||'').replace(/\D/g,'');
+  const link = `${ANAMNESE_FORM_URL}?cliente=${encodeURIComponent(id)}`;
+  const mensagem = `Olá, ${c.nome}! Antes do seu atendimento na Sandra Júlia, por favor preencha sua ficha de anamnese pelo link: ${link}`;
+  window.open(`https://wa.me/55${phone}?text=${encodeURIComponent(mensagem)}`,'_blank');
+  toast('WhatsApp aberto com o link da ficha de anamnese.','success');
+}
+async function openHistorico(id){
+  const [c, agenda, servicos, anamneses] = await Promise.all([
+    api('listarClientes').then(l=>l.find(x=>x.id===id)), api('listarAgenda'), api('listarServicos'), api('listarAnamneses')
+  ]);
+  const hist = agenda.filter(a=>a.clienteId===id).sort((a,b)=>b.data.localeCompare(a.data));
+  const nomeServ=id2=>(servicos.find(s=>s.id===id2)||{}).nome||'—';
+  const fichasCliente = anamneses.filter(a=>a.clienteId===id).sort((a,b)=>b.data.localeCompare(a.data));
+  const ultimaFicha = fichasCliente[0];
+  const simNao = v => v==='sim' ? 'Sim' : v==='nao' ? 'Não' : (v||'—');
+  openModal(`
+    <div class="modal-head"><h3>Histórico · ${c.nome}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <h4 style="font-size:14px;margin-bottom:10px;">Atendimentos</h4>
+      ${hist.length? hist.map(a=>`
+        <div class="list-row"><span class="dot ${a.status}"></span>
+          <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${nomeServ(a.servicoId)}</div>
+          <div class="cell-sub">${fmtDate(a.data)} às ${a.hora} · ${fmtMoney(a.valor)}</div></div>
+          <span class="tag tag-${a.status}">${STATUS_LABEL[a.status]}</span>
+        </div>`).join('') : `<div class="empty-state">Nenhum atendimento registrado ainda.</div>`}
+
+      <h4 style="font-size:14px;margin:18px 0 10px;border-top:1px dashed var(--nude-200);padding-top:16px;">Ficha de Anamnese</h4>
+      ${ultimaFicha ? `
+        <p class="cell-sub" style="margin-bottom:10px;">Preenchida em ${fmtDate(ultimaFicha.data)} · assinada por ${escapeHtml(ultimaFicha.assinatura||'')}</p>
+        <div class="list-row"><div style="flex:1;">Alergias</div><b>${simNao(ultimaFicha.alergia)}${ultimaFicha.alergiaDescricao?': '+escapeHtml(ultimaFicha.alergiaDescricao):''}</b></div>
+        <div class="list-row"><div style="flex:1;">Gestante/amamentando</div><b>${simNao(ultimaFicha.gestanteAmamentando)}</b></div>
+        <div class="list-row"><div style="flex:1;">Medicamentos contínuos</div><b>${simNao(ultimaFicha.medicamentos)}${ultimaFicha.medicamentosDescricao?': '+escapeHtml(ultimaFicha.medicamentosDescricao):''}</b></div>
+        <div class="list-row"><div style="flex:1;">Química recente</div><b>${simNao(ultimaFicha.quimicaRecente)}</b></div>
+        <div class="list-row"><div style="flex:1;">Problema de pele/couro cabeludo/unha</div><b>${simNao(ultimaFicha.problemaPele)}${ultimaFicha.problemaPeleDescricao?': '+escapeHtml(ultimaFicha.problemaPeleDescricao):''}</b></div>
+        <div class="list-row"><div style="flex:1;">Reação alérgica anterior</div><b>${simNao(ultimaFicha.reacaoAlergicaAnterior)}</b></div>
+        <div class="list-row"><div style="flex:1;">Autoriza uso de imagem</div><b>${simNao(ultimaFicha.autorizaImagem)}</b></div>
+        ${ultimaFicha.observacoes?`<div class="list-row"><div style="flex:1;">Observações</div><b>${escapeHtml(ultimaFicha.observacoes)}</b></div>`:''}
+      ` : `<div class="empty-state">Nenhuma ficha de anamnese preenchida ainda. Use o botão 💬📋 na lista de clientes para enviar o link pelo WhatsApp.</div>`}
+    </div>
+    <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Fechar</button></div>`);
+}
+
+/* ---------- PROFISSIONAIS ---------- */
+RENDERERS.profissionais = async function(){
+  const list = await api('listarProfissionais');
+  return `
+    <div class="toolbar"><div style="flex:1;"></div>
+      <button class="btn btn-gold" onclick="openProfissionalModal()">+ Novo Profissional</button>
+    </div>
+    <div class="profile-cards">
+      ${list.map(p=>`
+        <div class="prof-card">
+          <div class="avatar-lg">${initials(p.nome)}</div>
+          <h4>${p.nome}</h4>
+          <div class="spec">${p.especialidade}</div>
+          <div class="stats">
+            <div><b>${p.comissao}%</b>comissão</div>
+            <div><b>${p.atendimentosMes||0}</b>atend./mês</div>
+          </div>
+          <div class="row-actions" style="justify-content:center;margin-top:12px;flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" onclick="navigate('agenda')">Agenda</button>
+            <button class="btn btn-outline btn-sm" onclick="openReciboModal('${p.id}')">Recibo</button>
+            <button class="btn btn-outline btn-sm" onclick="openProfissionalModal('${p.id}')">Editar</button>
+          </div>
+        </div>`).join('')}
+    </div>`;
+};
+async function openProfissionalModal(id){
+  const list = await api('listarProfissionais');
+  const item = id? list.find(p=>p.id===id): null;
+  openModal(`
+    <div class="modal-head"><h3>${item?'Editar Profissional':'Novo Profissional'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field full"><label>Nome</label><input id="pf-nome" value="${item?escapeHtml(item.nome):''}"></div>
+      <div class="field"><label>Especialidade</label><input id="pf-especialidade" value="${item?escapeHtml(item.especialidade):''}"></div>
+      <div class="field"><label>Comissão (%)</label><input id="pf-comissao" type="number" value="${item?item.comissao:30}"></div>
+    </div></div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteProfissional('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveProfissional('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+async function saveProfissional(id){
+  const payload = {id:id||undefined, nome:document.getElementById('pf-nome').value.trim(),
+    especialidade:document.getElementById('pf-especialidade').value, comissao:Number(document.getElementById('pf-comissao').value), ativo:true};
+  if(!payload.nome){ toast('Informe o nome do profissional.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarProfissional',payload); showLoader(false); closeModal(); toast('Profissional salvo.','success'); navigate('profissionais'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar.','error'); }
+}
+async function deleteProfissional(id){
+  if(!confirm('Excluir este profissional?')) return;
+  showLoader(true);
+  try{ await api('excluirProfissional',{id}); showLoader(false); closeModal(); toast('Profissional excluído.','success'); navigate('profissionais'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+
+/* ---------- RECIBOS ----------
+   Reproduz digitalmente o bloco de recibo físico do salão: dados do cliente,
+   até 5 linhas de Atendente/Serviço/Comissão/Valor, Café/Consumo, Produtos/
+   Vendas, Crédito e Total Recebido — com opção de imprimir em um formato
+   compatível com a folha do talão. ---------- */
+RENDERERS.recibos = async function(){
+  const raw = await api('listarRecibos');
+  const st = tableState('recibos');
+  const {pageData,total,pages} = applyTableControls('recibos', raw, {searchKeys:['clienteNome','cpf']});
+  return `
+    <div class="toolbar">
+      <div class="search-box"><span>🔎</span><input placeholder="Pesquisar por cliente ou CPF..." value="${st.search||''}" oninput="searchTable('recibos',this.value)"></div>
+      <button class="btn btn-gold" onclick="openReciboModal()">+ Novo Recibo</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th onclick="sortTable('recibos','data')">Data</th><th onclick="sortTable('recibos','clienteNome')">Cliente</th><th>Total Recebido</th><th style="text-align:right;">Ações</th></tr></thead>
+      <tbody>${pageData.length?pageData.slice().sort((a,b)=>b.data.localeCompare(a.data)).map(r=>`
+        <tr><td>${fmtDate(r.data)}</td><td class="cell-name">${r.clienteNome||'—'}</td><td>${fmtMoney(r.totalRecebido)}</td>
+        <td><div class="row-actions" style="justify-content:flex-end;">
+          <button class="btn btn-outline btn-sm" onclick="printRecibo('${r.id}')">🖨 Imprimir</button>
+        </div></td></tr>`).join(''):`<tr><td colspan="4"><div class="empty-state"><div class="ico">🧾</div>Nenhum recibo emitido ainda.</div></td></tr>`}
+      </tbody></table>${paginationHtml('recibos',total,pages)}</div>`;
+};
+
+async function openReciboModal(prefillProfissionalId){
+  const [profs, servicos] = await Promise.all([api('listarProfissionais'), api('listarServicos')]);
+  const profOptions = `<option value="">—</option>` + profs.map(p=>`<option value="${p.id}" data-comissao="${p.comissao}" ${p.id===prefillProfissionalId?'selected':''}>${p.nome}</option>`).join('');
+  const servOptions = `<option value="">—</option>` + servicos.map(s=>`<option value="${s.id}" data-preco="${s.preco}">${s.nome}</option>`).join('');
+  const rows = [0,1,2,3,4].map(i=>`
+    <tr>
+      <td><select class="rc-atendente" data-row="${i}" onchange="reciboRecalcRow(${i})">${profOptions}</select></td>
+      <td><select class="rc-servico" data-row="${i}" onchange="reciboRecalcRow(${i})">${servOptions}</select></td>
+      <td><input class="rc-comissao" data-row="${i}" type="number" step="0.01" placeholder="0,00" oninput="reciboRecalcTotal()"></td>
+      <td><input class="rc-valor" data-row="${i}" type="number" step="0.01" placeholder="0,00" oninput="reciboRecalcTotal()"></td>
+    </tr>`).join('');
+  openModal(`
+    <div class="modal-head"><h3>Novo Recibo</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field full"><label>Cliente</label><input id="rc-cliente" placeholder="Nome do cliente"></div>
+        <div class="field"><label>Telefone</label><input id="rc-telefone" data-mask="phone" placeholder="(00) 00000-0000"></div>
+        <div class="field"><label>Data Aniv.</label><input id="rc-aniversario" placeholder="DD/MM"></div>
+        <div class="field"><label>Instagram</label><input id="rc-instagram" placeholder="@usuario"></div>
+        <div class="field"><label>CPF</label><input id="rc-cpf" data-mask="cpf" placeholder="000.000.000-00"></div>
+      </div>
+      <div class="table-wrap" style="margin-top:16px;">
+        <table><thead><tr><th>Atendente</th><th>Serviço</th><th>Comissão</th><th>Valor</th></tr></thead>
+        <tbody>${rows}</tbody></table>
+      </div>
+      <div class="form-grid" style="margin-top:16px;">
+        <div class="field"><label>Café / Consumo (R$)</label><input id="rc-cafe" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"></div>
+        <div class="field"><label>Produtos / Vendas (R$)</label><input id="rc-produtos" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"></div>
+        <div class="field full"><label>Crédito (desconto já pago) (R$)</label><input id="rc-credito" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"></div>
+      </div>
+      <div class="card card-pad" style="margin-top:6px;background:var(--nude-50);">
+        <label style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-500);">Total Recebido</label>
+        <div id="rc-total" style="font-family:var(--font-display);font-size:32px;margin-top:4px;">R$ 0,00</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveRecibo()">Salvar e Imprimir</button>
+    </div>`);
+}
+function reciboRecalcRow(i){
+  const servSel = document.querySelector(`.rc-servico[data-row="${i}"]`);
+  const atdSel = document.querySelector(`.rc-atendente[data-row="${i}"]`);
+  const valorInp = document.querySelector(`.rc-valor[data-row="${i}"]`);
+  const comInp = document.querySelector(`.rc-comissao[data-row="${i}"]`);
+  const preco = servSel.selectedOptions[0]?.dataset.preco;
+  const comissaoPct = atdSel.selectedOptions[0]?.dataset.comissao;
+  if(preco && !valorInp.value) valorInp.value = Number(preco).toFixed(2);
+  if(comissaoPct && valorInp.value) comInp.value = (Number(valorInp.value) * Number(comissaoPct) / 100).toFixed(2);
+  reciboRecalcTotal();
+}
+function reciboRecalcTotal(){
+  let total = 0;
+  document.querySelectorAll('.rc-valor').forEach(inp=> total += Number(inp.value||0));
+  total += Number(document.getElementById('rc-cafe').value||0);
+  total += Number(document.getElementById('rc-produtos').value||0);
+  total -= Number(document.getElementById('rc-credito').value||0);
+  document.getElementById('rc-total').textContent = fmtMoney(total);
+}
+async function saveRecibo(){
+  const [profs, servicos] = await Promise.all([api('listarProfissionais'), api('listarServicos')]);
+  const itens = [];
+  for(let i=0;i<5;i++){
+    const atd = document.querySelector(`.rc-atendente[data-row="${i}"]`);
+    const srv = document.querySelector(`.rc-servico[data-row="${i}"]`);
+    const com = document.querySelector(`.rc-comissao[data-row="${i}"]`);
+    const val = document.querySelector(`.rc-valor[data-row="${i}"]`);
+    if(atd.value || srv.value || val.value){
+      itens.push({
+        atendente: atd.selectedOptions[0]?.textContent || '',
+        servico: srv.selectedOptions[0]?.textContent || '',
+        comissao: Number(com.value||0),
+        valor: Number(val.value||0),
+      });
+    }
+  }
+  const cafe = Number(document.getElementById('rc-cafe').value||0);
+  const produtos = Number(document.getElementById('rc-produtos').value||0);
+  const credito = Number(document.getElementById('rc-credito').value||0);
+  const totalRecebido = itens.reduce((s,i)=>s+i.valor,0) + cafe + produtos - credito;
+  const payload = {
+    data: new Date().toISOString().slice(0,10),
+    clienteNome: document.getElementById('rc-cliente').value.trim(),
+    telefone: document.getElementById('rc-telefone').value,
+    aniversario: document.getElementById('rc-aniversario').value,
+    instagram: document.getElementById('rc-instagram').value,
+    cpf: document.getElementById('rc-cpf').value,
+    itens: JSON.stringify(itens),
+    cafeConsumo: cafe, produtosVendas: produtos, credito, totalRecebido,
+  };
+  showLoader(true);
+  try{
+    const saved = await api('salvarRecibo', payload);
+    showLoader(false); closeModal(); toast('Recibo salvo com sucesso.','success');
+    navigate('recibos');
+    printRecibo(null, saved);
+  }catch(e){ showLoader(false); toast('Erro ao salvar recibo.','error'); }
+}
+async function printRecibo(id, preloaded){
+  const recibo = preloaded || (await api('listarRecibos')).find(r=>r.id===id);
+  if(!recibo){ toast('Recibo não encontrado.','error'); return; }
+  let itens = [];
+  try{ itens = JSON.parse(recibo.itens||'[]'); }catch(e){ itens = []; }
+  const rowsHtml = itens.map(i=>`<tr><td>${escapeHtml(i.atendente)}</td><td>${escapeHtml(i.servico)}</td><td>${fmtMoney(i.comissao)}</td><td>${fmtMoney(i.valor)}</td></tr>`).join('')
+    + Array(Math.max(0,5-itens.length)).fill('<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>').join('');
+  const win = window.open('', '_blank', 'width=420,height=680');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Recibo</title>
+  <style>
+    body{font-family:Georgia,serif; padding:22px; color:#241E1C;}
+    h2{text-align:center;letter-spacing:1px;margin-bottom:0;}
+    .sub{text-align:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#B8892E;margin-bottom:18px;}
+    table{width:100%;border-collapse:collapse;margin:14px 0;}
+    th,td{border:1px solid #ccc;padding:6px 8px;font-size:12.5px;text-align:left;}
+    .line{margin:8px 0;font-size:13px;border-bottom:1px dotted #999;padding-bottom:4px;}
+    .total{margin-top:16px;border:2px solid #241E1C;padding:10px;font-weight:bold;font-size:16px;text-align:right;}
+  </style></head><body>
+    <h2>Sandra Júlia</h2>
+    <div class="sub">Cabelo &amp; Maquiagem · Salão · Spa · Estética</div>
+    <div class="line"><b>Cliente:</b> ${escapeHtml(recibo.clienteNome||'')}</div>
+    <div class="line"><b>Telefone:</b> ${escapeHtml(recibo.telefone||'')} &nbsp;&nbsp; <b>Data Aniv.:</b> ${escapeHtml(recibo.aniversario||'')}</div>
+    <div class="line"><b>Instagram:</b> ${escapeHtml(recibo.instagram||'')} &nbsp;&nbsp; <b>CPF:</b> ${escapeHtml(recibo.cpf||'')}</div>
+    <table><thead><tr><th>Atendente</th><th>Serviço</th><th>Comissão</th><th>Valor</th></tr></thead><tbody>${rowsHtml}</tbody></table>
+    <div class="line"><b>Café / Consumo:</b> ${fmtMoney(recibo.cafeConsumo)}</div>
+    <div class="line"><b>Produtos / Vendas:</b> ${fmtMoney(recibo.produtosVendas)}</div>
+    <div class="line"><b>Crédito:</b> ${fmtMoney(recibo.credito)}</div>
+    <div class="total">TOTAL RECEBIDO: ${fmtMoney(recibo.totalRecebido)}</div>
+    <script>window.onload=()=>window.print();<\/script>
+  </body></html>`);
+  win.document.close();
+}
+
+/* ---------- SERVIÇOS ---------- */
+RENDERERS.servicos = async function(){
+  const raw = await api('listarServicos');
+  const st = tableState('servicos');
+  const {pageData,total,pages} = applyTableControls('servicos', raw, {searchKeys:['nome','categoria']});
+  return `
+    <div class="toolbar">
+      <div class="search-box"><span>🔎</span><input placeholder="Pesquisar serviço..." value="${st.search||''}" oninput="searchTable('servicos',this.value)"></div>
+      <button class="btn btn-gold" onclick="openServicoModal()">+ Novo Serviço</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th onclick="sortTable('servicos','nome')">Serviço</th><th onclick="sortTable('servicos','categoria')">Categoria</th>
+        <th onclick="sortTable('servicos','duracao')">Duração</th><th onclick="sortTable('servicos','preco')">Preço</th><th style="text-align:right;">Ações</th></tr></thead>
+      <tbody>${pageData.length?pageData.map(s=>`
+        <tr><td class="cell-name">${s.nome}</td><td>${s.categoria}</td><td>${s.duracao} min</td><td>${fmtMoney(s.preco)}</td>
+        <td><div class="row-actions" style="justify-content:flex-end;">
+          <button class="btn btn-outline btn-icon btn-sm" onclick="openServicoModal('${s.id}')">✎</button>
+          <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteServico('${s.id}')">🗑</button>
+        </div></td></tr>`).join(''):`<tr><td colspan="5"><div class="empty-state">Nenhum serviço cadastrado.</div></td></tr>`}
+      </tbody></table>${paginationHtml('servicos',total,pages)}</div>`;
+};
+async function openServicoModal(id){
+  const list = await api('listarServicos'); const item = id?list.find(s=>s.id===id):null;
+  openModal(`<div class="modal-head"><h3>${item?'Editar Serviço':'Novo Serviço'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field full"><label>Nome</label><input id="sv-nome" value="${item?escapeHtml(item.nome):''}"></div>
+      <div class="field"><label>Categoria</label><input id="sv-categoria" value="${item?escapeHtml(item.categoria):''}"></div>
+      <div class="field"><label>Duração (min)</label><input id="sv-duracao" type="number" value="${item?item.duracao:45}"></div>
+      <div class="field"><label>Preço (R$)</label><input id="sv-preco" type="number" step="0.01" value="${item?item.preco:0}"></div>
+    </div></div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteServico('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveServico('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+async function saveServico(id){
+  const payload={id:id||undefined, nome:document.getElementById('sv-nome').value.trim(), categoria:document.getElementById('sv-categoria').value,
+    duracao:Number(document.getElementById('sv-duracao').value), preco:Number(document.getElementById('sv-preco').value)};
+  if(!payload.nome){ toast('Informe o nome do serviço.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarServico',payload); showLoader(false); closeModal(); toast('Serviço salvo.','success'); navigate('servicos'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar.','error'); }
+}
+async function deleteServico(id){
+  if(!confirm('Excluir este serviço?')) return;
+  showLoader(true);
+  try{ await api('excluirServico',{id}); showLoader(false); toast('Serviço excluído.','success'); navigate('servicos'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+
+/* ---------- PRODUTOS ---------- */
+RENDERERS.produtos = async function(){
+  const [raw, fornecedores, movimentacoes] = await Promise.all([api('listarProdutos'), api('listarFornecedores'), api('listarMovimentacoesEstoque')]);
+  const st = tableState('produtos');
+  const {pageData,total,pages} = applyTableControls('produtos', raw, {searchKeys:['nome','categoria']});
+  const isRO = STATE.user.perfil==='Recepcionista';
+  const nomeForn=id=>(fornecedores.find(f=>f.id===id)||{}).nome||'—';
+  const nomeProd=id=>(raw.find(p=>p.id===id)||{}).nome||'—';
+  const chartRows = raw.map(p=>({label:p.nome, value:p.estoque, low:p.estoque<=p.minimo}))
+    .sort((a,b)=>a.value-b.value);
+  const maxEstoque = Math.max(...chartRows.map(r=>r.value),1);
+  const chartHtml = chartRows.length ? chartRows.map(r=>`
+      <div class="report-bar-row">
+        <div class="label" title="${escapeHtml(r.label)}">${escapeHtml(r.label)}</div>
+        <div class="report-bar-track"><div class="report-bar-fill" style="width:${(r.value/maxEstoque*100).toFixed(0)}%;${r.low?'background:var(--danger);':''}"></div></div>
+        <div class="report-bar-val">${r.value} un</div>
+      </div>`).join('') : '<div class="empty-state">Sem produtos cadastrados.</div>';
+  const movRecentes = movimentacoes.slice().sort((a,b)=>b.data.localeCompare(a.data)).slice(0,8);
+  return `
+    <div class="card card-pad" style="margin-bottom:20px;">
+      <div class="section-head"><div><h3>Nível de Estoque</h3><div class="ribbon"></div></div></div>
+      ${chartHtml}
+    </div>
+    <div class="toolbar">
+      <div class="search-box"><span>🔎</span><input placeholder="Pesquisar produto..." value="${st.search||''}" oninput="searchTable('produtos',this.value)"></div>
+      ${isRO?'':'<button class="btn btn-gold" onclick="openProdutoModal()">+ Novo Produto</button>'}
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th onclick="sortTable('produtos','nome')">Produto</th><th>Fornecedor</th><th onclick="sortTable('produtos','estoque')">Estoque</th><th onclick="sortTable('produtos','preco')">Preço</th>${isRO?'':'<th style="text-align:right;">Ações</th>'}</tr></thead>
+      <tbody>${pageData.length?pageData.map(p=>{
+        const pct = Math.min(100, Math.round((p.estoque/(p.minimo*2))*100));
+        const low = p.estoque<=p.minimo;
+        return `<tr>
+          <td class="cell-name">${p.nome}<div class="cell-sub">${p.categoria}</div></td>
+          <td>${nomeForn(p.fornecedorId)}</td>
+          <td style="min-width:130px;">${p.estoque} un ${low?'<span class="tag tag-cancelado">Baixo</span>':''}
+            <div class="stock-bar"><div style="width:${pct}%;background:${low?'var(--danger)':'var(--success)'}"></div></div></td>
+          <td>${fmtMoney(p.preco)}</td>
+          ${isRO?'':`<td><div class="row-actions" style="justify-content:flex-end;">
+            <button class="btn btn-outline btn-icon btn-sm" title="Movimentar estoque" onclick="openMovimentacaoModal('${p.id}')">↕</button>
+            <button class="btn btn-outline btn-icon btn-sm" onclick="openProdutoModal('${p.id}')">✎</button>
+            <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteProduto('${p.id}')">🗑</button>
+          </div></td>`}
+        </tr>`;
+      }).join(''):`<tr><td colspan="5"><div class="empty-state">Nenhum produto cadastrado.</div></td></tr>`}
+      </tbody></table>${paginationHtml('produtos',total,pages)}</div>
+    ${isRO?'':`
+    <div class="card card-pad" style="margin-top:20px;">
+      <div class="section-head"><div><h3>Movimentações Recentes</h3><div class="ribbon"></div></div></div>
+      ${movRecentes.length ? movRecentes.map(m=>`
+        <div class="list-row"><span class="dot ${m.tipo==='entrada'?'livre':'cancelado'}"></span>
+          <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${nomeProd(m.produtoId)}</div>
+          <div class="cell-sub">${fmtDate(m.data)} · ${m.observacao||''}</div></div>
+          <div style="font-weight:800;color:${m.tipo==='entrada'?'var(--success)':'var(--danger)'};">${m.tipo==='entrada'?'+':'-'} ${m.quantidade} un</div>
+        </div>`).join('') : '<div class="empty-state">Nenhuma movimentação registrada ainda.</div>'}
+    </div>`}`;
+};
+async function openMovimentacaoModal(produtoId){
+  const produtos = await api('listarProdutos');
+  const produto = produtos.find(p=>p.id===produtoId);
+  openModal(`<div class="modal-head"><h3>Movimentar Estoque · ${escapeHtml(produto.nome)}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <p class="helper-text" style="margin-bottom:12px;">Estoque atual: <b>${produto.estoque} un</b> (mínimo ${produto.minimo} un)</p>
+      <div class="form-grid">
+        <div class="field"><label>Tipo</label><select id="mv-tipo"><option value="entrada">Entrada</option><option value="saida">Saída</option></select></div>
+        <div class="field"><label>Quantidade</label><input id="mv-quantidade" type="number" min="1" value="1"></div>
+        <div class="field full"><label>Observação</label><input id="mv-obs" placeholder="Ex: Compra do fornecedor / Uso em atendimento"></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveMovimentacao('${produtoId}')">Registrar</button></div>`);
+}
+async function saveMovimentacao(produtoId){
+  const payload = {produtoId, tipo:document.getElementById('mv-tipo').value,
+    quantidade:Number(document.getElementById('mv-quantidade').value||0),
+    observacao:document.getElementById('mv-obs').value, data:new Date().toISOString().slice(0,10)};
+  if(!payload.quantidade || payload.quantidade<=0){ toast('Informe uma quantidade válida.','error'); return; }
+  showLoader(true);
+  try{ await api('registrarMovimentacaoEstoque',payload); showLoader(false); closeModal(); toast('Movimentação registrada.','success'); navigate('produtos'); }
+  catch(e){ showLoader(false); toast('Erro ao registrar movimentação.','error'); }
+}
+async function openProdutoModal(id){
+  const [list, fornecedores] = await Promise.all([api('listarProdutos'), api('listarFornecedores')]);
+  const item = id?list.find(p=>p.id===id):null;
+  openModal(`<div class="modal-head"><h3>${item?'Editar Produto':'Novo Produto'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field full"><label>Nome</label><input id="pd-nome" value="${item?escapeHtml(item.nome):''}"></div>
+      <div class="field"><label>Categoria</label><input id="pd-categoria" value="${item?escapeHtml(item.categoria):''}"></div>
+      <div class="field"><label>Fornecedor</label><select id="pd-fornecedor">${fornecedores.map(f=>`<option value="${f.id}" ${item&&item.fornecedorId===f.id?'selected':''}>${f.nome}</option>`).join('')}</select></div>
+      <div class="field"><label>Estoque atual</label><input id="pd-estoque" type="number" value="${item?item.estoque:0}"></div>
+      <div class="field"><label>Estoque mínimo</label><input id="pd-minimo" type="number" value="${item?item.minimo:5}"></div>
+      <div class="field"><label>Preço (R$)</label><input id="pd-preco" type="number" step="0.01" value="${item?item.preco:0}"></div>
+    </div></div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteProduto('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveProduto('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+async function saveProduto(id){
+  const payload={id:id||undefined, nome:document.getElementById('pd-nome').value.trim(), categoria:document.getElementById('pd-categoria').value,
+    fornecedorId:document.getElementById('pd-fornecedor').value, estoque:Number(document.getElementById('pd-estoque').value),
+    minimo:Number(document.getElementById('pd-minimo').value), preco:Number(document.getElementById('pd-preco').value)};
+  if(!payload.nome){ toast('Informe o nome do produto.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarProduto',payload); showLoader(false); closeModal(); toast('Produto salvo.','success'); navigate('produtos'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar.','error'); }
+}
+async function deleteProduto(id){
+  if(!confirm('Excluir este produto?')) return;
+  showLoader(true);
+  try{ await api('excluirProduto',{id}); showLoader(false); toast('Produto excluído.','success'); navigate('produtos'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+
+/* ---------- FORNECEDORES ---------- */
+RENDERERS.fornecedores = async function(){
+  const raw = await api('listarFornecedores');
+  const st = tableState('fornecedores');
+  const {pageData,total,pages} = applyTableControls('fornecedores', raw, {searchKeys:['nome','categoria','contato']});
+  return `
+    <div class="toolbar">
+      <div class="search-box"><span>🔎</span><input placeholder="Pesquisar fornecedor..." value="${st.search||''}" oninput="searchTable('fornecedores',this.value)"></div>
+      <button class="btn btn-gold" onclick="openFornecedorModal()">+ Novo Fornecedor</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th onclick="sortTable('fornecedores','nome')">Fornecedor</th><th>Categoria</th><th>Contato</th><th style="text-align:right;">Ações</th></tr></thead>
+      <tbody>${pageData.length?pageData.map(f=>`
+        <tr><td class="cell-name">${f.nome}</td><td>${f.categoria}</td><td>${f.contato}</td>
+        <td><div class="row-actions" style="justify-content:flex-end;">
+          <button class="btn btn-outline btn-icon btn-sm" onclick="openFornecedorModal('${f.id}')">✎</button>
+          <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteFornecedor('${f.id}')">🗑</button>
+        </div></td></tr>`).join(''):`<tr><td colspan="4"><div class="empty-state">Nenhum fornecedor cadastrado.</div></td></tr>`}
+      </tbody></table>${paginationHtml('fornecedores',total,pages)}</div>`;
+};
+async function openFornecedorModal(id){
+  const list = await api('listarFornecedores'); const item=id?list.find(f=>f.id===id):null;
+  openModal(`<div class="modal-head"><h3>${item?'Editar Fornecedor':'Novo Fornecedor'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field full"><label>Nome</label><input id="fn-nome" value="${item?escapeHtml(item.nome):''}"></div>
+      <div class="field"><label>Categoria</label><input id="fn-categoria" value="${item?escapeHtml(item.categoria):''}"></div>
+      <div class="field"><label>Contato</label><input id="fn-contato" data-mask="phone" value="${item?item.contato:''}"></div>
+    </div></div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteFornecedor('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveFornecedor('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+async function saveFornecedor(id){
+  const payload={id:id||undefined, nome:document.getElementById('fn-nome').value.trim(), categoria:document.getElementById('fn-categoria').value, contato:document.getElementById('fn-contato').value};
+  if(!payload.nome){ toast('Informe o nome do fornecedor.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarFornecedor',payload); showLoader(false); closeModal(); toast('Fornecedor salvo.','success'); navigate('fornecedores'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar.','error'); }
+}
+async function deleteFornecedor(id){
+  if(!confirm('Excluir este fornecedor?')) return;
+  showLoader(true);
+  try{ await api('excluirFornecedor',{id}); showLoader(false); toast('Fornecedor excluído.','success'); navigate('fornecedores'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+
+/* ---------- FINANCEIRO ---------- */
+RENDERERS.financeiro = async function(){
+  const st = tableState('financeiro');
+  if(!st.periodo) st.periodo='diario';
+  const lanc = await api('listarFinanceiro');
+  const todayISO = new Date().toISOString().slice(0,10);
+  const mesAtual = todayISO.slice(0,7);
+  const semanaAtras = new Date(); semanaAtras.setDate(semanaAtras.getDate()-6);
+  const semanaAtrasISO = semanaAtras.toISOString().slice(0,10);
+  const filtered = st.periodo==='diario' ? lanc.filter(f=>f.data===todayISO)
+    : st.periodo==='semanal' ? lanc.filter(f=>f.data>=semanaAtrasISO && f.data<=todayISO)
+    : lanc.filter(f=>f.data.startsWith(mesAtual));
+  const entradas = filtered.filter(f=>f.tipo==='entrada').reduce((s,f)=>s+f.valor,0);
+  const saidas = filtered.filter(f=>f.tipo==='saida').reduce((s,f)=>s+f.valor,0);
+  const porForma = {};
+  filtered.filter(f=>f.tipo==='entrada').forEach(f=>{ porForma[f.forma]=(porForma[f.forma]||0)+f.valor; });
+  const formaLabel={pix:'Pix',debito:'Débito',credito:'Crédito',dinheiro:'Dinheiro'};
+  return `
+    <div class="tabs">
+      <button class="${st.periodo==='diario'?'active':''}" onclick="setFinPeriodo('diario')">Fluxo Diário</button>
+      <button class="${st.periodo==='semanal'?'active':''}" onclick="setFinPeriodo('semanal')">Fluxo Semanal</button>
+      <button class="${st.periodo==='mensal'?'active':''}" onclick="setFinPeriodo('mensal')">Fluxo Mensal</button>
+    </div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="kpi" style="--kpi-color:var(--success)"><div class="kpi-label">Entradas</div><div class="kpi-value">${fmtMoney(entradas)}</div></div>
+      <div class="kpi" style="--kpi-color:var(--danger)"><div class="kpi-label">Saídas</div><div class="kpi-value">${fmtMoney(saidas)}</div></div>
+      <div class="kpi" style="--kpi-color:var(--gold-600)"><div class="kpi-label">Saldo</div><div class="kpi-value">${fmtMoney(entradas-saidas)}</div></div>
+    </div>
+    <div class="dash-grid">
+      <div class="card card-pad">
+        <div class="section-head"><div><h3>Lançamentos</h3><div class="ribbon"></div></div>
+          <button class="btn btn-gold btn-sm" onclick="openLancamentoModal()">+ Receber / Lançar</button>
+        </div>
+        ${filtered.length?filtered.sort((a,b)=>b.data.localeCompare(a.data)).map(f=>`
+          <div class="list-row"><span class="dot ${f.tipo==='entrada'?'livre':'cancelado'}"></span>
+            <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${f.descricao}</div>
+            <div class="cell-sub">${fmtDate(f.data)} · ${formaLabel[f.forma]||f.forma}</div></div>
+            <div style="font-weight:800;color:${f.tipo==='entrada'?'var(--success)':'var(--danger)'};">${f.tipo==='entrada'?'+':'-'} ${fmtMoney(f.valor)}</div>
+          </div>`).join(''):`<div class="empty-state">Nenhum lançamento no período.</div>`}
+      </div>
+      <div class="card card-pad">
+        <div class="section-head"><div><h3>Por Forma de Pagamento</h3><div class="ribbon"></div></div></div>
+        ${Object.keys(porForma).length? Object.entries(porForma).map(([k,v])=>`<span class="chip-payment">${formaLabel[k]||k}: ${fmtMoney(v)}</span>`).join(''):'<div class="empty-state">Sem entradas no período.</div>'}
+      </div>
+    </div>`;
+};
+function setFinPeriodo(p){ tableState('financeiro').periodo=p; navigate('financeiro'); }
+async function openLancamentoModal(){
+  openModal(`<div class="modal-head"><h3>Novo Lançamento</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field"><label>Tipo</label><select id="fi-tipo"><option value="entrada">Entrada (Receber)</option><option value="saida">Saída</option></select></div>
+      <div class="field"><label>Forma</label><select id="fi-forma">
+        <option value="pix">Pix</option><option value="debito">Débito</option><option value="credito">Crédito</option><option value="dinheiro">Dinheiro</option>
+      </select></div>
+      <div class="field"><label>Valor (R$)</label><input id="fi-valor" type="number" step="0.01"></div>
+      <div class="field"><label>Desconto (R$)</label><input id="fi-desconto" type="number" step="0.01" value="0"></div>
+      <div class="field full"><label>Descrição</label><input id="fi-descricao" placeholder="Ex: Corte - Nome do Cliente"></div>
+    </div></div>
+    <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-gold" onclick="saveLancamento()">Salvar</button></div>`);
+}
+async function saveLancamento(){
+  const valor = Number(document.getElementById('fi-valor').value) - Number(document.getElementById('fi-desconto').value||0);
+  const payload = {tipo:document.getElementById('fi-tipo').value, forma:document.getElementById('fi-forma').value,
+    valor, descricao:document.getElementById('fi-descricao').value||'Lançamento manual', data:new Date().toISOString().slice(0,10)};
+  showLoader(true);
+  try{ await api('salvarLancamentoFinanceiro',payload); showLoader(false); closeModal(); toast('Lançamento registrado.','success'); navigate('financeiro'); }
+  catch(e){ showLoader(false); toast('Erro ao registrar.','error'); }
+}
+
+/* ---------- RELATÓRIOS ---------- */
+RENDERERS.relatorios = async function(){
+  const st = tableState('relatorios'); if(!st.tab) st.tab='clientesFrequentes';
+  const [clientes, profs, servicos, agenda, financeiro] = await Promise.all([
+    api('listarClientes'), api('listarProfissionais'), api('listarServicos'), api('listarAgenda'), api('listarFinanceiro')
+  ]);
+  const tabs = [
+    ['clientesFrequentes','Clientes Frequentes'], ['aniversariantes','Aniversariantes'],
+    ['servicosMaisVendidos','Serviços Mais Vendidos'], ['profissionalProdutivo','Profissional Mais Produtivo'],
+    ['produtosUtilizados','Produtos Mais Utilizados'], ['faturamento','Faturamento'],
+  ];
+  const countBy = (arr,key)=>{ const m={}; arr.forEach(x=>{ m[x[key]]=(m[x[key]]||0)+1; }); return m; };
+  const nomeCli = id=>(clientes.find(c=>c.id===id)||{}).nome||'—';
+  const nomeProf = id=>(profs.find(p=>p.id===id)||{}).nome||'—';
+  const nomeServ = id=>(servicos.find(s=>s.id===id)||{}).nome||'—';
+
+  let body='';
+  if(st.tab==='clientesFrequentes'){
+    const m = countBy(agenda,'clienteId');
+    const rows = Object.entries(m).map(([id,c])=>({label:nomeCli(id), value:c})).sort((a,b)=>b.value-a.value);
+    body = barList(rows,'atend.');
+  } else if(st.tab==='aniversariantes'){
+    body = `<div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Data</th></tr></thead><tbody>
+      ${clientes.map(c=>`<tr><td class="cell-name">${c.nome}</td><td>${c.aniversario}</td></tr>`).join('')}
+      </tbody></table></div>`;
+  } else if(st.tab==='servicosMaisVendidos'){
+    const m = countBy(agenda,'servicoId');
+    const rows = Object.entries(m).map(([id,c])=>({label:nomeServ(id), value:c})).sort((a,b)=>b.value-a.value);
+    body = barList(rows,'vendas');
+  } else if(st.tab==='profissionalProdutivo'){
+    const m = countBy(agenda,'profissionalId');
+    const rows = Object.entries(m).map(([id,c])=>({label:nomeProf(id), value:c})).sort((a,b)=>b.value-a.value);
+    body = barList(rows,'atend.');
+  } else if(st.tab==='produtosUtilizados'){
+    const produtos = await api('listarProdutos');
+    const rows = produtos.map(p=>({label:p.nome, value:p.minimo*3-p.estoque>0?p.minimo*3-p.estoque:1})).sort((a,b)=>b.value-a.value);
+    body = barList(rows,'uso');
+  } else if(st.tab==='faturamento'){
+    const total = financeiro.filter(f=>f.tipo==='entrada').reduce((s,f)=>s+f.valor,0);
+    const porDia = {};
+    financeiro.filter(f=>f.tipo==='entrada').forEach(f=>{ porDia[f.data]=(porDia[f.data]||0)+f.valor; });
+    const rows = Object.entries(porDia).map(([d,v])=>({label:fmtDate(d), value:v})).sort((a,b)=>b.value-a.value);
+    body = `<div class="kpi" style="--kpi-color:var(--gold-600);max-width:280px;margin-bottom:18px;"><div class="kpi-label">Faturamento total (período)</div><div class="kpi-value">${fmtMoney(total)}</div></div>` + barList(rows,'R$', v=>fmtMoney(v));
+  }
+  return `
+    <div class="tabs">${tabs.map(([k,l])=>`<button class="${st.tab===k?'active':''}" onclick="setReportTab('${k}')">${l}</button>`).join('')}</div>
+    <div class="card card-pad">${body || '<div class="empty-state">Sem dados suficientes para este relatório ainda.</div>'}</div>`;
+};
+function barList(rows, unit, fmt){
+  if(!rows.length) return '<div class="empty-state">Sem dados para exibir.</div>';
+  const max = Math.max(...rows.map(r=>r.value),1);
+  return rows.map(r=>`
+    <div class="report-bar-row">
+      <div class="label" title="${escapeHtml(r.label)}">${escapeHtml(r.label)}</div>
+      <div class="report-bar-track"><div class="report-bar-fill" style="width:${(r.value/max*100).toFixed(0)}%;"></div></div>
+      <div class="report-bar-val">${fmt?fmt(r.value):r.value+' '+unit}</div>
+    </div>`).join('');
+}
+function setReportTab(t){ tableState('relatorios').tab=t; navigate('relatorios'); }
+
+/* ---------- CONFIGURAÇÕES ---------- */
+RENDERERS.configuracoes = async function(){
+  return `
+    <div class="card card-pad" style="max-width:640px;margin-bottom:20px;">
+      <h3>Conexão com o Backend</h3><div class="ribbon"></div>
+      <p class="helper-text" style="margin-top:12px;font-size:12.5px;">
+        ${USE_REMOTE_API
+          ? 'Modo conectado — o sistema está gravando na sua planilha do Google Sheets através da API em <code>'+escapeHtml(APPS_SCRIPT_URL)+'</code>.'
+          : 'Modo demonstração — nenhuma URL de API configurada ainda. Os dados exibidos são fictícios e não são salvos. Cole a URL do seu Apps Script na constante <code>APPS_SCRIPT_URL</code>, no topo do &lt;script&gt; do index.html.'}
+      </p>
+      <p class="helper-text" style="margin-top:8px;font-size:12.5px;">
+        ${/^https?:\/\/.+/.test(ANAMNESE_FORM_URL) && !ANAMNESE_FORM_URL.startsWith('COLE_AQUI')
+          ? 'Formulário de anamnese configurado em <code>'+escapeHtml(ANAMNESE_FORM_URL)+'</code>.'
+          : 'Ficha de anamnese ainda não configurada — publique o arquivo <code>anamnese.html</code> junto com o index.html e cole o link na constante <code>ANAMNESE_FORM_URL</code>.'}
+      </p>
+      <div style="margin-top:14px;"><button class="btn btn-outline btn-sm" onclick="testarConexaoAPI()">Testar Conexão</button></div>
+    </div>
+    <div class="card card-pad" style="max-width:640px;">
+      <h3>Dados do Salão</h3><div class="ribbon"></div>
+      <div class="form-grid" style="margin-top:16px;">
+        <div class="field full"><label>Nome do Salão</label><input value="Sandra Júlia Cabelo &amp; Maquiagem"></div>
+        <div class="field"><label>Horário de Abertura</label><input type="time" value="09:00"></div>
+        <div class="field"><label>Horário de Fechamento</label><input type="time" value="20:00"></div>
+        <div class="field full"><label>Telefone / WhatsApp do Salão</label><input data-mask="phone" value="(61) 99000-0000"></div>
+      </div>
+      <div style="margin-top:18px;"><button class="btn btn-gold" onclick="toast('Configurações salvas.','success')">Salvar Configurações</button></div>
+      <hr style="margin:26px 0;border:none;border-top:1px solid var(--nude-200);">
+      <h3>Integrações Futuras</h3><div class="ribbon"></div>
+      <p class="helper-text" style="margin-top:12px;font-size:12.5px;">
+        Espaços reservados para expansão: WhatsApp Business API, emissão de nota fiscal eletrônica,
+        programa de fidelidade, campanhas de marketing automatizado, recomendações por IA e aplicativo móvel do cliente.
+      </p>
+    </div>`;
+};
+async function testarConexaoAPI(){
+  if(!USE_REMOTE_API){ toast('Nenhuma URL de API configurada — sistema em modo demonstração.','error'); return; }
+  showLoader(true);
+  try{
+    const r = await fetch(APPS_SCRIPT_URL, {method:'GET'});
+    const json = await r.json();
+    showLoader(false);
+    if(json.ok) toast('Conexão bem-sucedida com a API! Status: online.','success');
+    else toast('A API respondeu, mas com erro: '+(json.error||'desconhecido'),'error');
+  }catch(e){
+    showLoader(false);
+    toast('Não foi possível conectar à API. Verifique a URL e a implantação.','error');
+  }
+}
+
+/* ---------- USUÁRIOS ---------- */
+RENDERERS.usuarios = async function(){
+  const raw = await api('listarUsuarios');
+  const st = tableState('usuarios');
+  const {pageData,total,pages} = applyTableControls('usuarios', raw, {searchKeys:['nome','usuario','perfil']});
+  return `
+    <div class="toolbar">
+      <div class="search-box"><span>🔎</span><input placeholder="Pesquisar usuário..." value="${st.search||''}" oninput="searchTable('usuarios',this.value)"></div>
+      <button class="btn btn-gold" onclick="openUsuarioModal()">+ Novo Usuário</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th onclick="sortTable('usuarios','nome')">Nome</th><th>Usuário</th><th>Perfil</th><th>Status</th><th style="text-align:right;">Ações</th></tr></thead>
+      <tbody>${pageData.length?pageData.map(u=>`
+        <tr><td class="cell-name">${u.nome}</td><td>${u.usuario}</td><td><span class="tag tag-confirmado">${u.perfil}</span></td>
+        <td>${u.ativo?'<span class="tag tag-livre">Ativo</span>':'<span class="tag tag-cancelado">Inativo</span>'}</td>
+        <td><div class="row-actions" style="justify-content:flex-end;">
+          <button class="btn btn-outline btn-icon btn-sm" onclick="openUsuarioModal('${u.id}')">✎</button>
+          <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteUsuario('${u.id}')">🗑</button>
+        </div></td></tr>`).join(''):`<tr><td colspan="5"><div class="empty-state">Nenhum usuário cadastrado.</div></td></tr>`}
+      </tbody></table>${paginationHtml('usuarios',total,pages)}</div>`;
+};
+async function openUsuarioModal(id){
+  const [list, profs] = await Promise.all([api('listarUsuarios'), api('listarProfissionais')]);
+  const item = id?list.find(u=>u.id===id):null;
+  openModal(`<div class="modal-head"><h3>${item?'Editar Usuário':'Novo Usuário'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field full"><label>Nome</label><input id="us-nome" value="${item?escapeHtml(item.nome):''}"></div>
+      <div class="field"><label>Usuário</label><input id="us-usuario" value="${item?item.usuario:''}"></div>
+      <div class="field"><label>Senha</label><input id="us-senha" type="text" value="${item?item.senha:''}"></div>
+      <div class="field"><label>Perfil</label><select id="us-perfil" onchange="onUsuarioPerfilChange()">
+        <option value="Administrador" ${item&&item.perfil==='Administrador'?'selected':''}>Administrador</option>
+        <option value="Recepcionista" ${item&&item.perfil==='Recepcionista'?'selected':''}>Recepcionista</option>
+        <option value="Profissional" ${item&&item.perfil==='Profissional'?'selected':''}>Profissional</option>
+      </select></div>
+      <div class="field full" id="us-prof-field" style="${item&&item.perfil!=='Profissional'?'display:none;':''}">
+        <label>Vincular ao Profissional</label>
+        <select id="us-profissionalId">${profs.map(p=>`<option value="${p.id}" ${item&&item.profissionalId===p.id?'selected':''}>${p.nome}</option>`).join('')}</select>
+      </div>
+    </div></div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteUsuario('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveUsuario('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+function onUsuarioPerfilChange(){
+  document.getElementById('us-prof-field').style.display = document.getElementById('us-perfil').value==='Profissional' ? '' : 'none';
+}
+async function saveUsuario(id){
+  const perfil = document.getElementById('us-perfil').value;
+  const payload = {id:id||undefined, nome:document.getElementById('us-nome').value.trim(), usuario:document.getElementById('us-usuario').value.trim(),
+    senha:document.getElementById('us-senha').value, perfil, ativo:true,
+    profissionalId: perfil==='Profissional' ? document.getElementById('us-profissionalId').value : undefined};
+  if(!payload.nome || !payload.usuario || !payload.senha){ toast('Preencha nome, usuário e senha.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarUsuario',payload); showLoader(false); closeModal(); toast('Usuário salvo.','success'); navigate('usuarios'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar.','error'); }
+}
+async function deleteUsuario(id){
+  if(!confirm('Excluir este usuário?')) return;
+  showLoader(true);
+  try{ await api('excluirUsuario',{id}); showLoader(false); toast('Usuário excluído.','success'); navigate('usuarios'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+</script>
+</body>
+</html>
