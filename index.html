@@ -1386,11 +1386,18 @@ async function sendAnamnese(id){
     toast('Configure a constante ANAMNESE_FORM_URL no topo do index.html com o link do anamnese.html publicado.','error');
     return;
   }
+  // Abre a aba em branco IMEDIATAMENTE (ainda de forma síncrona ao clique), antes
+  // de qualquer await — navegadores bloqueiam window.open() como pop-up quando ele
+  // acontece depois de uma operação assíncrona (ex.: aguardar a API responder).
+  const janela = window.open('', '_blank');
   const c = (await api('listarClientes')).find(x=>x.id===id);
+  if(!c){ if(janela) janela.close(); toast('Cliente não encontrado.','error'); return; }
   const phone = (c.telefone||'').replace(/\D/g,'');
+  if(!phone){ if(janela) janela.close(); toast('Este cliente não tem telefone cadastrado — edite o cliente e adicione o telefone.','error'); return; }
   const link = `${ANAMNESE_FORM_URL}?cliente=${encodeURIComponent(id)}`;
   const mensagem = `Olá, ${c.nome}! Antes do seu atendimento na Sandra Júlia, por favor preencha sua ficha de anamnese pelo link: ${link}`;
-  window.open(`https://wa.me/55${phone}?text=${encodeURIComponent(mensagem)}`,'_blank');
+  const url = `https://wa.me/55${phone}?text=${encodeURIComponent(mensagem)}`;
+  if(janela) janela.location.href = url; else window.open(url,'_blank');
   toast('WhatsApp aberto com o link da ficha de anamnese.','success');
 }
 async function openHistorico(id){
