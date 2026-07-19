@@ -75,7 +75,11 @@ button{font-family:inherit;}
     radial-gradient(circle at 15% 20%, rgba(212,177,90,.14), transparent 40%),
     radial-gradient(circle at 85% 80%, rgba(214,154,160,.18), transparent 45%),
     var(--ink-900);
-  padding:24px;
+  padding:24px; position:relative;
+}
+.login-footer{
+  position:absolute; left:0; right:0; bottom:16px; text-align:center;
+  font-size:11px; letter-spacing:1px; color:rgba(251,247,242,.45); font-weight:600;
 }
 .login-card{
   width:100%; max-width:400px; background:var(--white);
@@ -98,6 +102,11 @@ button{font-family:inherit;}
   color:var(--ink-500); margin-bottom:2px;
 }
 .app-name b{color:var(--gold-600);}
+.dev-credit{font-size:10.5px; color:var(--ink-500); font-weight:700; margin-bottom:2px;}
+.dev-tagline{
+  font-size:10px; letter-spacing:.8px; color:var(--quartz-700); font-style:italic;
+  margin-bottom:14px;
+}
 .login-card h1{font-size:26px; letter-spacing:.3px; margin-top:2px;}
 .login-card .subtitle{
   font-size:11.5px; letter-spacing:2.5px; text-transform:uppercase;
@@ -396,6 +405,8 @@ tbody tr:hover{background:var(--nude-50);}
 <div id="login-screen">
   <div class="login-card">
     <div class="app-name">SJ <b>Connect</b></div>
+    <div class="dev-credit">by JPires</div>
+    <div class="dev-tagline">Tecnologia para impulsionar negócios</div>
     <div class="brand-mark" id="login-logo"></div>
     <h1>Sandra Júlia</h1>
     <div class="subtitle">Cabelo &amp; Maquiagem · Salão · Spa · Estética</div>
@@ -419,6 +430,7 @@ tbody tr:hover{background:var(--nude-50);}
       Demo: admin/admin · recepcao/recepcao · profissional/profissional
     </p>
   </div>
+  <div class="login-footer">© 2026 JPires</div>
 </div>
 
 <!-- ============================== APP SHELL ============================== -->
@@ -443,6 +455,7 @@ tbody tr:hover{background:var(--nude-50);}
       </div>
       <button class="logout-btn" onclick="handleLogout()">Sair</button>
       <div style="text-align:center;font-size:9.5px;letter-spacing:1.5px;color:var(--ink-500);margin-top:12px;text-transform:uppercase;font-weight:700;">SJ Connect</div>
+      <div style="text-align:center;font-size:9px;color:rgba(251,247,242,.35);margin-top:3px;">© 2026 JPires</div>
     </div>
   </aside>
 
