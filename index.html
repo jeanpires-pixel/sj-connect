@@ -469,6 +469,7 @@ tbody tr:hover{background:var(--nude-50);}
         </div>
       </div>
       <div class="topbar-right">
+        <button class="icon-btn" title="Alterar senha" onclick="openAlterarSenhaModal()">🔑</button>
         <button class="icon-btn" title="Notificações" onclick="toast('Você não tem novas notificações.','info')">🔔<span class="badge-dot"></span></button>
         <button class="icon-btn" title="Atualizar" onclick="refreshCurrentView()">⟳</button>
       </div>
@@ -602,9 +603,9 @@ function seedDB(){
       {id:'c5', nome:'Fernanda Ribeiro', telefone:'(61) 98123-9988', cpf:'567.890.123-44', aniversario:'03-09', vip:false, ultimaVisita:'2026-07-08', observacoes:''},
     ],
     profissionais:[
-      {id:'p1', nome:'Marcos Lima', especialidade:'Colorista', comissao:35, ativo:true, atendimentosMes:64},
-      {id:'p2', nome:'Ana Beatriz', especialidade:'Maquiadora', comissao:40, ativo:true, atendimentosMes:51},
-      {id:'p3', nome:'Diego Ferreira', especialidade:'Barbeiro / Cortes', comissao:30, ativo:true, atendimentosMes:58},
+      {id:'p1', nome:'Marcos Lima', especialidade:'Colorista', comissao:35, ativo:true, atendimentosMes:64, pix:'marcos.lima@email.com'},
+      {id:'p2', nome:'Ana Beatriz', especialidade:'Maquiadora', comissao:40, ativo:true, atendimentosMes:51, pix:'(61) 99888-1122'},
+      {id:'p3', nome:'Diego Ferreira', especialidade:'Barbeiro / Cortes', comissao:30, ativo:true, atendimentosMes:58, pix:'diego.ferreira@email.com'},
     ],
     servicos:[
       {id:'s1', nome:'Corte Feminino', categoria:'Cabelo', duracao:45, preco:90},
@@ -614,15 +615,15 @@ function seedDB(){
       {id:'s5', nome:'Manicure + Pedicure', categoria:'Unhas', duracao:75, preco:85},
     ],
     produtos:[
-      {id:'pr1', nome:'Shampoo Reconstrução', categoria:'Cabelo', estoque:4, minimo:8, preco:65, fornecedorId:'f1'},
-      {id:'pr2', nome:'Base Líquida HD', categoria:'Maquiagem', estoque:12, minimo:5, preco:98, fornecedorId:'f2'},
-      {id:'pr3', nome:'Esmalte Nude Premium', categoria:'Unhas', estoque:3, minimo:10, preco:22, fornecedorId:'f3'},
-      {id:'pr4', nome:'Ampola de Tratamento', categoria:'Cabelo', estoque:20, minimo:6, preco:35, fornecedorId:'f1'},
+      {id:'pr1', nome:'Shampoo Reconstrução', categoria:'Cabelo', estoque:4, estoqueFracionado:8, minimo:8, preco:65, precoCompra:38, precoFracionado:12, fornecedorId:'f1', consignado:false},
+      {id:'pr2', nome:'Base Líquida HD', categoria:'Maquiagem', estoque:12, estoqueFracionado:0, minimo:5, preco:98, precoCompra:52, precoFracionado:0, fornecedorId:'f2', consignado:true},
+      {id:'pr3', nome:'Esmalte Nude Premium', categoria:'Unhas', estoque:3, estoqueFracionado:0, minimo:10, preco:22, precoCompra:11, precoFracionado:0, fornecedorId:'f3', consignado:false},
+      {id:'pr4', nome:'Ampola de Tratamento', categoria:'Cabelo', estoque:20, estoqueFracionado:40, minimo:6, preco:35, precoCompra:18, precoFracionado:6, fornecedorId:'f1', consignado:false},
     ],
     fornecedores:[
-      {id:'f1', nome:'BeautyLine Distribuidora', contato:'(61) 3222-1010', categoria:'Cabelo'},
-      {id:'f2', nome:'MakeUp Brasil', contato:'(61) 3222-2020', categoria:'Maquiagem'},
-      {id:'f3', nome:'Nail Import', contato:'(61) 3222-3030', categoria:'Unhas'},
+      {id:'f1', nome:'BeautyLine Distribuidora', contato:'(61) 3222-1010', categoria:'Cabelo', representante:'Marcelo Souza', vendedor:'Ana Paula'},
+      {id:'f2', nome:'MakeUp Brasil', contato:'(61) 3222-2020', categoria:'Maquiagem', representante:'Rafael Nogueira', vendedor:'Bianca Costa'},
+      {id:'f3', nome:'Nail Import', contato:'(61) 3222-3030', categoria:'Unhas', representante:'Carla Menezes', vendedor:'Diego Alves'},
     ],
     agenda:[
       {id:'a1', clienteId:'c1', profissionalId:'p1', servicoId:'s2', data:iso(hoje), hora:'09:00', duracao:120, status:'confirmado', valor:220, obs:''},
@@ -641,6 +642,8 @@ function seedDB(){
     recibos:[],
     movimentacoes:[],
     anamneses:[],
+    comissoesServico:[],
+    contasPagar:[],
   };
 }
 function uid(prefix){ return prefix + Math.random().toString(36).slice(2,9); }
@@ -728,6 +731,30 @@ function demoAPI(action, payload){
     case 'salvarAnamnese': { payload.id = uid('an'); DB.anamneses.push(payload); return clone(payload); }
     case 'listarAnamneses': return clone(DB.anamneses);
 
+    case 'listarComissoesServico': return clone(DB.comissoesServico);
+    case 'salvarComissaoServico': {
+      const existente = DB.comissoesServico.find(c=>c.servicoId===payload.servicoId && c.profissionalId===payload.profissionalId);
+      if(existente){ Object.assign(existente, payload); return clone(existente); }
+      payload.id = uid('cs'); DB.comissoesServico.push(payload); return clone(payload);
+    }
+
+    case 'listarContasPagar': return clone(DB.contasPagar);
+    case 'salvarContaPagar': {
+      if(payload.id){ const i=DB.contasPagar.findIndex(c=>c.id===payload.id); DB.contasPagar[i]=payload; }
+      else { payload.id = uid('cp'); if(payload.pago===undefined) payload.pago=false; DB.contasPagar.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirContaPagar': DB.contasPagar = DB.contasPagar.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'alterarSenha': {
+      const u = DB.usuarios.find(x=>x.id===payload.usuarioId);
+      if(!u) throw new Error('Usuário não encontrado.');
+      if(String(u.senha)!==String(payload.senhaAtual)) throw new Error('Senha atual incorreta.');
+      if(!payload.novaSenha || payload.novaSenha.length<4) throw new Error('A nova senha deve ter pelo menos 4 caracteres.');
+      u.senha = payload.novaSenha;
+      return {ok:true};
+    }
+
     case 'listarUsuarios': return clone(DB.usuarios);
     case 'salvarUsuario': {
       if(payload.id){ const i=DB.usuarios.findIndex(c=>c.id===payload.id); DB.usuarios[i]=payload; }
@@ -795,6 +822,47 @@ function handleLogout(){
   document.getElementById('app').classList.add('hidden');
   document.getElementById('login-screen').classList.remove('hidden');
   document.getElementById('login-form').reset();
+}
+
+// Troca de senha — disponível para qualquer perfil (Administrador, Recepcionista
+// ou Profissional), acessível pelo ícone 🔑 na barra superior.
+function openAlterarSenhaModal(){
+  openModal(`
+    <div class="modal-head"><h3>Alterar Senha</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <p class="helper-text" style="margin-bottom:16px;">Alterando a senha de <b>${escapeHtml(STATE.user.nome)}</b> (${escapeHtml(STATE.user.usuario||'')}).</p>
+      <div class="field"><label>Senha atual</label><input type="password" id="sen-atual" autocomplete="current-password"></div>
+      <div class="field"><label>Nova senha</label><input type="password" id="sen-nova" autocomplete="new-password"></div>
+      <div class="field"><label>Confirmar nova senha</label><input type="password" id="sen-confirma" autocomplete="new-password"></div>
+      <div class="error-box" id="sen-erro" style="display:none;background:#FBEAE8;color:var(--danger);font-size:13px;font-weight:600;padding:10px 13px;border-radius:8px;"></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-gold" onclick="saveAlterarSenha()">Salvar Nova Senha</button></div>`);
+}
+async function saveAlterarSenha(){
+  const senhaAtual = document.getElementById('sen-atual').value;
+  const novaSenha = document.getElementById('sen-nova').value;
+  const confirma = document.getElementById('sen-confirma').value;
+  const errBox = document.getElementById('sen-erro');
+  errBox.style.display='none';
+  if(!senhaAtual || !novaSenha || !confirma){
+    errBox.textContent = 'Preencha todos os campos.'; errBox.style.display='block'; return;
+  }
+  if(novaSenha !== confirma){
+    errBox.textContent = 'A nova senha e a confirmação não coincidem.'; errBox.style.display='block'; return;
+  }
+  if(novaSenha.length < 4){
+    errBox.textContent = 'A nova senha deve ter pelo menos 4 caracteres.'; errBox.style.display='block'; return;
+  }
+  showLoader(true);
+  try{
+    await api('alterarSenha', {usuarioId: STATE.user.id, senhaAtual, novaSenha});
+    STATE.user.senha = novaSenha;
+    showLoader(false); closeModal();
+    toast('Senha alterada com sucesso.','success');
+  }catch(e){
+    showLoader(false);
+    errBox.textContent = e.message || 'Não foi possível alterar a senha.'; errBox.style.display='block';
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -1077,6 +1145,12 @@ async function loadAgendaContext(){
 }
 const STATUS_LIST = ['livre','confirmado','andamento','finalizado','cancelado'];
 const STATUS_LABEL = {livre:'Livre', confirmado:'Confirmado', andamento:'Em Atendimento', finalizado:'Finalizado', cancelado:'Cancelado'};
+// Formas de pagamento usadas tanto no Recibo quanto no Financeiro — mantidas
+// num único lugar para as duas telas ficarem sempre consistentes.
+const FORMA_PAGAMENTO_LABEL = {pix:'Pix', dinheiro:'Dinheiro', debito:'Débito', credito_avista:'Crédito à Vista', credito_parcelado:'Crédito Parcelado'};
+function formaPagamentoOptionsHtml(selecionado){
+  return Object.keys(FORMA_PAGAMENTO_LABEL).map(k=>`<option value="${k}" ${selecionado===k?'selected':''}>${FORMA_PAGAMENTO_LABEL[k]}</option>`).join('');
+}
 // Profissionais com estas especialidades têm o horário travado: não é possível
 // marcar dois atendimentos no mesmo horário para a mesma pessoa. Os demais
 // profissionais não sofrem esse bloqueio e podem atender mais de um serviço
@@ -1462,6 +1536,7 @@ RENDERERS.profissionais = async function(){
           <div class="avatar-lg">${initials(p.nome)}</div>
           <h4>${p.nome}</h4>
           <div class="spec">${p.especialidade}</div>
+          ${p.pix?`<div class="cell-sub" style="margin-bottom:6px;">Pix: ${escapeHtml(p.pix)}</div>`:''}
           <div class="stats">
             <div><b>${p.comissao}%</b>comissão</div>
             <div><b>${p.atendimentosMes||0}</b>atend./mês</div>
@@ -1483,6 +1558,7 @@ async function openProfissionalModal(id){
       <div class="field full"><label>Nome</label><input id="pf-nome" value="${item?escapeHtml(item.nome):''}"></div>
       <div class="field"><label>Especialidade</label><input id="pf-especialidade" value="${item?escapeHtml(item.especialidade):''}"></div>
       <div class="field"><label>Comissão (%)</label><input id="pf-comissao" type="number" value="${item?item.comissao:30}"></div>
+      <div class="field full"><label>Pix para recebimento</label><input id="pf-pix" value="${item?escapeHtml(item.pix||''):''}" placeholder="Chave pix (CPF, e-mail, telefone ou aleatória)"></div>
     </div></div>
     <div class="modal-foot">
       ${item?`<button class="btn btn-danger-outline" onclick="deleteProfissional('${item.id}')">Excluir</button>`:''}
@@ -1492,7 +1568,8 @@ async function openProfissionalModal(id){
 }
 async function saveProfissional(id){
   const payload = {id:id||undefined, nome:document.getElementById('pf-nome').value.trim(),
-    especialidade:document.getElementById('pf-especialidade').value, comissao:Number(document.getElementById('pf-comissao').value), ativo:true};
+    especialidade:document.getElementById('pf-especialidade').value, comissao:Number(document.getElementById('pf-comissao').value),
+    pix:document.getElementById('pf-pix').value, ativo:true};
   if(!payload.nome){ toast('Informe o nome do profissional.','error'); return; }
   showLoader(true);
   try{ await api('salvarProfissional',payload); showLoader(false); closeModal(); toast('Profissional salvo.','success'); navigate('profissionais'); }
@@ -1530,7 +1607,8 @@ RENDERERS.recibos = async function(){
 };
 
 async function openReciboModal(prefillProfissionalId){
-  const [profs, servicos] = await Promise.all([api('listarProfissionais'), api('listarServicos')]);
+  const [profs, servicos, comissoesServico] = await Promise.all([api('listarProfissionais'), api('listarServicos'), api('listarComissoesServico')]);
+  window._comissoesServicoCache = comissoesServico; // usado por reciboRecalcRow, evita refazer a chamada a cada linha
   const profOptions = `<option value="">—</option>` + profs.map(p=>`<option value="${p.id}" data-comissao="${p.comissao}" ${p.id===prefillProfissionalId?'selected':''}>${p.nome}</option>`).join('');
   const servOptions = `<option value="">—</option>` + servicos.map(s=>`<option value="${s.id}" data-preco="${s.preco}">${s.nome}</option>`).join('');
   const rows = [0,1,2,3,4].map(i=>`
@@ -1557,7 +1635,8 @@ async function openReciboModal(prefillProfissionalId){
       <div class="form-grid" style="margin-top:16px;">
         <div class="field"><label>Café / Consumo (R$)</label><input id="rc-cafe" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"></div>
         <div class="field"><label>Produtos / Vendas (R$)</label><input id="rc-produtos" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"></div>
-        <div class="field full"><label>Crédito (desconto já pago) (R$)</label><input id="rc-credito" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"></div>
+        <div class="field"><label>Crédito (desconto já pago) (R$)</label><input id="rc-credito" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"></div>
+        <div class="field"><label>Forma de Pagamento</label><select id="rc-forma-pagamento">${formaPagamentoOptionsHtml('pix')}</select></div>
       </div>
       <div class="card card-pad" style="margin-top:6px;background:var(--nude-50);">
         <label style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-500);">Total Recebido</label>
@@ -1575,8 +1654,12 @@ function reciboRecalcRow(i){
   const valorInp = document.querySelector(`.rc-valor[data-row="${i}"]`);
   const comInp = document.querySelector(`.rc-comissao[data-row="${i}"]`);
   const preco = servSel.selectedOptions[0]?.dataset.preco;
-  const comissaoPct = atdSel.selectedOptions[0]?.dataset.comissao;
+  const comissaoPctPadrao = atdSel.selectedOptions[0]?.dataset.comissao;
   if(preco && !valorInp.value) valorInp.value = Number(preco).toFixed(2);
+  // Comissão específica do profissional para este serviço tem prioridade sobre a comissão padrão dele.
+  const overrides = window._comissoesServicoCache || [];
+  const override = overrides.find(c=>c.servicoId===servSel.value && c.profissionalId===atdSel.value);
+  const comissaoPct = override ? override.comissao : comissaoPctPadrao;
   if(comissaoPct && valorInp.value) comInp.value = (Number(valorInp.value) * Number(comissaoPct) / 100).toFixed(2);
   reciboRecalcTotal();
 }
@@ -1589,7 +1672,6 @@ function reciboRecalcTotal(){
   document.getElementById('rc-total').textContent = fmtMoney(total);
 }
 async function saveRecibo(){
-  const [profs, servicos] = await Promise.all([api('listarProfissionais'), api('listarServicos')]);
   const itens = [];
   for(let i=0;i<5;i++){
     const atd = document.querySelector(`.rc-atendente[data-row="${i}"]`);
@@ -1608,21 +1690,31 @@ async function saveRecibo(){
   const cafe = Number(document.getElementById('rc-cafe').value||0);
   const produtos = Number(document.getElementById('rc-produtos').value||0);
   const credito = Number(document.getElementById('rc-credito').value||0);
+  const formaPagamento = document.getElementById('rc-forma-pagamento').value;
   const totalRecebido = itens.reduce((s,i)=>s+i.valor,0) + cafe + produtos - credito;
+  const clienteNome = document.getElementById('rc-cliente').value.trim();
   const payload = {
     data: new Date().toISOString().slice(0,10),
-    clienteNome: document.getElementById('rc-cliente').value.trim(),
+    clienteNome,
     telefone: document.getElementById('rc-telefone').value,
     aniversario: document.getElementById('rc-aniversario').value,
     instagram: document.getElementById('rc-instagram').value,
     cpf: document.getElementById('rc-cpf').value,
     itens: JSON.stringify(itens),
-    cafeConsumo: cafe, produtosVendas: produtos, credito, totalRecebido,
+    cafeConsumo: cafe, produtosVendas: produtos, credito, totalRecebido, formaPagamento,
   };
   showLoader(true);
   try{
     const saved = await api('salvarRecibo', payload);
-    showLoader(false); closeModal(); toast('Recibo salvo com sucesso.','success');
+    // Gera automaticamente o lançamento correspondente no Fluxo de Caixa,
+    // já com a forma de pagamento escolhida — assim o Financeiro reflete o Recibo sem digitação dupla.
+    if(totalRecebido>0){
+      await api('salvarLancamentoFinanceiro', {
+        tipo:'entrada', forma:formaPagamento, valor:totalRecebido,
+        descricao:'Recibo - '+(clienteNome||'Cliente'), data:payload.data,
+      });
+    }
+    showLoader(false); closeModal(); toast('Recibo salvo e lançado no Fluxo de Caixa.','success');
     navigate('recibos');
     printRecibo(null, saved);
   }catch(e){ showLoader(false); toast('Erro ao salvar recibo.','error'); }
@@ -1654,6 +1746,7 @@ async function printRecibo(id, preloaded){
     <div class="line"><b>Café / Consumo:</b> ${fmtMoney(recibo.cafeConsumo)}</div>
     <div class="line"><b>Produtos / Vendas:</b> ${fmtMoney(recibo.produtosVendas)}</div>
     <div class="line"><b>Crédito:</b> ${fmtMoney(recibo.credito)}</div>
+    <div class="line"><b>Forma de Pagamento:</b> ${escapeHtml(FORMA_PAGAMENTO_LABEL[recibo.formaPagamento]||recibo.formaPagamento||'—')}</div>
     <div class="total">TOTAL RECEBIDO: ${fmtMoney(recibo.totalRecebido)}</div>
     <script>window.onload=()=>window.print();<\/script>
   </body></html>`);
@@ -1676,11 +1769,42 @@ RENDERERS.servicos = async function(){
       <tbody>${pageData.length?pageData.map(s=>`
         <tr><td class="cell-name">${s.nome}</td><td>${s.categoria}</td><td>${s.duracao} min</td><td>${fmtMoney(s.preco)}</td>
         <td><div class="row-actions" style="justify-content:flex-end;">
+          <button class="btn btn-outline btn-sm" title="Comissão por profissional" onclick="openComissoesModal('${s.id}')">% Comissões</button>
           <button class="btn btn-outline btn-icon btn-sm" onclick="openServicoModal('${s.id}')">✎</button>
           <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteServico('${s.id}')">🗑</button>
         </div></td></tr>`).join(''):`<tr><td colspan="5"><div class="empty-state">Nenhum serviço cadastrado.</div></td></tr>`}
       </tbody></table>${paginationHtml('servicos',total,pages)}</div>`;
 };
+async function openComissoesModal(servicoId){
+  const [servicos, profs, comissoes] = await Promise.all([api('listarServicos'), api('listarProfissionais'), api('listarComissoesServico')]);
+  const servico = servicos.find(s=>s.id===servicoId);
+  const linhas = profs.map(p=>{
+    const override = comissoes.find(c=>c.servicoId===servicoId && c.profissionalId===p.id);
+    return `<div class="list-row">
+      <div style="flex:1;">${p.nome}<div class="cell-sub">Padrão: ${p.comissao}%</div></div>
+      <input type="number" step="0.1" class="cs-comissao" data-prof="${p.id}" placeholder="${p.comissao}"
+        value="${override?override.comissao:''}" style="width:90px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--nude-200);text-align:right;">
+    </div>`;
+  }).join('');
+  openModal(`<div class="modal-head"><h3>Comissões · ${escapeHtml(servico.nome)}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <p class="helper-text" style="margin-bottom:12px;">Deixe em branco para usar a comissão padrão do profissional. Preencha só para sobrescrever, especificamente para este serviço.</p>
+      ${linhas}
+    </div>
+    <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveComissoes('${servicoId}')">Salvar</button></div>`);
+}
+async function saveComissoes(servicoId){
+  const inputs = document.querySelectorAll('.cs-comissao');
+  showLoader(true);
+  try{
+    for(const inp of inputs){
+      if(inp.value.trim()===''){ continue; }
+      await api('salvarComissaoServico', {servicoId, profissionalId:inp.dataset.prof, comissao:Number(inp.value)});
+    }
+    showLoader(false); closeModal(); toast('Comissões atualizadas.','success');
+  }catch(e){ showLoader(false); toast('Erro ao salvar comissões.','error'); }
+}
 async function openServicoModal(id){
   const list = await api('listarServicos'); const item = id?list.find(s=>s.id===id):null;
   openModal(`<div class="modal-head"><h3>${item?'Editar Serviço':'Novo Serviço'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
@@ -1739,16 +1863,16 @@ RENDERERS.produtos = async function(){
       ${isRO?'':'<button class="btn btn-gold" onclick="openProdutoModal()">+ Novo Produto</button>'}
     </div>
     <div class="table-wrap"><table>
-      <thead><tr><th onclick="sortTable('produtos','nome')">Produto</th><th>Fornecedor</th><th onclick="sortTable('produtos','estoque')">Estoque</th><th onclick="sortTable('produtos','preco')">Preço</th>${isRO?'':'<th style="text-align:right;">Ações</th>'}</tr></thead>
+      <thead><tr><th onclick="sortTable('produtos','nome')">Produto</th><th>Fornecedor</th><th onclick="sortTable('produtos','estoque')">Estoque</th><th>Preço (compra / venda / fracionado)</th>${isRO?'':'<th style="text-align:right;">Ações</th>'}</tr></thead>
       <tbody>${pageData.length?pageData.map(p=>{
         const pct = Math.min(100, Math.round((p.estoque/(p.minimo*2))*100));
         const low = p.estoque<=p.minimo;
         return `<tr>
-          <td class="cell-name">${p.nome}<div class="cell-sub">${p.categoria}</div></td>
+          <td class="cell-name">${p.nome}${p.consignado?' <span class="tag tag-vip">Consignado</span>':''}<div class="cell-sub">${p.categoria}</div></td>
           <td>${nomeForn(p.fornecedorId)}</td>
-          <td style="min-width:130px;">${p.estoque} un ${low?'<span class="tag tag-cancelado">Baixo</span>':''}
+          <td style="min-width:150px;">${p.estoque} un (unit.) ${p.estoqueFracionado?' + '+p.estoqueFracionado+' frac.':''} ${low?'<span class="tag tag-cancelado">Baixo</span>':''}
             <div class="stock-bar"><div style="width:${pct}%;background:${low?'var(--danger)':'var(--success)'}"></div></div></td>
-          <td>${fmtMoney(p.preco)}</td>
+          <td class="cell-sub">Compra: ${fmtMoney(p.precoCompra||0)}<br>Venda: ${fmtMoney(p.preco)}${p.precoFracionado?'<br>Fracionado: '+fmtMoney(p.precoFracionado):''}</td>
           ${isRO?'':`<td><div class="row-actions" style="justify-content:flex-end;">
             <button class="btn btn-outline btn-icon btn-sm" title="Movimentar estoque" onclick="openMovimentacaoModal('${p.id}')">↕</button>
             <button class="btn btn-outline btn-icon btn-sm" onclick="openProdutoModal('${p.id}')">✎</button>
@@ -1797,12 +1921,19 @@ async function openProdutoModal(id){
   const item = id?list.find(p=>p.id===id):null;
   openModal(`<div class="modal-head"><h3>${item?'Editar Produto':'Novo Produto'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="modal-body"><div class="form-grid">
-      <div class="field full"><label>Nome</label><input id="pd-nome" value="${item?escapeHtml(item.nome):''}"></div>
+      <div class="field full"><label>Nome do Produto</label><input id="pd-nome" value="${item?escapeHtml(item.nome):''}"></div>
       <div class="field"><label>Categoria</label><input id="pd-categoria" value="${item?escapeHtml(item.categoria):''}"></div>
-      <div class="field"><label>Fornecedor</label><select id="pd-fornecedor">${fornecedores.map(f=>`<option value="${f.id}" ${item&&item.fornecedorId===f.id?'selected':''}>${f.nome}</option>`).join('')}</select></div>
-      <div class="field"><label>Estoque atual</label><input id="pd-estoque" type="number" value="${item?item.estoque:0}"></div>
+      <div class="field"><label>Nome do Fornecedor</label><select id="pd-fornecedor">${fornecedores.map(f=>`<option value="${f.id}" ${item&&item.fornecedorId===f.id?'selected':''}>${f.nome}</option>`).join('')}</select></div>
+      <div class="field"><label>Estoque Unitário</label><input id="pd-estoque" type="number" value="${item?item.estoque:0}"></div>
+      <div class="field"><label>Estoque Fracionado</label><input id="pd-estoque-fracionado" type="number" value="${item?(item.estoqueFracionado||0):0}"><div class="helper">Ex.: doses/ml restantes de um produto já aberto.</div></div>
       <div class="field"><label>Estoque mínimo</label><input id="pd-minimo" type="number" value="${item?item.minimo:5}"></div>
-      <div class="field"><label>Preço (R$)</label><input id="pd-preco" type="number" step="0.01" value="${item?item.preco:0}"></div>
+      <div class="field"><label>Preço de Compra (R$)</label><input id="pd-preco-compra" type="number" step="0.01" value="${item?(item.precoCompra||0):0}"></div>
+      <div class="field"><label>Preço de Venda — unitário (R$)</label><input id="pd-preco" type="number" step="0.01" value="${item?item.preco:0}"></div>
+      <div class="field full"><label>Preço Fracionado (R$)</label><input id="pd-preco-fracionado" type="number" step="0.01" value="${item?(item.precoFracionado||0):0}"><div class="helper">Preço cobrado por dose/fração, quando aplicável.</div></div>
+      <div class="field full"><div class="checkbox-row" style="display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" id="pd-consignado" ${item&&item.consignado?'checked':''}>
+        <label for="pd-consignado" style="margin:0;">Produto consignado</label>
+      </div></div>
     </div></div>
     <div class="modal-foot">
       ${item?`<button class="btn btn-danger-outline" onclick="deleteProduto('${item.id}')">Excluir</button>`:''}
@@ -1813,7 +1944,11 @@ async function openProdutoModal(id){
 async function saveProduto(id){
   const payload={id:id||undefined, nome:document.getElementById('pd-nome').value.trim(), categoria:document.getElementById('pd-categoria').value,
     fornecedorId:document.getElementById('pd-fornecedor').value, estoque:Number(document.getElementById('pd-estoque').value),
-    minimo:Number(document.getElementById('pd-minimo').value), preco:Number(document.getElementById('pd-preco').value)};
+    estoqueFracionado:Number(document.getElementById('pd-estoque-fracionado').value||0),
+    minimo:Number(document.getElementById('pd-minimo').value), preco:Number(document.getElementById('pd-preco').value),
+    precoCompra:Number(document.getElementById('pd-preco-compra').value||0),
+    precoFracionado:Number(document.getElementById('pd-preco-fracionado').value||0),
+    consignado:document.getElementById('pd-consignado').checked};
   if(!payload.nome){ toast('Informe o nome do produto.','error'); return; }
   showLoader(true);
   try{ await api('salvarProduto',payload); showLoader(false); closeModal(); toast('Produto salvo.','success'); navigate('produtos'); }
@@ -1830,29 +1965,31 @@ async function deleteProduto(id){
 RENDERERS.fornecedores = async function(){
   const raw = await api('listarFornecedores');
   const st = tableState('fornecedores');
-  const {pageData,total,pages} = applyTableControls('fornecedores', raw, {searchKeys:['nome','categoria','contato']});
+  const {pageData,total,pages} = applyTableControls('fornecedores', raw, {searchKeys:['nome','categoria','contato','representante','vendedor']});
   return `
     <div class="toolbar">
       <div class="search-box"><span>🔎</span><input placeholder="Pesquisar fornecedor..." value="${st.search||''}" oninput="searchTable('fornecedores',this.value)"></div>
       <button class="btn btn-gold" onclick="openFornecedorModal()">+ Novo Fornecedor</button>
     </div>
     <div class="table-wrap"><table>
-      <thead><tr><th onclick="sortTable('fornecedores','nome')">Fornecedor</th><th>Categoria</th><th>Contato</th><th style="text-align:right;">Ações</th></tr></thead>
+      <thead><tr><th onclick="sortTable('fornecedores','nome')">Nome da Empresa</th><th>Representante</th><th>Telefone</th><th>Vendedor</th><th style="text-align:right;">Ações</th></tr></thead>
       <tbody>${pageData.length?pageData.map(f=>`
-        <tr><td class="cell-name">${f.nome}</td><td>${f.categoria}</td><td>${f.contato}</td>
+        <tr><td class="cell-name">${f.nome}<div class="cell-sub">${f.categoria||''}</div></td><td>${f.representante||'—'}</td><td>${f.contato||'—'}</td><td>${f.vendedor||'—'}</td>
         <td><div class="row-actions" style="justify-content:flex-end;">
           <button class="btn btn-outline btn-icon btn-sm" onclick="openFornecedorModal('${f.id}')">✎</button>
           <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteFornecedor('${f.id}')">🗑</button>
-        </div></td></tr>`).join(''):`<tr><td colspan="4"><div class="empty-state">Nenhum fornecedor cadastrado.</div></td></tr>`}
+        </div></td></tr>`).join(''):`<tr><td colspan="5"><div class="empty-state">Nenhum fornecedor cadastrado.</div></td></tr>`}
       </tbody></table>${paginationHtml('fornecedores',total,pages)}</div>`;
 };
 async function openFornecedorModal(id){
   const list = await api('listarFornecedores'); const item=id?list.find(f=>f.id===id):null;
   openModal(`<div class="modal-head"><h3>${item?'Editar Fornecedor':'Novo Fornecedor'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="modal-body"><div class="form-grid">
-      <div class="field full"><label>Nome</label><input id="fn-nome" value="${item?escapeHtml(item.nome):''}"></div>
-      <div class="field"><label>Categoria</label><input id="fn-categoria" value="${item?escapeHtml(item.categoria):''}"></div>
-      <div class="field"><label>Contato</label><input id="fn-contato" data-mask="phone" value="${item?item.contato:''}"></div>
+      <div class="field full"><label>Nome da Empresa</label><input id="fn-nome" value="${item?escapeHtml(item.nome):''}"></div>
+      <div class="field"><label>Representante</label><input id="fn-representante" value="${item?escapeHtml(item.representante||''):''}"></div>
+      <div class="field"><label>Telefone</label><input id="fn-contato" data-mask="phone" value="${item?item.contato:''}"></div>
+      <div class="field"><label>Vendedor</label><input id="fn-vendedor" value="${item?escapeHtml(item.vendedor||''):''}"></div>
+      <div class="field"><label>Categoria</label><input id="fn-categoria" value="${item?escapeHtml(item.categoria||''):''}"></div>
     </div></div>
     <div class="modal-foot">
       ${item?`<button class="btn btn-danger-outline" onclick="deleteFornecedor('${item.id}')">Excluir</button>`:''}
@@ -1861,8 +1998,10 @@ async function openFornecedorModal(id){
     </div>`);
 }
 async function saveFornecedor(id){
-  const payload={id:id||undefined, nome:document.getElementById('fn-nome').value.trim(), categoria:document.getElementById('fn-categoria').value, contato:document.getElementById('fn-contato').value};
-  if(!payload.nome){ toast('Informe o nome do fornecedor.','error'); return; }
+  const payload={id:id||undefined, nome:document.getElementById('fn-nome').value.trim(), categoria:document.getElementById('fn-categoria').value,
+    contato:document.getElementById('fn-contato').value, representante:document.getElementById('fn-representante').value,
+    vendedor:document.getElementById('fn-vendedor').value};
+  if(!payload.nome){ toast('Informe o nome da empresa.','error'); return; }
   showLoader(true);
   try{ await api('salvarFornecedor',payload); showLoader(false); closeModal(); toast('Fornecedor salvo.','success'); navigate('fornecedores'); }
   catch(e){ showLoader(false); toast('Erro ao salvar.','error'); }
@@ -1878,6 +2017,7 @@ async function deleteFornecedor(id){
 RENDERERS.financeiro = async function(){
   const st = tableState('financeiro');
   if(!st.periodo) st.periodo='diario';
+  if(st.periodo==='contaspagar') return await renderContasPagar();
   const lanc = await api('listarFinanceiro');
   const todayISO = new Date().toISOString().slice(0,10);
   const mesAtual = todayISO.slice(0,7);
@@ -1890,13 +2030,8 @@ RENDERERS.financeiro = async function(){
   const saidas = filtered.filter(f=>f.tipo==='saida').reduce((s,f)=>s+f.valor,0);
   const porForma = {};
   filtered.filter(f=>f.tipo==='entrada').forEach(f=>{ porForma[f.forma]=(porForma[f.forma]||0)+f.valor; });
-  const formaLabel={pix:'Pix',debito:'Débito',credito:'Crédito',dinheiro:'Dinheiro'};
   return `
-    <div class="tabs">
-      <button class="${st.periodo==='diario'?'active':''}" onclick="setFinPeriodo('diario')">Fluxo Diário</button>
-      <button class="${st.periodo==='semanal'?'active':''}" onclick="setFinPeriodo('semanal')">Fluxo Semanal</button>
-      <button class="${st.periodo==='mensal'?'active':''}" onclick="setFinPeriodo('mensal')">Fluxo Mensal</button>
-    </div>
+    ${financeiroTabsHtml(st.periodo)}
     <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
       <div class="kpi" style="--kpi-color:var(--success)"><div class="kpi-label">Entradas</div><div class="kpi-value">${fmtMoney(entradas)}</div></div>
       <div class="kpi" style="--kpi-color:var(--danger)"><div class="kpi-label">Saídas</div><div class="kpi-value">${fmtMoney(saidas)}</div></div>
@@ -1910,24 +2045,100 @@ RENDERERS.financeiro = async function(){
         ${filtered.length?filtered.sort((a,b)=>b.data.localeCompare(a.data)).map(f=>`
           <div class="list-row"><span class="dot ${f.tipo==='entrada'?'livre':'cancelado'}"></span>
             <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${f.descricao}</div>
-            <div class="cell-sub">${fmtDate(f.data)} · ${formaLabel[f.forma]||f.forma}</div></div>
+            <div class="cell-sub">${fmtDate(f.data)} · ${FORMA_PAGAMENTO_LABEL[f.forma]||f.forma}</div></div>
             <div style="font-weight:800;color:${f.tipo==='entrada'?'var(--success)':'var(--danger)'};">${f.tipo==='entrada'?'+':'-'} ${fmtMoney(f.valor)}</div>
           </div>`).join(''):`<div class="empty-state">Nenhum lançamento no período.</div>`}
       </div>
       <div class="card card-pad">
         <div class="section-head"><div><h3>Por Forma de Pagamento</h3><div class="ribbon"></div></div></div>
-        ${Object.keys(porForma).length? Object.entries(porForma).map(([k,v])=>`<span class="chip-payment">${formaLabel[k]||k}: ${fmtMoney(v)}</span>`).join(''):'<div class="empty-state">Sem entradas no período.</div>'}
+        ${Object.keys(porForma).length? Object.entries(porForma).map(([k,v])=>`<span class="chip-payment">${FORMA_PAGAMENTO_LABEL[k]||k}: ${fmtMoney(v)}</span>`).join(''):'<div class="empty-state">Sem entradas no período.</div>'}
       </div>
     </div>`;
 };
+function financeiroTabsHtml(periodoAtivo){
+  return `<div class="tabs">
+      <button class="${periodoAtivo==='diario'?'active':''}" onclick="setFinPeriodo('diario')">Fluxo Diário</button>
+      <button class="${periodoAtivo==='semanal'?'active':''}" onclick="setFinPeriodo('semanal')">Fluxo Semanal</button>
+      <button class="${periodoAtivo==='mensal'?'active':''}" onclick="setFinPeriodo('mensal')">Fluxo Mensal</button>
+      <button class="${periodoAtivo==='contaspagar'?'active':''}" onclick="setFinPeriodo('contaspagar')">Contas a Pagar</button>
+    </div>`;
+}
 function setFinPeriodo(p){ tableState('financeiro').periodo=p; navigate('financeiro'); }
+async function renderContasPagar(){
+  const [contas, fornecedores] = await Promise.all([api('listarContasPagar'), api('listarFornecedores')]);
+  const nomeForn = id => (fornecedores.find(f=>f.id===id)||{}).nome || '—';
+  const hojeISO = new Date().toISOString().slice(0,10);
+  const pendentes = contas.filter(c=>!c.pago).sort((a,b)=>(a.vencimento||'').localeCompare(b.vencimento||''));
+  const pagas = contas.filter(c=>c.pago).sort((a,b)=>(b.dataPagamento||'').localeCompare(a.dataPagamento||''));
+  return `
+    ${financeiroTabsHtml('contaspagar')}
+    <div class="toolbar"><div style="flex:1;"></div>
+      <button class="btn btn-gold" onclick="openContaPagarModal()">+ Nova Conta a Pagar</button>
+    </div>
+    <div class="card card-pad" style="margin-bottom:20px;">
+      <div class="section-head"><div><h3>Pendentes</h3><div class="ribbon"></div></div></div>
+      ${pendentes.length ? pendentes.map(c=>{
+        const vencida = c.vencimento && c.vencimento < hojeISO;
+        return `<div class="list-row"><span class="dot ${vencida?'cancelado':'confirmado'}"></span>
+          <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${escapeHtml(c.descricao)}</div>
+          <div class="cell-sub">${c.fornecedorId?nomeForn(c.fornecedorId)+' · ':''}Vencimento: ${fmtDate(c.vencimento)} ${vencida?'<span class="tag tag-cancelado">Vencida</span>':''}</div></div>
+          <div style="font-weight:800;">${fmtMoney(c.valor)}</div>
+          <div class="row-actions">
+            <button class="btn btn-outline btn-sm" onclick="marcarContaPaga('${c.id}')">Marcar Paga</button>
+            <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteContaPagar('${c.id}')">🗑</button>
+          </div>
+        </div>`;
+      }).join('') : '<div class="empty-state">Nenhuma conta pendente.</div>'}
+    </div>
+    <div class="card card-pad">
+      <div class="section-head"><div><h3>Pagas</h3><div class="ribbon"></div></div></div>
+      ${pagas.length ? pagas.slice(0,10).map(c=>`
+        <div class="list-row"><span class="dot livre"></span>
+          <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${escapeHtml(c.descricao)}</div>
+          <div class="cell-sub">Pago em ${fmtDate(c.dataPagamento)}</div></div>
+          <div style="font-weight:800;">${fmtMoney(c.valor)}</div>
+        </div>`).join('') : '<div class="empty-state">Nenhuma conta paga ainda.</div>'}
+    </div>`;
+}
+async function openContaPagarModal(){
+  const fornecedores = await api('listarFornecedores');
+  openModal(`<div class="modal-head"><h3>Nova Conta a Pagar</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field full"><label>Descrição</label><input id="cp-descricao" placeholder="Ex: Compra de produtos, aluguel..."></div>
+      <div class="field"><label>Fornecedor (opcional)</label><select id="cp-fornecedor"><option value="">—</option>${fornecedores.map(f=>`<option value="${f.id}">${f.nome}</option>`).join('')}</select></div>
+      <div class="field"><label>Valor (R$)</label><input id="cp-valor" type="number" step="0.01"></div>
+      <div class="field full"><label>Vencimento</label><input id="cp-vencimento" type="date"></div>
+    </div></div>
+    <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-gold" onclick="saveContaPagar()">Salvar</button></div>`);
+}
+async function saveContaPagar(){
+  const payload = {descricao:document.getElementById('cp-descricao').value.trim(), fornecedorId:document.getElementById('cp-fornecedor').value,
+    valor:Number(document.getElementById('cp-valor').value||0), vencimento:document.getElementById('cp-vencimento').value, pago:false};
+  if(!payload.descricao || !payload.valor){ toast('Informe a descrição e o valor.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarContaPagar',payload); showLoader(false); closeModal(); toast('Conta a pagar registrada.','success'); tableState('financeiro').periodo='contaspagar'; navigate('financeiro'); }
+  catch(e){ showLoader(false); toast('Erro ao registrar.','error'); }
+}
+async function marcarContaPaga(id){
+  const contas = await api('listarContasPagar');
+  const conta = contas.find(c=>c.id===id);
+  if(!conta) return;
+  conta.pago = true; conta.dataPagamento = new Date().toISOString().slice(0,10);
+  showLoader(true);
+  try{ await api('salvarContaPagar',conta); showLoader(false); toast('Conta marcada como paga.','success'); navigate('financeiro'); }
+  catch(e){ showLoader(false); toast('Erro ao atualizar.','error'); }
+}
+async function deleteContaPagar(id){
+  if(!confirm('Excluir esta conta a pagar?')) return;
+  showLoader(true);
+  try{ await api('excluirContaPagar',{id}); showLoader(false); toast('Conta excluída.','success'); navigate('financeiro'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
 async function openLancamentoModal(){
   openModal(`<div class="modal-head"><h3>Novo Lançamento</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="modal-body"><div class="form-grid">
       <div class="field"><label>Tipo</label><select id="fi-tipo"><option value="entrada">Entrada (Receber)</option><option value="saida">Saída</option></select></div>
-      <div class="field"><label>Forma</label><select id="fi-forma">
-        <option value="pix">Pix</option><option value="debito">Débito</option><option value="credito">Crédito</option><option value="dinheiro">Dinheiro</option>
-      </select></div>
+      <div class="field"><label>Forma</label><select id="fi-forma">${formaPagamentoOptionsHtml('pix')}</select></div>
       <div class="field"><label>Valor (R$)</label><input id="fi-valor" type="number" step="0.01"></div>
       <div class="field"><label>Desconto (R$)</label><input id="fi-desconto" type="number" step="0.01" value="0"></div>
       <div class="field full"><label>Descrição</label><input id="fi-descricao" placeholder="Ex: Corte - Nome do Cliente"></div>
@@ -1946,18 +2157,25 @@ async function saveLancamento(){
 /* ---------- RELATÓRIOS ---------- */
 RENDERERS.relatorios = async function(){
   const st = tableState('relatorios'); if(!st.tab) st.tab='clientesFrequentes';
-  const [clientes, profs, servicos, agenda, financeiro] = await Promise.all([
-    api('listarClientes'), api('listarProfissionais'), api('listarServicos'), api('listarAgenda'), api('listarFinanceiro')
+  const [clientes, profs, servicos, agenda, financeiro, recibos, produtos, movimentacoes, contasPagar, fornecedores] = await Promise.all([
+    api('listarClientes'), api('listarProfissionais'), api('listarServicos'), api('listarAgenda'), api('listarFinanceiro'),
+    api('listarRecibos'), api('listarProdutos'), api('listarMovimentacoesEstoque'), api('listarContasPagar'), api('listarFornecedores')
   ]);
   const tabs = [
     ['clientesFrequentes','Clientes Frequentes'], ['aniversariantes','Aniversariantes'],
     ['servicosMaisVendidos','Serviços Mais Vendidos'], ['profissionalProdutivo','Profissional Mais Produtivo'],
     ['produtosUtilizados','Produtos Mais Utilizados'], ['faturamento','Faturamento'],
+    ['contasAPagar','Contas a Pagar'], ['comissaoProfissionais','Comissão das Profissionais'],
+    ['vendasDiarias','Vendas Diárias'], ['vendasMensais','Vendas Mensais'],
+    ['comparativoMensal','Comparativo Mensal/Anual'], ['produtosConsignados','Produtos Consignados'],
   ];
   const countBy = (arr,key)=>{ const m={}; arr.forEach(x=>{ m[x[key]]=(m[x[key]]||0)+1; }); return m; };
   const nomeCli = id=>(clientes.find(c=>c.id===id)||{}).nome||'—';
   const nomeProf = id=>(profs.find(p=>p.id===id)||{}).nome||'—';
   const nomeServ = id=>(servicos.find(s=>s.id===id)||{}).nome||'—';
+  const nomeProd = id=>(produtos.find(p=>p.id===id)||{}).nome||'—';
+  const nomeForn = id=>(fornecedores.find(f=>f.id===id)||{}).nome||'—';
+  const hojeISO = new Date().toISOString().slice(0,10);
 
   let body='';
   if(st.tab==='clientesFrequentes'){
@@ -1977,7 +2195,6 @@ RENDERERS.relatorios = async function(){
     const rows = Object.entries(m).map(([id,c])=>({label:nomeProf(id), value:c})).sort((a,b)=>b.value-a.value);
     body = barList(rows,'atend.');
   } else if(st.tab==='produtosUtilizados'){
-    const produtos = await api('listarProdutos');
     const rows = produtos.map(p=>({label:p.nome, value:p.minimo*3-p.estoque>0?p.minimo*3-p.estoque:1})).sort((a,b)=>b.value-a.value);
     body = barList(rows,'uso');
   } else if(st.tab==='faturamento'){
@@ -1986,6 +2203,57 @@ RENDERERS.relatorios = async function(){
     financeiro.filter(f=>f.tipo==='entrada').forEach(f=>{ porDia[f.data]=(porDia[f.data]||0)+f.valor; });
     const rows = Object.entries(porDia).map(([d,v])=>({label:fmtDate(d), value:v})).sort((a,b)=>b.value-a.value);
     body = `<div class="kpi" style="--kpi-color:var(--gold-600);max-width:280px;margin-bottom:18px;"><div class="kpi-label">Faturamento total (período)</div><div class="kpi-value">${fmtMoney(total)}</div></div>` + barList(rows,'R$', v=>fmtMoney(v));
+  } else if(st.tab==='contasAPagar'){
+    const pendentes = contasPagar.filter(c=>!c.pago).sort((a,b)=>(a.vencimento||'').localeCompare(b.vencimento||''));
+    const totalPendente = pendentes.reduce((s,c)=>s+Number(c.valor||0),0);
+    body = `<div class="kpi" style="--kpi-color:var(--danger);max-width:280px;margin-bottom:18px;"><div class="kpi-label">Total pendente</div><div class="kpi-value">${fmtMoney(totalPendente)}</div></div>
+      <div class="table-wrap"><table><thead><tr><th>Descrição</th><th>Vencimento</th><th>Valor</th></tr></thead><tbody>
+      ${pendentes.length?pendentes.map(c=>{
+        const vencida = c.vencimento && c.vencimento < hojeISO;
+        return `<tr><td class="cell-name">${escapeHtml(c.descricao)}</td><td>${fmtDate(c.vencimento)} ${vencida?'<span class="tag tag-cancelado">Vencida</span>':''}</td><td>${fmtMoney(c.valor)}</td></tr>`;
+      }).join(''):'<tr><td colspan="3"><div class="empty-state">Nenhuma conta pendente.</div></td></tr>'}
+      </tbody></table></div>
+      <p class="helper-text" style="margin-top:12px;">Para cadastrar ou marcar contas como pagas, use a aba "Contas a Pagar" dentro de Financeiro.</p>`;
+  } else if(st.tab==='comissaoProfissionais'){
+    const comissaoPorAtendente = {};
+    recibos.forEach(r=>{
+      let itens = []; try{ itens = JSON.parse(r.itens||'[]'); }catch(e){}
+      itens.forEach(i=>{ if(i.atendente){ comissaoPorAtendente[i.atendente] = (comissaoPorAtendente[i.atendente]||0) + Number(i.comissao||0); } });
+    });
+    const rows = Object.entries(comissaoPorAtendente).map(([nome,v])=>({label:nome, value:v})).sort((a,b)=>b.value-a.value);
+    body = rows.length ? barList(rows,'R$', v=>fmtMoney(v)) : '<div class="empty-state">Nenhuma comissão registrada ainda — a comissão é calculada a partir dos Recibos emitidos.</div>';
+  } else if(st.tab==='vendasDiarias'){
+    const porDia = {};
+    financeiro.filter(f=>f.tipo==='entrada').forEach(f=>{ porDia[f.data]=(porDia[f.data]||0)+f.valor; });
+    const dias = Object.keys(porDia).sort().slice(-14);
+    const rows = dias.map(d=>({label:fmtDate(d), value:porDia[d]}));
+    body = rows.length ? barList(rows,'R$', v=>fmtMoney(v)) : '<div class="empty-state">Sem vendas registradas ainda.</div>';
+  } else if(st.tab==='vendasMensais'){
+    const porMes = {};
+    financeiro.filter(f=>f.tipo==='entrada').forEach(f=>{ const m=f.data.slice(0,7); porMes[m]=(porMes[m]||0)+f.valor; });
+    const meses = Object.keys(porMes).sort().slice(-12);
+    const rows = meses.map(m=>({label:m, value:porMes[m]}));
+    body = rows.length ? barList(rows,'R$', v=>fmtMoney(v)) : '<div class="empty-state">Sem vendas registradas ainda.</div>';
+  } else if(st.tab==='comparativoMensal'){
+    const porMes = {};
+    financeiro.filter(f=>f.tipo==='entrada').forEach(f=>{ const m=f.data.slice(0,7); porMes[m]=(porMes[m]||0)+f.valor; });
+    const meses = Object.keys(porMes).sort();
+    const porAno = {};
+    meses.forEach(m=>{ const ano=m.slice(0,4); porAno[ano]=(porAno[ano]||0)+porMes[m]; });
+    const rowsMensal = meses.map(m=>({label:m, value:porMes[m]}));
+    const rowsAnual = Object.entries(porAno).map(([a,v])=>({label:a, value:v}));
+    body = `<h4 style="font-size:14px;margin-bottom:10px;">Comparativo Mensal</h4>
+      ${rowsMensal.length?barList(rowsMensal,'R$', v=>fmtMoney(v)):'<div class="empty-state">Sem dados mensais ainda.</div>'}
+      <h4 style="font-size:14px;margin:20px 0 10px;border-top:1px dashed var(--nude-200);padding-top:16px;">Comparativo Anual</h4>
+      ${rowsAnual.length>1?barList(rowsAnual,'R$', v=>fmtMoney(v)):'<div class="empty-state">Ainda há dados de apenas um ano — o comparativo anual aparece quando houver mais de um ano de histórico.</div>'}`;
+  } else if(st.tab==='produtosConsignados'){
+    const consignados = produtos.filter(p=>p.consignado);
+    const vendidoPor = id => movimentacoes.filter(m=>m.produtoId===id && m.tipo==='saida').reduce((s,m)=>s+Number(m.quantidade||0),0);
+    body = consignados.length ? `<div class="table-wrap"><table><thead><tr><th>Produto</th><th>Fornecedor</th><th>Estoque Atual</th><th>Unidades Vendidas (saídas registradas)</th></tr></thead><tbody>
+      ${consignados.map(p=>`<tr><td class="cell-name">${p.nome}</td><td>${nomeForn(p.fornecedorId)}</td><td>${p.estoque}</td><td>${vendidoPor(p.id)}</td></tr>`).join('')}
+      </tbody></table></div>
+      <p class="helper-text" style="margin-top:10px;">"Unidades vendidas" é calculado a partir das saídas de estoque registradas para cada produto — marque um produto como Consignado no cadastro de Produtos para ele aparecer aqui.</p>`
+      : '<div class="empty-state">Nenhum produto marcado como consignado ainda. Marque essa opção ao cadastrar ou editar um produto.</div>';
   }
   return `
     <div class="tabs">${tabs.map(([k,l])=>`<button class="${st.tab===k?'active':''}" onclick="setReportTab('${k}')">${l}</button>`).join('')}</div>
