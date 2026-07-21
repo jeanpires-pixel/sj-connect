@@ -1872,7 +1872,7 @@ RENDERERS.produtos = async function(){
           <td>${nomeForn(p.fornecedorId)}</td>
           <td style="min-width:150px;">${p.estoque} un (unit.) ${p.estoqueFracionado?' + '+p.estoqueFracionado+' frac.':''} ${low?'<span class="tag tag-cancelado">Baixo</span>':''}
             <div class="stock-bar"><div style="width:${pct}%;background:${low?'var(--danger)':'var(--success)'}"></div></div></td>
-          <td class="cell-sub">Compra: ${fmtMoney(p.precoCompra||0)}<br>Venda: ${fmtMoney(p.preco)}${p.precoFracionado?'<br>Fracionado: '+fmtMoney(p.precoFracionado):''}</td>
+          <td class="cell-sub">Compra: ${fmtMoney(p.precoCompra||0)}${p.formaPagamento?' ('+escapeHtml(p.formaPagamento)+')':''}<br>Venda: ${fmtMoney(p.preco)}${p.precoFracionado?'<br>Fracionado: '+fmtMoney(p.precoFracionado):''}</td>
           ${isRO?'':`<td><div class="row-actions" style="justify-content:flex-end;">
             <button class="btn btn-outline btn-icon btn-sm" title="Movimentar estoque" onclick="openMovimentacaoModal('${p.id}')">↕</button>
             <button class="btn btn-outline btn-icon btn-sm" onclick="openProdutoModal('${p.id}')">✎</button>
@@ -1919,6 +1919,8 @@ async function saveMovimentacao(produtoId){
 async function openProdutoModal(id){
   const [list, fornecedores] = await Promise.all([api('listarProdutos'), api('listarFornecedores')]);
   const item = id?list.find(p=>p.id===id):null;
+  const formasUsadas = [...new Set(list.map(p=>p.formaPagamento).filter(Boolean))];
+  const formasOptions = [...new Set([...FORMAS_CONTA_PADRAO, ...formasUsadas])];
   openModal(`<div class="modal-head"><h3>${item?'Editar Produto':'Novo Produto'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="modal-body"><div class="form-grid">
       <div class="field full"><label>Nome do Produto</label><input id="pd-nome" value="${item?escapeHtml(item.nome):''}"></div>
@@ -1928,6 +1930,11 @@ async function openProdutoModal(id){
       <div class="field"><label>Estoque Fracionado</label><input id="pd-estoque-fracionado" type="number" value="${item?(item.estoqueFracionado||0):0}"><div class="helper">Ex.: doses/ml restantes de um produto já aberto.</div></div>
       <div class="field"><label>Estoque mínimo</label><input id="pd-minimo" type="number" value="${item?item.minimo:5}"></div>
       <div class="field"><label>Preço de Compra (R$)</label><input id="pd-preco-compra" type="number" step="0.01" value="${item?(item.precoCompra||0):0}"></div>
+      <div class="field">
+        <label>Forma de Pagamento</label>
+        <input id="pd-forma-pagamento" list="pd-forma-list" placeholder="Selecione ou digite uma nova" value="${item?escapeHtml(item.formaPagamento||''):''}">
+        <datalist id="pd-forma-list">${formasOptions.map(f=>`<option value="${escapeHtml(f)}">`).join('')}</datalist>
+      </div>
       <div class="field"><label>Preço de Venda — unitário (R$)</label><input id="pd-preco" type="number" step="0.01" value="${item?item.preco:0}"></div>
       <div class="field full"><label>Preço Fracionado (R$)</label><input id="pd-preco-fracionado" type="number" step="0.01" value="${item?(item.precoFracionado||0):0}"><div class="helper">Preço cobrado por dose/fração, quando aplicável.</div></div>
       <div class="field full"><div class="checkbox-row" style="display:flex;align-items:center;gap:8px;">
@@ -1948,6 +1955,7 @@ async function saveProduto(id){
     minimo:Number(document.getElementById('pd-minimo').value), preco:Number(document.getElementById('pd-preco').value),
     precoCompra:Number(document.getElementById('pd-preco-compra').value||0),
     precoFracionado:Number(document.getElementById('pd-preco-fracionado').value||0),
+    formaPagamento:document.getElementById('pd-forma-pagamento').value.trim(),
     consignado:document.getElementById('pd-consignado').checked};
   if(!payload.nome){ toast('Informe o nome do produto.','error'); return; }
   showLoader(true);
