@@ -2065,11 +2065,17 @@ function financeiroTabsHtml(periodoAtivo){
 }
 function setFinPeriodo(p){ tableState('financeiro').periodo=p; navigate('financeiro'); }
 async function renderContasPagar(){
-  const [contas, fornecedores] = await Promise.all([api('listarContasPagar'), api('listarFornecedores')]);
+  const [contas, fornecedores, profs] = await Promise.all([api('listarContasPagar'), api('listarFornecedores'), api('listarProfissionais')]);
   const nomeForn = id => (fornecedores.find(f=>f.id===id)||{}).nome || '—';
+  const nomeProf = id => (profs.find(p=>p.id===id)||{}).nome || '—';
   const hojeISO = new Date().toISOString().slice(0,10);
   const pendentes = contas.filter(c=>!c.pago).sort((a,b)=>(a.vencimento||'').localeCompare(b.vencimento||''));
   const pagas = contas.filter(c=>c.pago).sort((a,b)=>(b.dataPagamento||'').localeCompare(a.dataPagamento||''));
+  const referenciaLinha = c => {
+    if(c.categoria==='Fornecedor' && c.fornecedorId) return nomeForn(c.fornecedorId);
+    if(c.categoria==='Profissional' && c.profissionalId) return nomeProf(c.profissionalId);
+    return c.categoria || '—';
+  };
   return `
     ${financeiroTabsHtml('contaspagar')}
     <div class="toolbar"><div style="flex:1;"></div>
@@ -2080,8 +2086,8 @@ async function renderContasPagar(){
       ${pendentes.length ? pendentes.map(c=>{
         const vencida = c.vencimento && c.vencimento < hojeISO;
         return `<div class="list-row"><span class="dot ${vencida?'cancelado':'confirmado'}"></span>
-          <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${escapeHtml(c.descricao)}</div>
-          <div class="cell-sub">${c.fornecedorId?nomeForn(c.fornecedorId)+' · ':''}Vencimento: ${fmtDate(c.vencimento)} ${vencida?'<span class="tag tag-cancelado">Vencida</span>':''}</div></div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${escapeHtml(c.descricao)} ${c.categoria?'<span class="tag tag-confirmado">'+escapeHtml(c.categoria)+'</span>':''}</div>
+          <div class="cell-sub">${referenciaLinha(c)} · ${escapeHtml(c.formaPagamento||'')} · Vencimento: ${fmtDate(c.vencimento)} ${vencida?'<span class="tag tag-cancelado">Vencida</span>':''}</div></div>
           <div style="font-weight:800;">${fmtMoney(c.valor)}</div>
           <div class="row-actions">
             <button class="btn btn-outline btn-sm" onclick="marcarContaPaga('${c.id}')">Marcar Paga</button>
@@ -2094,26 +2100,72 @@ async function renderContasPagar(){
       <div class="section-head"><div><h3>Pagas</h3><div class="ribbon"></div></div></div>
       ${pagas.length ? pagas.slice(0,10).map(c=>`
         <div class="list-row"><span class="dot livre"></span>
-          <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${escapeHtml(c.descricao)}</div>
-          <div class="cell-sub">Pago em ${fmtDate(c.dataPagamento)}</div></div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${escapeHtml(c.descricao)} ${c.categoria?'<span class="tag tag-livre">'+escapeHtml(c.categoria)+'</span>':''}</div>
+          <div class="cell-sub">${referenciaLinha(c)} · Pago em ${fmtDate(c.dataPagamento)}</div></div>
           <div style="font-weight:800;">${fmtMoney(c.valor)}</div>
         </div>`).join('') : '<div class="empty-state">Nenhuma conta paga ainda.</div>'}
     </div>`;
 }
+const CATEGORIAS_CONTA_PADRAO = ['Fornecedor','Profissional','Aluguel','Energia','Telefone','Internet','Marketing'];
+const FORMAS_CONTA_PADRAO = ['Duplicata','Mensal Fixo','Manual','Pix','Cartão à Vista','Cartão Parcelado','Débito','Dinheiro'];
 async function openContaPagarModal(){
-  const fornecedores = await api('listarFornecedores');
+  const [fornecedores, profs, contasExistentes] = await Promise.all([api('listarFornecedores'), api('listarProfissionais'), api('listarContasPagar')]);
+  // Junta as opções padrão com quaisquer categorias/formas personalizadas que já
+  // tenham sido digitadas antes — uma forma nova criada uma vez fica disponível
+  // para reutilizar depois, sem precisar mexer em código.
+  const categoriasUsadas = [...new Set(contasExistentes.map(c=>c.categoria).filter(Boolean))];
+  const formasUsadas = [...new Set(contasExistentes.map(c=>c.formaPagamento).filter(Boolean))];
+  const categoriasOptions = [...new Set([...CATEGORIAS_CONTA_PADRAO, ...categoriasUsadas])];
+  const formasOptions = [...new Set([...FORMAS_CONTA_PADRAO, ...formasUsadas])];
   openModal(`<div class="modal-head"><h3>Nova Conta a Pagar</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="modal-body"><div class="form-grid">
-      <div class="field full"><label>Descrição</label><input id="cp-descricao" placeholder="Ex: Compra de produtos, aluguel..."></div>
-      <div class="field"><label>Fornecedor (opcional)</label><select id="cp-fornecedor"><option value="">—</option>${fornecedores.map(f=>`<option value="${f.id}">${f.nome}</option>`).join('')}</select></div>
+      <div class="field full"><label>Descrição</label><input id="cp-descricao" placeholder="Ex: Compra de produtos, aluguel do mês..."></div>
+      <div class="field">
+        <label>Categoria</label>
+        <input id="cp-categoria" list="cp-categoria-list" placeholder="Selecione ou digite uma nova" onchange="onCategoriaContaChange()">
+        <datalist id="cp-categoria-list">${categoriasOptions.map(c=>`<option value="${escapeHtml(c)}">`).join('')}</datalist>
+      </div>
+      <div class="field">
+        <label>Forma de Pagamento</label>
+        <input id="cp-forma" list="cp-forma-list" placeholder="Selecione ou digite uma nova">
+        <datalist id="cp-forma-list">${formasOptions.map(f=>`<option value="${escapeHtml(f)}">`).join('')}</datalist>
+      </div>
+      <div class="field" id="cp-fornecedor-field" style="display:none;">
+        <label>Fornecedor</label>
+        <select id="cp-fornecedor"><option value="">—</option>${fornecedores.map(f=>`<option value="${f.id}">${f.nome}</option>`).join('')}</select>
+      </div>
+      <div class="field" id="cp-profissional-field" style="display:none;">
+        <label>Profissional</label>
+        <select id="cp-profissional" onchange="onProfissionalContaChange()"><option value="">—</option>${profs.map(p=>`<option value="${p.id}" data-comissao="${p.comissao}">${p.nome} (comissão padrão: ${p.comissao}%)</option>`).join('')}</select>
+      </div>
       <div class="field"><label>Valor (R$)</label><input id="cp-valor" type="number" step="0.01"></div>
       <div class="field full"><label>Vencimento</label><input id="cp-vencimento" type="date"></div>
     </div></div>
     <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-gold" onclick="saveContaPagar()">Salvar</button></div>`);
 }
+function onCategoriaContaChange(){
+  const cat = document.getElementById('cp-categoria').value;
+  document.getElementById('cp-fornecedor-field').style.display = cat==='Fornecedor' ? '' : 'none';
+  document.getElementById('cp-profissional-field').style.display = cat==='Profissional' ? '' : 'none';
+}
+function onProfissionalContaChange(){
+  const sel = document.getElementById('cp-profissional');
+  const comissao = sel.selectedOptions[0]?.dataset.comissao;
+  const nome = sel.selectedOptions[0]?.textContent.split(' (')[0];
+  const descricaoEl = document.getElementById('cp-descricao');
+  if(comissao && !descricaoEl.value) descricaoEl.value = `Comissão - ${nome} (${comissao}%)`;
+}
 async function saveContaPagar(){
-  const payload = {descricao:document.getElementById('cp-descricao').value.trim(), fornecedorId:document.getElementById('cp-fornecedor').value,
-    valor:Number(document.getElementById('cp-valor').value||0), vencimento:document.getElementById('cp-vencimento').value, pago:false};
+  const payload = {
+    descricao: document.getElementById('cp-descricao').value.trim(),
+    categoria: document.getElementById('cp-categoria').value.trim(),
+    formaPagamento: document.getElementById('cp-forma').value.trim(),
+    fornecedorId: document.getElementById('cp-fornecedor-field').style.display!=='none' ? document.getElementById('cp-fornecedor').value : '',
+    profissionalId: document.getElementById('cp-profissional-field').style.display!=='none' ? document.getElementById('cp-profissional').value : '',
+    valor: Number(document.getElementById('cp-valor').value||0),
+    vencimento: document.getElementById('cp-vencimento').value,
+    pago: false,
+  };
   if(!payload.descricao || !payload.valor){ toast('Informe a descrição e o valor.','error'); return; }
   showLoader(true);
   try{ await api('salvarContaPagar',payload); showLoader(false); closeModal(); toast('Conta a pagar registrada.','success'); tableState('financeiro').periodo='contaspagar'; navigate('financeiro'); }
@@ -2207,11 +2259,11 @@ RENDERERS.relatorios = async function(){
     const pendentes = contasPagar.filter(c=>!c.pago).sort((a,b)=>(a.vencimento||'').localeCompare(b.vencimento||''));
     const totalPendente = pendentes.reduce((s,c)=>s+Number(c.valor||0),0);
     body = `<div class="kpi" style="--kpi-color:var(--danger);max-width:280px;margin-bottom:18px;"><div class="kpi-label">Total pendente</div><div class="kpi-value">${fmtMoney(totalPendente)}</div></div>
-      <div class="table-wrap"><table><thead><tr><th>Descrição</th><th>Vencimento</th><th>Valor</th></tr></thead><tbody>
+      <div class="table-wrap"><table><thead><tr><th>Descrição</th><th>Categoria</th><th>Vencimento</th><th>Valor</th></tr></thead><tbody>
       ${pendentes.length?pendentes.map(c=>{
         const vencida = c.vencimento && c.vencimento < hojeISO;
-        return `<tr><td class="cell-name">${escapeHtml(c.descricao)}</td><td>${fmtDate(c.vencimento)} ${vencida?'<span class="tag tag-cancelado">Vencida</span>':''}</td><td>${fmtMoney(c.valor)}</td></tr>`;
-      }).join(''):'<tr><td colspan="3"><div class="empty-state">Nenhuma conta pendente.</div></td></tr>'}
+        return `<tr><td class="cell-name">${escapeHtml(c.descricao)}</td><td>${escapeHtml(c.categoria||'—')}</td><td>${fmtDate(c.vencimento)} ${vencida?'<span class="tag tag-cancelado">Vencida</span>':''}</td><td>${fmtMoney(c.valor)}</td></tr>`;
+      }).join(''):'<tr><td colspan="4"><div class="empty-state">Nenhuma conta pendente.</div></td></tr>'}
       </tbody></table></div>
       <p class="helper-text" style="margin-top:12px;">Para cadastrar ou marcar contas como pagas, use a aba "Contas a Pagar" dentro de Financeiro.</p>`;
   } else if(st.tab==='comissaoProfissionais'){
