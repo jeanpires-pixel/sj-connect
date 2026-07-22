@@ -1,0 +1,2815 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SJ Connect | Sandra Júlia Cabelo & Maquiagem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   SANDRA JÚLIA — DESIGN TOKENS
+   Palette: nude / rosa quartzo / dourado / branco / preto
+   Display: Cormorant Garamond (editorial serif, salon-invitation feel)
+   Body/UI: Manrope (clean geometric sans for data-dense screens)
+   Signature element: the "fita dourada" (golden ribbon) — a thin gradient
+   underline that sweeps in under active nav items, headings and the
+   logo mark, echoing a hair ribbon / ribbon on a beauty product box.
+   ========================================================================== */
+:root{
+  --nude-50:#FBF7F2;
+  --nude-100:#F3E9DE;
+  --nude-200:#E9D9C7;
+  --quartz-300:#E7BFC3;
+  --quartz-500:#D69AA0;
+  --quartz-700:#B06E76;
+  --gold-400:#D4B15A;
+  --gold-600:#B8892E;
+  --gold-800:#8A6317;
+  --ink-900:#241E1C;
+  --ink-700:#463D39;
+  --ink-500:#7A6E68;
+  --white:#FFFFFF;
+  --success:#5B8C6E;
+  --warn:#C99A3A;
+  --danger:#B4544A;
+  --info:#5D7EA6;
+
+  --font-display:'Cormorant Garamond', serif;
+  --font-body:'Manrope', sans-serif;
+
+  --shadow-sm:0 1px 2px rgba(36,30,28,.06);
+  --shadow-md:0 6px 20px rgba(36,30,28,.08);
+  --shadow-lg:0 16px 40px rgba(36,30,28,.14);
+  --radius:14px;
+  --radius-sm:8px;
+  --sidebar-w:264px;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  font-family:var(--font-body);
+  background:var(--nude-50);
+  color:var(--ink-900);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-display); font-weight:600; margin:0; color:var(--ink-900);}
+a{color:inherit;}
+button{font-family:inherit;}
+::selection{background:var(--quartz-300); color:var(--ink-900);}
+::-webkit-scrollbar{width:9px; height:9px;}
+::-webkit-scrollbar-thumb{background:var(--nude-200); border-radius:10px;}
+::-webkit-scrollbar-thumb:hover{background:var(--quartz-500);}
+
+.ribbon{
+  height:3px; width:46px; border-radius:3px; margin-top:6px;
+  background:linear-gradient(90deg, var(--gold-600), var(--quartz-500));
+}
+.hidden{display:none !important;}
+
+/* ---------------------------------- LOGIN ---------------------------------- */
+#login-screen{
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(212,177,90,.14), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(214,154,160,.18), transparent 45%),
+    var(--ink-900);
+  padding:24px; position:relative;
+}
+.login-footer{
+  position:absolute; left:0; right:0; bottom:16px; text-align:center;
+  font-size:11px; letter-spacing:1px; color:rgba(251,247,242,.45); font-weight:600;
+}
+.login-card{
+  width:100%; max-width:400px; background:var(--white);
+  border-radius:20px; box-shadow:var(--shadow-lg);
+  padding:44px 38px 36px; text-align:center; position:relative; overflow:hidden;
+}
+.login-card::before{
+  content:""; position:absolute; inset:0 0 auto 0; height:6px;
+  background:linear-gradient(90deg, var(--gold-400), var(--quartz-500), var(--gold-600));
+}
+.brand-mark{
+  width:78px; height:78px; margin:0 auto 10px; border-radius:50%;
+  background:linear-gradient(150deg, var(--ink-900), var(--ink-700));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--shadow-md); padding:14px;
+}
+.brand-mark svg{width:100%; height:100%; color:var(--gold-400);}
+.app-name{
+  font-size:11px; letter-spacing:3px; text-transform:uppercase; font-weight:800;
+  color:var(--ink-500); margin-bottom:2px;
+}
+.app-name b{color:var(--gold-600);}
+.dev-credit{font-size:10.5px; color:var(--ink-500); font-weight:700; margin-bottom:2px;}
+.dev-tagline{
+  font-size:10px; letter-spacing:.8px; color:var(--quartz-700); font-style:italic;
+  margin-bottom:14px;
+}
+.login-card h1{font-size:26px; letter-spacing:.3px; margin-top:2px;}
+.login-card .subtitle{
+  font-size:11.5px; letter-spacing:2.5px; text-transform:uppercase;
+  color:var(--gold-600); margin-top:6px; font-weight:700;
+}
+.login-card .ribbon{margin:14px auto 26px;}
+.field{text-align:left; margin-bottom:16px;}
+.field label{
+  display:block; font-size:12px; font-weight:700; color:var(--ink-500);
+  text-transform:uppercase; letter-spacing:.6px; margin-bottom:6px;
+}
+.field input, .field select{
+  width:100%; padding:12px 14px; border-radius:10px; border:1.5px solid var(--nude-200);
+  background:var(--nude-50); font-size:14.5px; font-family:inherit; color:var(--ink-900);
+  transition:.15s;
+}
+.field input:focus, .field select:focus{
+  outline:none; border-color:var(--quartz-500); background:var(--white);
+  box-shadow:0 0 0 3px rgba(214,154,160,.18);
+}
+.btn{
+  border:none; cursor:pointer; border-radius:10px; font-weight:700; font-size:14px;
+  padding:12px 20px; transition:.15s; font-family:inherit; letter-spacing:.2px;
+}
+.btn-primary{
+  width:100%; background:linear-gradient(90deg, var(--ink-900), var(--ink-700));
+  color:var(--white); position:relative; overflow:hidden;
+}
+.btn-primary::after{
+  content:""; position:absolute; left:0; right:0; bottom:0; height:2.5px;
+  background:linear-gradient(90deg, var(--gold-400), var(--quartz-500));
+}
+.btn-primary:hover{transform:translateY(-1px); box-shadow:var(--shadow-md);}
+.btn-primary:active{transform:translateY(0);}
+.login-links{margin-top:16px; font-size:12.5px;}
+.login-links a{color:var(--quartz-700); text-decoration:none; font-weight:600; cursor:pointer;}
+.login-links a:hover{text-decoration:underline;}
+.login-error{
+  background:#FBEAE8; color:var(--danger); font-size:12.5px; font-weight:600;
+  padding:9px 12px; border-radius:8px; margin-bottom:14px; text-align:left; display:none;
+}
+
+/* ---------------------------------- APP SHELL ---------------------------------- */
+#app{display:flex; min-height:100vh;}
+.sidebar{
+  width:var(--sidebar-w); flex-shrink:0; background:var(--ink-900); color:var(--nude-100);
+  padding:26px 18px; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;
+  z-index:40;
+}
+.sidebar-brand{display:flex; align-items:center; gap:12px; padding:0 8px 22px; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:18px;}
+.sidebar-brand .mark{
+  width:42px; height:42px; border-radius:50%; flex-shrink:0; padding:7px;
+  background:rgba(255,255,255,.04); border:1px solid rgba(212,177,90,.35);
+  display:flex; align-items:center; justify-content:center;
+}
+.sidebar-brand .mark svg{width:100%; height:100%; color:var(--gold-400);}
+.sidebar-brand .name{font-family:var(--font-display); font-size:16.5px; line-height:1.15; color:var(--white);}
+.sidebar-brand .tagline{font-size:9.5px; letter-spacing:1.6px; text-transform:uppercase; color:var(--gold-400); font-weight:700;}
+.nav-group-label{font-size:10.5px; letter-spacing:1.6px; text-transform:uppercase; color:var(--ink-500); font-weight:700; padding:14px 10px 8px;}
+.nav-item{
+  display:flex; align-items:center; gap:11px; padding:10.5px 12px; border-radius:10px;
+  cursor:pointer; font-size:14px; font-weight:600; color:var(--nude-100); margin-bottom:2px;
+  transition:.15s; position:relative;
+}
+.nav-item .ico{width:18px; text-align:center; font-size:15px; opacity:.85;}
+.nav-item:hover{background:rgba(255,255,255,.06);}
+.nav-item.active{background:rgba(212,177,90,.14); color:var(--gold-400);}
+.nav-item.active::before{
+  content:""; position:absolute; left:-18px; top:8px; bottom:8px; width:3px; border-radius:3px;
+  background:linear-gradient(180deg, var(--gold-400), var(--quartz-500));
+}
+.sidebar-footer{margin-top:auto; padding-top:14px; border-top:1px solid rgba(255,255,255,.08);}
+.user-chip{display:flex; align-items:center; gap:10px; padding:8px; border-radius:10px;}
+.user-chip .avatar{
+  width:34px; height:34px; border-radius:50%; background:var(--quartz-500); color:var(--white);
+  display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex-shrink:0;
+}
+.user-chip .info{font-size:12.5px; line-height:1.3; overflow:hidden;}
+.user-chip .info .role{color:var(--gold-400); font-size:10.5px; text-transform:uppercase; letter-spacing:.6px; font-weight:700;}
+.logout-btn{
+  width:100%; margin-top:10px; background:transparent; border:1px solid rgba(255,255,255,.14);
+  color:var(--nude-100); padding:9px; border-radius:9px; font-size:12.5px; font-weight:700; cursor:pointer;
+}
+.logout-btn:hover{background:rgba(255,255,255,.06); border-color:var(--quartz-500);}
+
+.main{flex:1; min-width:0; display:flex; flex-direction:column;}
+.topbar{
+  height:68px; flex-shrink:0; background:var(--white); border-bottom:1px solid var(--nude-200);
+  display:flex; align-items:center; justify-content:space-between; padding:0 28px; position:sticky; top:0; z-index:30;
+}
+.topbar .page-title{font-size:21px;}
+.topbar .page-sub{font-size:12px; color:var(--ink-500); margin-top:1px;}
+.hamburger{display:none; background:none; border:none; font-size:20px; cursor:pointer; color:var(--ink-900); margin-right:12px;}
+.topbar-right{display:flex; align-items:center; gap:14px;}
+.icon-btn{
+  width:38px; height:38px; border-radius:50%; border:1px solid var(--nude-200); background:var(--white);
+  cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:15px; position:relative;
+}
+.icon-btn:hover{background:var(--nude-100);}
+.badge-dot{position:absolute; top:6px; right:7px; width:7px; height:7px; border-radius:50%; background:var(--quartz-700); border:1.5px solid var(--white);}
+.content{flex:1; padding:26px 28px 60px; overflow-x:hidden;}
+.view{display:none; animation:fadeIn .25s ease;}
+.view.active{display:block;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+/* ---------------------------------- COMPONENTS ---------------------------------- */
+.section-head{display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px;}
+.section-head .ribbon{margin-top:8px;}
+.card{background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow-sm); border:1px solid var(--nude-200);}
+.card-pad{padding:20px 22px;}
+
+.kpi-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:16px; margin-bottom:24px;}
+.kpi{
+  background:var(--white); border-radius:var(--radius); padding:18px 18px 16px; border:1px solid var(--nude-200);
+  box-shadow:var(--shadow-sm); position:relative; overflow:hidden;
+}
+.kpi::after{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--kpi-color, var(--gold-400));}
+.kpi .kpi-label{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--ink-500); font-weight:700;}
+.kpi .kpi-value{font-family:var(--font-display); font-size:30px; margin-top:6px; color:var(--ink-900);}
+.kpi .kpi-note{font-size:11.5px; color:var(--ink-500); margin-top:4px;}
+
+.dash-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:20px;}
+@media (max-width:1100px){.dash-grid{grid-template-columns:1fr;} .kpi-grid{grid-template-columns:repeat(2,1fr);}}
+
+.list-row{display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px dashed var(--nude-200);}
+.list-row:last-child{border-bottom:none;}
+.dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+.dot.livre{background:var(--success);} .dot.confirmado{background:var(--info);}
+.dot.andamento{background:var(--gold-600);} .dot.finalizado{background:var(--ink-500);} .dot.cancelado{background:var(--danger);}
+
+.toolbar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:16px;}
+.search-box{
+  display:flex; align-items:center; gap:8px; background:var(--white); border:1.5px solid var(--nude-200);
+  border-radius:10px; padding:9px 13px; flex:1; min-width:200px;
+}
+.search-box input{border:none; outline:none; background:transparent; font-size:14px; width:100%; font-family:inherit;}
+.select-filter{
+  padding:9px 12px; border-radius:10px; border:1.5px solid var(--nude-200); background:var(--white);
+  font-size:13.5px; font-family:inherit; color:var(--ink-700); cursor:pointer;
+}
+.btn-gold{
+  background:linear-gradient(90deg, var(--gold-600), var(--gold-400)); color:var(--white);
+}
+.btn-gold:hover{filter:brightness(1.05); box-shadow:var(--shadow-md);}
+.btn-outline{background:var(--white); border:1.5px solid var(--nude-200); color:var(--ink-900);}
+.btn-outline:hover{border-color:var(--quartz-500); background:var(--nude-100);}
+.btn-danger-outline{background:var(--white); border:1.5px solid #EAC9C5; color:var(--danger);}
+.btn-danger-outline:hover{background:#FBEAE8;}
+.btn-sm{padding:7px 12px; font-size:12.5px; border-radius:8px;}
+.btn-icon{width:32px; height:32px; padding:0; border-radius:8px; display:inline-flex; align-items:center; justify-content:center;}
+
+.table-wrap{overflow-x:auto; border-radius:var(--radius); border:1px solid var(--nude-200); background:var(--white);}
+table{width:100%; border-collapse:collapse; font-size:13.5px; min-width:640px;}
+thead th{
+  text-align:left; padding:13px 16px; background:var(--nude-100); color:var(--ink-700);
+  font-size:11px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; white-space:nowrap;
+  cursor:pointer; user-select:none;
+}
+thead th:hover{color:var(--gold-600);}
+tbody td{padding:12px 16px; border-top:1px solid var(--nude-200); vertical-align:middle;}
+tbody tr:hover{background:var(--nude-50);}
+.cell-name{font-weight:700; color:var(--ink-900);}
+.cell-sub{font-size:11.5px; color:var(--ink-500);}
+.avatar-mini{
+  width:32px; height:32px; border-radius:50%; background:var(--quartz-300); color:var(--ink-900);
+  display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; margin-right:9px;
+}
+.tag{display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700;}
+.tag-vip{background:#F5E6C8; color:var(--gold-800);}
+.tag-livre{background:#E4F0E7; color:var(--success);}
+.tag-confirmado{background:#E4EBF5; color:var(--info);}
+.tag-andamento{background:#F7EAD2; color:var(--gold-800);}
+.tag-finalizado{background:var(--nude-100); color:var(--ink-500);}
+.tag-cancelado{background:#F8E4E2; color:var(--danger);}
+.row-actions{display:flex; gap:6px;}
+.pagination{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; font-size:12.5px; color:var(--ink-500);}
+.pagination .pages{display:flex; gap:4px;}
+.pagination button{
+  width:28px; height:28px; border-radius:7px; border:1px solid var(--nude-200); background:var(--white);
+  cursor:pointer; font-size:12px; font-weight:700; color:var(--ink-700);
+}
+.pagination button.active{background:var(--ink-900); color:var(--white); border-color:var(--ink-900);}
+.empty-state{padding:50px 20px; text-align:center; color:var(--ink-500);}
+.empty-state .ico{font-size:34px; margin-bottom:10px;}
+
+/* Agenda */
+.agenda-toolbar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; margin-bottom:16px;}
+.agenda-view-toggle{display:flex; background:var(--nude-100); border-radius:10px; padding:3px;}
+.agenda-view-toggle button{
+  border:none; background:transparent; padding:7px 14px; border-radius:8px; font-size:12.5px; font-weight:700; cursor:pointer; color:var(--ink-700);
+}
+.agenda-view-toggle button.active{background:var(--white); box-shadow:var(--shadow-sm); color:var(--ink-900);}
+.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:11.5px; color:var(--ink-700); margin-bottom:14px;}
+.legend span{display:flex; align-items:center; gap:6px;}
+.agenda-day{display:flex; flex-direction:column; gap:8px;}
+.slot{
+  display:flex; align-items:center; gap:14px; padding:12px 16px; border-radius:10px; cursor:pointer;
+  border-left:4px solid; transition:.15s;
+}
+.slot:hover{transform:translateX(2px); box-shadow:var(--shadow-sm);}
+.slot.livre{background:#F1F8F3; border-color:var(--success);}
+.slot.confirmado{background:#EEF3FA; border-color:var(--info);}
+.slot.andamento{background:#FBF3E0; border-color:var(--gold-600);}
+.slot.finalizado{background:var(--nude-100); border-color:var(--ink-500);}
+.slot.cancelado{background:#FBEAE8; border-color:var(--danger);}
+.slot .time{font-weight:800; font-size:13.5px; width:52px; flex-shrink:0;}
+.slot .info{flex:1; min-width:0;}
+.slot .info .cli{font-weight:700; font-size:13.5px;}
+.slot .info .meta{font-size:11.5px; color:var(--ink-500);}
+.week-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:10px;}
+.week-col{background:var(--white); border-radius:10px; border:1px solid var(--nude-200); padding:10px; min-height:220px;}
+.week-col .wd{font-size:11px; text-transform:uppercase; font-weight:800; color:var(--ink-500); text-align:center; margin-bottom:8px;}
+.week-slot{font-size:10.5px; padding:5px 6px; border-radius:6px; margin-bottom:5px; border-left:3px solid;}
+
+/* Estoque/produtos low bar */
+.stock-bar{width:100%; height:6px; border-radius:4px; background:var(--nude-200); overflow:hidden; margin-top:5px;}
+.stock-bar > div{height:100%; border-radius:4px;}
+
+/* Modal */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(36,30,28,.5); display:flex; align-items:center; justify-content:center;
+  z-index:100; padding:20px; backdrop-filter:blur(2px);
+}
+.modal{
+  background:var(--white); border-radius:16px; width:100%; max-width:560px; max-height:90vh; overflow-y:auto;
+  box-shadow:var(--shadow-lg); animation:pop .18s ease;
+}
+@keyframes pop{from{transform:scale(.96); opacity:0;} to{transform:scale(1); opacity:1;}}
+.modal-head{display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid var(--nude-200);}
+.modal-head h3{font-size:20px;}
+.modal-close{background:none; border:none; font-size:20px; cursor:pointer; color:var(--ink-500); width:32px; height:32px; border-radius:8px;}
+.modal-close:hover{background:var(--nude-100);}
+.modal-body{padding:22px 24px;}
+.modal-foot{display:flex; justify-content:flex-end; gap:10px; padding:16px 24px; border-top:1px solid var(--nude-200);}
+.form-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px 16px;}
+.form-grid .full{grid-column:1/-1;}
+@media (max-width:520px){.form-grid{grid-template-columns:1fr;}}
+
+/* Toasts + Loader */
+#toast-container{position:fixed; bottom:22px; right:22px; z-index:200; display:flex; flex-direction:column; gap:10px;}
+.toast{
+  background:var(--ink-900); color:var(--white); padding:13px 18px; border-radius:10px; font-size:13.5px;
+  box-shadow:var(--shadow-lg); display:flex; align-items:center; gap:10px; min-width:240px; animation:slideIn .25s ease;
+  border-left:4px solid var(--gold-400);
+}
+.toast.success{border-color:var(--success);} .toast.error{border-color:var(--danger);}
+@keyframes slideIn{from{transform:translateX(30px); opacity:0;} to{transform:translateX(0); opacity:1;}}
+#loader-overlay{
+  position:fixed; inset:0; background:rgba(251,247,242,.7); z-index:300; display:none; align-items:center; justify-content:center;
+}
+.spinner{width:44px; height:44px; border-radius:50%; border:3px solid var(--nude-200); border-top-color:var(--gold-600); animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Sidebar mobile */
+.sidebar-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:39;}
+@media (max-width:900px){
+  .sidebar{position:fixed; left:-280px; top:0; transition:left .2s ease;}
+  .sidebar.open{left:0;}
+  .sidebar-overlay.show{display:block;}
+  .hamburger{display:block;}
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+  .content{padding:18px;}
+  .topbar{padding:0 16px;}
+  .week-grid{grid-template-columns:repeat(3,1fr);}
+}
+@media (max-width:520px){
+  .kpi-grid{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .week-grid{grid-template-columns:repeat(2,1fr);}
+}
+.helper-text{font-size:11px; color:var(--ink-500); margin-top:4px;}
+.profile-cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px;}
+.prof-card{background:var(--white); border:1px solid var(--nude-200); border-radius:var(--radius); padding:18px; text-align:center; box-shadow:var(--shadow-sm);}
+.prof-card .avatar-lg{
+  width:64px; height:64px; border-radius:50%; margin:0 auto 10px; background:linear-gradient(150deg,var(--quartz-300),var(--gold-400));
+  display:flex; align-items:center; justify-content:center; color:var(--white); font-weight:800; font-size:22px;
+}
+.prof-card h4{font-size:16px;}
+.prof-card .spec{font-size:12px; color:var(--ink-500); margin:2px 0 10px;}
+.prof-card .stats{display:flex; justify-content:space-around; font-size:11.5px; color:var(--ink-700); border-top:1px dashed var(--nude-200); padding-top:10px; margin-top:6px;}
+.prof-card .stats b{display:block; font-family:var(--font-display); font-size:15px; color:var(--ink-900);}
+.tabs{display:flex; gap:4px; background:var(--nude-100); border-radius:10px; padding:3px; margin-bottom:18px; width:fit-content; flex-wrap:wrap;}
+.tabs button{border:none; background:transparent; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:700; color:var(--ink-700); cursor:pointer;}
+.tabs button.active{background:var(--white); color:var(--ink-900); box-shadow:var(--shadow-sm);}
+.report-bar-row{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+.report-bar-row .label{width:170px; font-size:12.5px; font-weight:600; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.report-bar-track{flex:1; background:var(--nude-100); border-radius:6px; height:14px; overflow:hidden;}
+.report-bar-fill{height:100%; border-radius:6px; background:linear-gradient(90deg,var(--gold-400),var(--quartz-500));}
+.report-bar-val{width:56px; text-align:right; font-size:12px; font-weight:700; color:var(--ink-700); flex-shrink:0;}
+.chip-payment{display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:20px; background:var(--nude-100); font-size:12.5px; font-weight:700; margin-right:8px; margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<!-- ============================== LOGIN ============================== -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="app-name">SJ <b>Connect</b></div>
+    <div class="dev-credit">by JPires</div>
+    <div class="dev-tagline">Tecnologia para impulsionar negócios</div>
+    <div class="brand-mark" id="login-logo"></div>
+    <h1>Sandra Júlia</h1>
+    <div class="subtitle">Cabelo &amp; Maquiagem · Salão · Spa · Estética</div>
+    <div class="ribbon" style="margin-left:auto;margin-right:auto;"></div>
+    <div class="login-error" id="login-error">Usuário ou senha inválidos.</div>
+    <form id="login-form" onsubmit="return handleLogin(event)">
+      <div class="field">
+        <label>Usuário</label>
+        <input type="text" id="login-user" placeholder="seu.usuario" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label>Senha</label>
+        <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Entrar</button>
+    </form>
+    <div class="login-links">
+      <a onclick="toast('Solicite a redefinição com a administração do salão.','info')">Esqueci minha senha</a>
+    </div>
+    <p style="font-size:10.5px;color:var(--ink-500);margin-top:22px;">
+      Demo: admin/admin · recepcao/recepcao · profissional/profissional
+    </p>
+  </div>
+  <div class="login-footer">© 2026 JPires</div>
+</div>
+
+<!-- ============================== APP SHELL ============================== -->
+<div id="app" class="hidden">
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar(false)"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="mark" id="sidebar-logo"></div>
+      <div>
+        <div class="name">Sandra Júlia</div>
+        <div class="tagline">Salão · Spa · Estética</div>
+      </div>
+    </div>
+    <nav id="nav-menu"></nav>
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="avatar" id="user-avatar">SJ</div>
+        <div class="info">
+          <div id="user-name" style="font-weight:700;">—</div>
+          <div class="role" id="user-role">—</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="handleLogout()">Sair</button>
+      <div style="text-align:center;font-size:9.5px;letter-spacing:1.5px;color:var(--ink-500);margin-top:12px;text-transform:uppercase;font-weight:700;">SJ Connect</div>
+      <div style="text-align:center;font-size:9px;color:rgba(251,247,242,.35);margin-top:3px;">© 2026 JPires</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;">
+        <button class="hamburger" onclick="toggleSidebar(true)">☰</button>
+        <div>
+          <div class="page-title" id="page-title">Dashboard</div>
+          <div class="page-sub" id="page-sub">Visão geral do salão hoje</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" title="Alterar senha" onclick="openAlterarSenhaModal()">🔑</button>
+        <button class="icon-btn" title="Notificações" onclick="toast('Você não tem novas notificações.','info')">🔔<span class="badge-dot"></span></button>
+        <button class="icon-btn" title="Atualizar" onclick="refreshCurrentView()">⟳</button>
+      </div>
+    </header>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<div id="loader-overlay"><div class="spinner"></div></div>
+
+<script>
+/* ==========================================================================
+   SANDRA JÚLIA ERP — APPLICATION SCRIPT
+   Sections:
+     1. API LAYER (Google Apps Script bridge + local demo fallback)
+     2. STATE & AUTH
+     3. NAVIGATION / MENU BY PROFILE
+     4. UTIL (masks, toasts, loader, modal helpers, table helpers)
+     5. VIEW RENDERERS (Dashboard, Agenda, Clientes, Profissionais, Serviços,
+        Produtos, Fornecedores, Financeiro, Relatórios, Configurações, Usuários)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. API LAYER
+   Every data operation goes through `api(action, payload)`. It calls the
+   Apps Script Web App (deployed as a JSON API — see APPS_SCRIPT_URL below)
+   via fetch(), e.g. action "listarClientes" -> Code.gs function listarClientes().
+   This intentionally does NOT use google.script.run: that requires the page
+   to be served BY Apps Script's HtmlService, which triggers an in-browser
+   OAuth consent iframe that can break in some browsers/accounts. fetch()
+   avoids that entirely — this file can run as a local file or be hosted
+   anywhere, and simply talks to the Apps Script URL over plain HTTP.
+   With no APPS_SCRIPT_URL configured, it falls back to an in-memory demo
+   dataset so the interface can be reviewed without a live backend.
+-------------------------------------------------------------------------- */
+// Rede de segurança: qualquer erro não tratado aparece na tela (e no console)
+// em vez de deixar a aplicação em branco silenciosamente.
+window.addEventListener('error', function(e){
+  console.error('Erro não tratado:', e.error || e.message);
+  const content = document.getElementById('content');
+  const app = document.getElementById('app');
+  if(content && app && !app.classList.contains('hidden')){
+    content.innerHTML = `<div class="empty-state"><div class="ico">⚠</div>Ocorreu um erro inesperado: `
+      + `${(e.error&&e.error.message)||e.message||'ver console (F12) para detalhes'}</div>`;
+  }
+});
+// Erros assíncronos não tratados (ex.: dentro de uma função async chamada por um
+// botão de um modal) não disparam o listener 'error' acima — sem isso, um clique
+// em "Salvar" podia falhar silenciosamente, sem nenhuma mensagem visível.
+window.addEventListener('unhandledrejection', function(e){
+  console.error('Erro assíncrono não tratado:', e.reason);
+  if(typeof toast === 'function'){
+    toast('Ocorreu um erro: '+((e.reason&&e.reason.message)||String(e.reason)||'ver console (F12) para detalhes'), 'error');
+  }
+});
+
+// Emblema da marca — lótus minimalista em traço único, inspirado na identidade
+// visual do salão (SPA Sandra Julia), redesenhado em SVG para reaproveitar as
+// cores do sistema (dourado/nude) em qualquer fundo, claro ou escuro.
+const LOGO_SVG = `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M50,92 C38,66 38,24 50,8 C62,24 62,66 50,92 Z" transform="rotate(-60 50 92)"/>
+  <path d="M50,92 C38,66 38,24 50,8 C62,24 62,66 50,92 Z" transform="rotate(-30 50 92)"/>
+  <path d="M50,92 C38,66 38,24 50,8 C62,24 62,66 50,92 Z"/>
+  <path d="M50,92 C38,66 38,24 50,8 C62,24 62,66 50,92 Z" transform="rotate(30 50 92)"/>
+  <path d="M50,92 C38,66 38,24 50,8 C62,24 62,66 50,92 Z" transform="rotate(60 50 92)"/>
+  <circle cx="50" cy="90" r="3" fill="currentColor" stroke="none"/>
+</svg>`;
+['login-logo','sidebar-logo'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML = LOGO_SVG; });
+
+/* --------------------------------------------------------------------------
+   CONFIGURAÇÃO DA API
+   Cole aqui a URL do seu Apps Script implantado como "App da Web" (termina em
+   /exec). Enquanto estiver com o valor padrão abaixo, o sistema roda em modo
+   demonstração, usando dados fictícios em memória — útil para conferir a
+   interface antes de ligar ao backend real.
+
+   Por que fetch() e não google.script.run? Porque google.script.run só
+   funciona quando a própria página é servida pelo Apps Script (HtmlService),
+   o que nesse caso tem gerado uma tela de autorização quebrada em alguns
+   navegadores/contas. Com fetch(), o index.html roda fora do Apps Script
+   (local ou hospedado em qualquer lugar) e conversa com o backend por uma
+   chamada HTTP comum — sem qualquer tela de login/consentimento no meio.
+-------------------------------------------------------------------------- */
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdahgE00oDzfved_T4AlYT2x7Xww8fp1zwkbMaNRnFJOOmh7vlE_l_-BfxqGZaJZTn4w/exec'; // ex.: https://script.google.com/macros/s/AKfycb.../exec
+// URL pública onde o anamnese.html está hospedado (mesmo lugar do index.html),
+// usada para montar o link enviado ao cliente pelo WhatsApp.
+const ANAMNESE_FORM_URL = 'https://jeanpires-pixel.github.io/sj-connect/anamnese.html'; // ex.: https://seusite.netlify.app/anamnese.html
+const USE_REMOTE_API = /^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(APPS_SCRIPT_URL);
+
+function api(action, payload){
+  if(USE_REMOTE_API){
+    // Envia como text/plain para evitar o preflight OPTIONS do CORS, que o
+    // Apps Script Web App não responde. O corpo continua sendo um JSON válido;
+    // só o content-type da requisição é "simples" aos olhos do navegador.
+    return fetch(APPS_SCRIPT_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({action, payload})
+    })
+    .then(r=>{
+      if(!r.ok) throw new Error('Falha de rede ao contatar a API (HTTP '+r.status+').');
+      return r.json();
+    })
+    .then(json=>{
+      if(!json.ok) throw new Error(json.error || 'Erro desconhecido retornado pela API.');
+      return json.data;
+    });
+  }
+  // ---- MODO DEMONSTRAÇÃO (sem APPS_SCRIPT_URL configurada) ----
+  return new Promise((resolve, reject)=>{
+    setTimeout(()=>{
+      try{ resolve(demoAPI(action, payload)); }catch(e){ reject(e); }
+    }, 180 + Math.random()*220);
+  });
+}
+
+/* --------------------------------------------------------------------------
+   DEMO DATA — replicates the shape of what each Sheets-backed function
+   should return, purely so this file is explorable standalone. Everything
+   here is created dynamically (no data baked into the rendered UI markup);
+   once connected to Apps Script, api() bypasses this entirely.
+-------------------------------------------------------------------------- */
+let DB = null;
+function seedDB(){
+  if(DB) return;
+  const hoje = new Date();
+  const iso = d => d.toISOString().slice(0,10);
+  DB = {
+    usuarios:[
+      {id:'u1', nome:'Sandra Júlia', usuario:'admin', senha:'admin', perfil:'Administrador', ativo:true},
+      {id:'u2', nome:'Bianca Souza', usuario:'recepcao', senha:'recepcao', perfil:'Recepcionista', ativo:true},
+      {id:'u3', nome:'Marcos Lima', usuario:'profissional', senha:'profissional', perfil:'Profissional', profissionalId:'p1', ativo:true},
+    ],
+    clientes:[
+      {id:'c1', nome:'Juliana Prado', telefone:'(61) 99123-4567', cpf:'123.456.789-00', aniversario:'07-18', vip:true, ultimaVisita:'2026-07-02', observacoes:'Prefere tintura sem amônia.', saldoCredito:35},
+      {id:'c2', nome:'Renata Alves', telefone:'(61) 98844-2231', cpf:'234.567.890-11', aniversario:'07-15', vip:false, ultimaVisita:'2026-06-28', observacoes:'', saldoCredito:0},
+      {id:'c3', nome:'Camila Duarte', telefone:'(61) 99911-0022', cpf:'345.678.901-22', aniversario:'11-02', vip:true, ultimaVisita:'2026-07-10', observacoes:'Alergia a alguns esmaltes.', saldoCredito:0},
+      {id:'c4', nome:'Patrícia Nunes', telefone:'(61) 99700-1234', cpf:'456.789.012-33', aniversario:'07-15', vip:false, ultimaVisita:'2026-05-20', observacoes:'', saldoCredito:0},
+      {id:'c5', nome:'Fernanda Ribeiro', telefone:'(61) 98123-9988', cpf:'567.890.123-44', aniversario:'03-09', vip:false, ultimaVisita:'2026-07-08', observacoes:'', saldoCredito:0},
+    ],
+    profissionais:[
+      {id:'p1', nome:'Marcos Lima', especialidade:'Colorista', comissao:35, ativo:true, atendimentosMes:64, pix:'marcos.lima@email.com'},
+      {id:'p2', nome:'Ana Beatriz', especialidade:'Maquiadora', comissao:40, ativo:true, atendimentosMes:51, pix:'(61) 99888-1122'},
+      {id:'p3', nome:'Diego Ferreira', especialidade:'Barbeiro / Cortes', comissao:30, ativo:true, atendimentosMes:58, pix:'diego.ferreira@email.com'},
+    ],
+    servicos:[
+      {id:'s1', nome:'Corte Feminino', categoria:'Cabelo', duracao:45, preco:90},
+      {id:'s2', nome:'Coloração', categoria:'Cabelo', duracao:120, preco:220},
+      {id:'s3', nome:'Maquiagem Social', categoria:'Maquiagem', duracao:60, preco:150},
+      {id:'s4', nome:'Design de Sobrancelha', categoria:'Estética', duracao:30, preco:60},
+      {id:'s5', nome:'Manicure + Pedicure', categoria:'Unhas', duracao:75, preco:85},
+    ],
+    produtos:[
+      {id:'pr1', nome:'Shampoo Reconstrução', categoria:'Cabelo', estoque:4, estoqueFracionado:8, minimo:8, preco:65, precoCompra:38, precoFracionado:12, fornecedorId:'f1', consignado:false},
+      {id:'pr2', nome:'Base Líquida HD', categoria:'Maquiagem', estoque:12, estoqueFracionado:0, minimo:5, preco:98, precoCompra:52, precoFracionado:0, fornecedorId:'f2', consignado:true},
+      {id:'pr3', nome:'Esmalte Nude Premium', categoria:'Unhas', estoque:3, estoqueFracionado:0, minimo:10, preco:22, precoCompra:11, precoFracionado:0, fornecedorId:'f3', consignado:false},
+      {id:'pr4', nome:'Ampola de Tratamento', categoria:'Cabelo', estoque:20, estoqueFracionado:40, minimo:6, preco:35, precoCompra:18, precoFracionado:6, fornecedorId:'f1', consignado:false},
+    ],
+    fornecedores:[
+      {id:'f1', nome:'BeautyLine Distribuidora', contato:'(61) 3222-1010', categoria:'Cabelo', representante:'Marcelo Souza', vendedor:'Ana Paula'},
+      {id:'f2', nome:'MakeUp Brasil', contato:'(61) 3222-2020', categoria:'Maquiagem', representante:'Rafael Nogueira', vendedor:'Bianca Costa'},
+      {id:'f3', nome:'Nail Import', contato:'(61) 3222-3030', categoria:'Unhas', representante:'Carla Menezes', vendedor:'Diego Alves'},
+    ],
+    agenda:[
+      {id:'a1', clienteId:'c1', profissionalId:'p1', servicoId:'s2', data:iso(hoje), hora:'09:00', duracao:120, status:'confirmado', valor:220, obs:''},
+      {id:'a2', clienteId:'c2', profissionalId:'p3', servicoId:'s1', data:iso(hoje), hora:'10:00', duracao:45, status:'andamento', valor:90, obs:''},
+      {id:'a3', clienteId:'c3', profissionalId:'p2', servicoId:'s3', data:iso(hoje), hora:'11:30', duracao:60, status:'livre', valor:150, obs:'Confirmar horário com cliente.'},
+      {id:'a4', clienteId:'c4', profissionalId:'p1', servicoId:'s1', data:iso(hoje), hora:'14:00', duracao:45, status:'finalizado', valor:90, obs:''},
+      {id:'a5', clienteId:'c5', profissionalId:'p3', servicoId:'s5', data:iso(hoje), hora:'15:30', duracao:75, status:'cancelado', valor:85, obs:'Cliente remarcou.'},
+      {id:'a6', clienteId:'c1', profissionalId:'p2', servicoId:'s4', data:iso(hoje), hora:'16:30', duracao:30, status:'confirmado', valor:60, obs:''},
+    ],
+    financeiro:[
+      {id:'fi1', data:iso(hoje), tipo:'entrada', forma:'pix', valor:220, descricao:'Coloração - Juliana Prado'},
+      {id:'fi2', data:iso(hoje), tipo:'entrada', forma:'credito', valor:90, descricao:'Corte - Patrícia Nunes'},
+      {id:'fi3', data:iso(hoje), tipo:'entrada', forma:'dinheiro', valor:60, descricao:'Sobrancelha - Juliana Prado'},
+      {id:'fi4', data:iso(hoje), tipo:'saida', forma:'pix', valor:180, descricao:'Compra de produtos - BeautyLine'},
+    ],
+    recibos:[],
+    movimentacoes:[],
+    anamneses:[],
+    comissoesServico:[],
+    contasPagar:[],
+    cardapioConsumo:[
+      {id:'cd1', nome:'Cappuccino', categoria:'Bebidas', preco:12},
+      {id:'cd2', nome:'Água s/ Gás', categoria:'Bebidas', preco:3},
+      {id:'cd3', nome:'Suco Detox', categoria:'Suco Natural', preco:8},
+      {id:'cd4', nome:'Pão de Queijo', categoria:'Lanches', preco:4},
+      {id:'cd5', nome:'Tapioca Completa', categoria:'Lanches', preco:10},
+      {id:'cd6', nome:'Crepe com Frango', categoria:'Crepes', preco:15},
+    ],
+    descontosComissao:[],
+  };
+}
+function uid(prefix){ return prefix + Math.random().toString(36).slice(2,9); }
+
+function demoAPI(action, payload){
+  seedDB();
+  const clone = o => JSON.parse(JSON.stringify(o));
+  switch(action){
+    case 'autenticar': {
+      const u = DB.usuarios.find(x=>x.usuario===payload.usuario && x.senha===payload.senha && x.ativo);
+      if(!u) throw new Error('Credenciais inválidas');
+      return clone(u);
+    }
+    case 'listarClientes': return clone(DB.clientes);
+    case 'salvarCliente': {
+      if(payload.id){ const i=DB.clientes.findIndex(c=>c.id===payload.id); DB.clientes[i]=payload; }
+      else { payload.id = uid('c'); DB.clientes.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirCliente': DB.clientes = DB.clientes.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'listarProfissionais': return clone(DB.profissionais);
+    case 'salvarProfissional': {
+      if(payload.id){ const i=DB.profissionais.findIndex(c=>c.id===payload.id); DB.profissionais[i]=payload; }
+      else { payload.id = uid('p'); payload.atendimentosMes = 0; DB.profissionais.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirProfissional': DB.profissionais = DB.profissionais.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'listarServicos': return clone(DB.servicos);
+    case 'salvarServico': {
+      if(payload.id){ const i=DB.servicos.findIndex(c=>c.id===payload.id); DB.servicos[i]=payload; }
+      else { payload.id = uid('s'); DB.servicos.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirServico': DB.servicos = DB.servicos.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'listarProdutos': return clone(DB.produtos);
+    case 'salvarProduto': {
+      if(payload.id){ const i=DB.produtos.findIndex(c=>c.id===payload.id); DB.produtos[i]=payload; }
+      else { payload.id = uid('pr'); DB.produtos.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirProduto': DB.produtos = DB.produtos.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'listarFornecedores': return clone(DB.fornecedores);
+    case 'salvarFornecedor': {
+      if(payload.id){ const i=DB.fornecedores.findIndex(c=>c.id===payload.id); DB.fornecedores[i]=payload; }
+      else { payload.id = uid('f'); DB.fornecedores.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirFornecedor': DB.fornecedores = DB.fornecedores.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'listarAgenda': return clone(DB.agenda);
+    case 'salvarAgendamento': {
+      if(payload.id){ const i=DB.agenda.findIndex(c=>c.id===payload.id); DB.agenda[i]=payload; }
+      else { payload.id = uid('a'); DB.agenda.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirAgendamento': DB.agenda = DB.agenda.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'listarFinanceiro': return clone(DB.financeiro);
+    case 'salvarLancamentoFinanceiro': {
+      payload.id = uid('fi'); DB.financeiro.push(payload); return clone(payload);
+    }
+
+    case 'listarRecibos': return clone(DB.recibos);
+    case 'salvarRecibo': { payload.id = uid('rc'); DB.recibos.push(payload); return clone(payload); }
+
+    case 'listarMovimentacoesEstoque': return clone(DB.movimentacoes);
+    case 'registrarMovimentacaoEstoque': {
+      const prod = DB.produtos.find(p=>p.id===payload.produtoId);
+      if(!prod) throw new Error('Produto não encontrado.');
+      prod.estoque = payload.tipo==='entrada' ? prod.estoque + payload.quantidade : prod.estoque - payload.quantidade;
+      payload.id = uid('mv');
+      DB.movimentacoes.push(payload);
+      return {ok:true, produto:clone(prod)};
+    }
+
+    case 'obterClienteParaAnamnese': {
+      const c = DB.clientes.find(x=>x.id===payload.id);
+      if(!c) throw new Error('Cliente não encontrado.');
+      return {id:c.id, nome:c.nome};
+    }
+    case 'salvarAnamnese': { payload.id = uid('an'); DB.anamneses.push(payload); return clone(payload); }
+    case 'listarAnamneses': return clone(DB.anamneses);
+
+    case 'listarComissoesServico': return clone(DB.comissoesServico);
+    case 'salvarComissaoServico': {
+      const existente = DB.comissoesServico.find(c=>c.servicoId===payload.servicoId && c.profissionalId===payload.profissionalId);
+      if(existente){ Object.assign(existente, payload); return clone(existente); }
+      payload.id = uid('cs'); DB.comissoesServico.push(payload); return clone(payload);
+    }
+
+    case 'listarContasPagar': return clone(DB.contasPagar);
+    case 'salvarContaPagar': {
+      if(payload.id){ const i=DB.contasPagar.findIndex(c=>c.id===payload.id); DB.contasPagar[i]=payload; }
+      else { payload.id = uid('cp'); if(payload.pago===undefined) payload.pago=false; DB.contasPagar.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirContaPagar': DB.contasPagar = DB.contasPagar.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'alterarSenha': {
+      const u = DB.usuarios.find(x=>x.id===payload.usuarioId);
+      if(!u) throw new Error('Usuário não encontrado.');
+      if(String(u.senha)!==String(payload.senhaAtual)) throw new Error('Senha atual incorreta.');
+      if(!payload.novaSenha || payload.novaSenha.length<4) throw new Error('A nova senha deve ter pelo menos 4 caracteres.');
+      u.senha = payload.novaSenha;
+      return {ok:true};
+    }
+
+    case 'listarCardapioConsumo': return clone(DB.cardapioConsumo);
+    case 'salvarItemCardapio': {
+      if(payload.id){ const i=DB.cardapioConsumo.findIndex(c=>c.id===payload.id); DB.cardapioConsumo[i]=payload; }
+      else { payload.id = uid('cd'); DB.cardapioConsumo.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirItemCardapio': DB.cardapioConsumo = DB.cardapioConsumo.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'ajustarSaldoCredito': {
+      const c = DB.clientes.find(x=>x.id===payload.clienteId);
+      if(!c) throw new Error('Cliente não encontrado.');
+      c.saldoCredito = Number(c.saldoCredito||0) + Number(payload.delta||0);
+      return {ok:true, saldoCredito:c.saldoCredito};
+    }
+
+    case 'listarDescontosComissao': return clone(DB.descontosComissao);
+    case 'salvarDescontoComissao': { payload.id = uid('dc'); DB.descontosComissao.push(payload); return clone(payload); }
+
+    case 'listarUsuarios': return clone(DB.usuarios);
+    case 'salvarUsuario': {
+      if(payload.id){ const i=DB.usuarios.findIndex(c=>c.id===payload.id); DB.usuarios[i]=payload; }
+      else { payload.id = uid('u'); DB.usuarios.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirUsuario': DB.usuarios = DB.usuarios.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'obterDashboard': {
+      const hojeStr = iso_(new Date());
+      const ag = DB.agenda.filter(a=>a.data===hojeStr);
+      const faturamentoHoje = DB.financeiro.filter(f=>f.data===hojeStr && f.tipo==='entrada').reduce((s,f)=>s+f.valor,0);
+      const baixos = DB.produtos.filter(p=>p.estoque<=p.minimo).length;
+      const mmdd = d => d.slice(5);
+      const hojeMD = mmdd(hojeStr);
+      const aniversariantes = DB.clientes.filter(c=>c.aniversario===hojeMD || Math.abs(diffDay(c.aniversario,hojeMD))<=3);
+      return { agendamentosHoje: ag.length, clientesHoje: new Set(ag.map(a=>a.clienteId)).size,
+        aniversariantes: aniversariantes.length, faturamentoHoje, produtosBaixos: baixos, agendaHoje: clone(ag) };
+    }
+    default: throw new Error('Ação desconhecida: '+action);
+  }
+}
+function iso_(d){ return d.toISOString().slice(0,10); }
+function diffDay(a,b){ return 999; }
+
+/* --------------------------------------------------------------------------
+   2. STATE & AUTH
+-------------------------------------------------------------------------- */
+const STATE = {
+  user:null,
+  currentView:'dashboard',
+  cache:{ clientes:[], profissionais:[], servicos:[], produtos:[], fornecedores:[], agenda:[], usuarios:[], financeiro:[] },
+  table:{ // per-table UI state: search, sort, page
+  }
+};
+
+function tableState(name){
+  if(!STATE.table[name]) STATE.table[name] = {search:'', sortKey:null, sortDir:1, page:1, pageSize:6, filter:''};
+  return STATE.table[name];
+}
+
+async function handleLogin(e){
+  e.preventDefault();
+  const usuario = document.getElementById('login-user').value.trim();
+  const senha = document.getElementById('login-pass').value;
+  const errBox = document.getElementById('login-error');
+  errBox.style.display='none';
+  showLoader(true);
+  try{
+    const user = await api('autenticar', {usuario, senha});
+    STATE.user = user;
+    showLoader(false);
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    bootApp();
+  }catch(err){
+    showLoader(false);
+    errBox.textContent = 'Usuário ou senha inválidos.';
+    errBox.style.display='block';
+  }
+  return false;
+}
+function handleLogout(){
+  STATE.user = null;
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('login-form').reset();
+}
+
+// Troca de senha — disponível para qualquer perfil (Administrador, Recepcionista
+// ou Profissional), acessível pelo ícone 🔑 na barra superior.
+function openAlterarSenhaModal(){
+  openModal(`
+    <div class="modal-head"><h3>Alterar Senha</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <p class="helper-text" style="margin-bottom:16px;">Alterando a senha de <b>${escapeHtml(STATE.user.nome)}</b> (${escapeHtml(STATE.user.usuario||'')}).</p>
+      <div class="field"><label>Senha atual</label><input type="password" id="sen-atual" autocomplete="current-password"></div>
+      <div class="field"><label>Nova senha</label><input type="password" id="sen-nova" autocomplete="new-password"></div>
+      <div class="field"><label>Confirmar nova senha</label><input type="password" id="sen-confirma" autocomplete="new-password"></div>
+      <div class="error-box" id="sen-erro" style="display:none;background:#FBEAE8;color:var(--danger);font-size:13px;font-weight:600;padding:10px 13px;border-radius:8px;"></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-gold" onclick="saveAlterarSenha()">Salvar Nova Senha</button></div>`);
+}
+async function saveAlterarSenha(){
+  const senhaAtual = document.getElementById('sen-atual').value;
+  const novaSenha = document.getElementById('sen-nova').value;
+  const confirma = document.getElementById('sen-confirma').value;
+  const errBox = document.getElementById('sen-erro');
+  errBox.style.display='none';
+  if(!senhaAtual || !novaSenha || !confirma){
+    errBox.textContent = 'Preencha todos os campos.'; errBox.style.display='block'; return;
+  }
+  if(novaSenha !== confirma){
+    errBox.textContent = 'A nova senha e a confirmação não coincidem.'; errBox.style.display='block'; return;
+  }
+  if(novaSenha.length < 4){
+    errBox.textContent = 'A nova senha deve ter pelo menos 4 caracteres.'; errBox.style.display='block'; return;
+  }
+  showLoader(true);
+  try{
+    await api('alterarSenha', {usuarioId: STATE.user.id, senhaAtual, novaSenha});
+    STATE.user.senha = novaSenha;
+    showLoader(false); closeModal();
+    toast('Senha alterada com sucesso.','success');
+  }catch(e){
+    showLoader(false);
+    errBox.textContent = e.message || 'Não foi possível alterar a senha.'; errBox.style.display='block';
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. NAVIGATION / MENU BY PROFILE
+-------------------------------------------------------------------------- */
+const MENUS = {
+  'Administrador':[
+    {view:'dashboard', label:'Dashboard', ico:'◆'},
+    {view:'agenda', label:'Agenda', ico:'📅'},
+    {view:'clientes', label:'Clientes', ico:'👤'},
+    {view:'profissionais', label:'Profissionais', ico:'💇'},
+    {view:'recibos', label:'Recibo', ico:'🧾'},
+    {view:'servicos', label:'Serviços', ico:'✂'},
+    {view:'produtos', label:'Produtos', ico:'🧴'},
+    {view:'fornecedores', label:'Fornecedores', ico:'🚚'},
+    {view:'financeiro', label:'Financeiro', ico:'💰'},
+    {view:'relatorios', label:'Relatórios', ico:'📊'},
+    {view:'configuracoes', label:'Configurações', ico:'⚙'},
+    {view:'usuarios', label:'Usuários', ico:'🔑'},
+  ],
+  'Recepcionista':[
+    {view:'dashboard', label:'Dashboard', ico:'◆'},
+    {view:'agenda', label:'Agenda', ico:'📅'},
+    {view:'clientes', label:'Clientes', ico:'👤'},
+    {view:'profissionais', label:'Profissionais', ico:'💇'},
+    {view:'servicos', label:'Serviços', ico:'✂'},
+    {view:'produtos', label:'Produtos', ico:'🧴', readonly:true},
+  ],
+  'Profissional':[
+    {view:'minhaagenda', label:'Minha Agenda', ico:'📅'},
+    {view:'agendasemanal', label:'Agenda Semanal', ico:'🗓'},
+    {view:'servicos', label:'Tabela de Serviços', ico:'✂', readonly:true},
+    {view:'meuperfil', label:'Meu Perfil', ico:'👤'},
+  ],
+};
+const PAGE_META = {
+  dashboard:['Dashboard','Visão geral do salão hoje'],
+  agenda:['Agenda','Calendário de atendimentos'],
+  clientes:['Clientes','Base de clientes do salão'],
+  profissionais:['Profissionais','Equipe e especialidades'],
+  recibos:['Recibo','Comprovantes de atendimento'],
+  servicos:['Serviços','Catálogo de serviços e preços'],
+  produtos:['Produtos','Controle de estoque'],
+  fornecedores:['Fornecedores','Parceiros e contatos'],
+  financeiro:['Financeiro','Fluxo de caixa do salão'],
+  relatorios:['Relatórios','Indicadores e desempenho'],
+  configuracoes:['Configurações','Preferências do sistema'],
+  usuarios:['Usuários','Contas de acesso ao sistema'],
+  minhaagenda:['Minha Agenda','Seus atendimentos de hoje'],
+  agendasemanal:['Agenda Semanal','Sua semana de atendimentos'],
+  meuperfil:['Meu Perfil','Seus dados profissionais'],
+};
+
+// Aceita variações de acentuação/maiúsculas vindas da planilha (ex.: "administrador",
+// "ADMINISTRADOR ", "Administrador") e sempre resolve para uma das 3 chaves de MENUS.
+function normalizePerfil(raw){
+  const s = String(raw||'').trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,''); // remove acentos
+  if(s.startsWith('admin')) return 'Administrador';
+  if(s.startsWith('recep')) return 'Recepcionista';
+  if(s.startsWith('profis')) return 'Profissional';
+  return null;
+}
+
+function bootApp(){
+  try{
+    const perfil = normalizePerfil(STATE.user.perfil);
+    if(!perfil){
+      throw new Error('Perfil de usuário "'+STATE.user.perfil+'" não reconhecido. '+
+        'Use exatamente Administrador, Recepcionista ou Profissional na coluna "perfil" da aba Usuarios.');
+    }
+    STATE.user.perfil = perfil;
+    document.getElementById('user-name').textContent = STATE.user.nome || '—';
+    document.getElementById('user-role').textContent = perfil;
+    document.getElementById('user-avatar').textContent = initials(STATE.user.nome || '?');
+    renderMenu();
+    const firstItem = MENUS[perfil][0];
+    navigate(firstItem.view);
+  }catch(err){
+    console.error('Erro ao iniciar o sistema:', err);
+    document.getElementById('content').innerHTML =
+      `<div class="empty-state"><div class="ico">⚠</div>${escapeHtml(err.message||String(err))}</div>`;
+    document.getElementById('nav-menu').innerHTML = '';
+  }
+}
+function initials(name){ return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
+
+function renderMenu(){
+  const nav = document.getElementById('nav-menu');
+  const items = MENUS[STATE.user.perfil] || [];
+  nav.innerHTML = items.map(it=>`
+    <div class="nav-item" data-view="${it.view}" onclick="navigate('${it.view}')">
+      <span class="ico">${it.ico}</span><span>${it.label}</span>
+    </div>`).join('');
+}
+function setActiveNav(view){
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    el.classList.toggle('active', el.dataset.view===view);
+  });
+}
+async function navigate(view){
+  STATE.currentView = view;
+  setActiveNav(view);
+  const meta = PAGE_META[view] || [view,''];
+  document.getElementById('page-title').textContent = meta[0];
+  document.getElementById('page-sub').textContent = meta[1];
+  toggleSidebar(false);
+  const content = document.getElementById('content');
+  content.innerHTML = `<div class="empty-state"><div class="spinner" style="margin:0 auto;"></div></div>`;
+  try{
+    const html = await RENDERERS[view]();
+    content.innerHTML = html;
+    if(POST_RENDER[view]) POST_RENDER[view]();
+  }catch(err){
+    content.innerHTML = `<div class="empty-state">Erro ao carregar: ${escapeHtml(err.message||String(err))}</div>`;
+  }
+}
+function refreshCurrentView(){ navigate(STATE.currentView); }
+function toggleSidebar(open){
+  document.getElementById('sidebar').classList.toggle('open', !!open);
+  document.getElementById('sidebar-overlay').classList.toggle('show', !!open);
+}
+
+/* --------------------------------------------------------------------------
+   4. UTIL
+-------------------------------------------------------------------------- */
+function showLoader(v){ document.getElementById('loader-overlay').style.display = v ? 'flex' : 'none'; }
+function toast(msg, type='info'){
+  const c = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = `<span>${type==='success'?'✓':type==='error'?'✕':'ℹ'}</span><span>${escapeHtml(msg)}</span>`;
+  c.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='.3s'; setTimeout(()=>el.remove(),300); }, 3200);
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function fmtMoney(v){ return (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+function fmtDate(iso){ if(!iso) return '—'; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
+function maskCPF(v){
+  return v.replace(/\D/g,'').slice(0,11)
+    .replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+}
+function maskPhone(v){
+  v = v.replace(/\D/g,'').slice(0,11);
+  if(v.length>10) return v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3');
+  return v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
+}
+function attachMasks(root){
+  root.querySelectorAll('[data-mask="cpf"]').forEach(inp=>inp.addEventListener('input',()=>inp.value=maskCPF(inp.value)));
+  root.querySelectorAll('[data-mask="phone"]').forEach(inp=>inp.addEventListener('input',()=>inp.value=maskPhone(inp.value)));
+}
+function openModal(html){
+  const overlay = document.createElement('div');
+  overlay.className='modal-overlay'; overlay.id='active-modal-overlay';
+  overlay.innerHTML = `<div class="modal">${html}</div>`;
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) closeModal(); });
+  document.body.appendChild(overlay);
+  attachMasks(overlay);
+  return overlay;
+}
+function closeModal(){ const el=document.getElementById('active-modal-overlay'); if(el) el.remove(); }
+
+/* Generic sortable/searchable table controller.
+   config = { data, columns:[{key,label,render?}], searchKeys:[...], onSearch, rowActions(row) } */
+function applyTableControls(name, rawData, opts){
+  const st = tableState(name);
+  let data = rawData.slice();
+  if(opts.customFilter) data = opts.customFilter(data, st);
+  if(st.search && opts.searchKeys){
+    const q = st.search.toLowerCase();
+    data = data.filter(row => opts.searchKeys.some(k => String(row[k]||'').toLowerCase().includes(q)));
+  }
+  if(st.sortKey){
+    data.sort((a,b)=>{
+      const av=a[st.sortKey], bv=b[st.sortKey];
+      if(typeof av==='number') return (av-bv)*st.sortDir;
+      return String(av||'').localeCompare(String(bv||''))*st.sortDir;
+    });
+  }
+  const total = data.length;
+  const pages = Math.max(1, Math.ceil(total/st.pageSize));
+  st.page = Math.min(st.page, pages);
+  const start = (st.page-1)*st.pageSize;
+  const pageData = data.slice(start, start+st.pageSize);
+  return {pageData, total, pages};
+}
+function paginationHtml(name, total, pages){
+  const st = tableState(name);
+  let btns='';
+  for(let i=1;i<=pages;i++){
+    btns += `<button class="${i===st.page?'active':''}" onclick="gotoPage('${name}',${i})">${i}</button>`;
+  }
+  return `<div class="pagination">
+    <span>${total} registro${total===1?'':'s'}</span>
+    <div class="pages">${btns}</div>
+  </div>`;
+}
+function gotoPage(name, page){ tableState(name).page = page; navigate(STATE.currentView); }
+function sortTable(name, key){
+  const st = tableState(name);
+  if(st.sortKey===key) st.sortDir *= -1; else { st.sortKey=key; st.sortDir=1; }
+  navigate(STATE.currentView);
+}
+function searchTable(name, val){ tableState(name).search = val; tableState(name).page=1; navigate(STATE.currentView); }
+function filterTable(name, val){ tableState(name).filter = val; tableState(name).page=1; navigate(STATE.currentView); }
+
+/* --------------------------------------------------------------------------
+   5. RENDERERS
+-------------------------------------------------------------------------- */
+const RENDERERS = {};
+const POST_RENDER = {}; // optional hooks to bind events after innerHTML set
+
+/* ---------- DASHBOARD ---------- */
+RENDERERS.dashboard = async function(){
+  const d = await api('obterDashboard');
+  const profs = await api('listarProfissionais');
+  const clientes = await api('listarClientes');
+  const nomeProf = id => (profs.find(p=>p.id===id)||{}).nome || '—';
+  const nomeCli = id => (clientes.find(c=>c.id===id)||{}).nome || '—';
+
+  const kpis = [
+    {label:'Agendamentos Hoje', value:d.agendamentosHoje, note:'atendimentos marcados', color:'var(--gold-400)'},
+    {label:'Clientes Hoje', value:d.clientesHoje, note:'clientes distintos', color:'var(--quartz-500)'},
+    {label:'Aniversariantes', value:d.aniversariantes, note:'nesta semana', color:'var(--info)'},
+    {label:'Faturamento', value:fmtMoney(d.faturamentoHoje), note:'previsto para hoje', color:'var(--success)'},
+    {label:'Produtos Baixos', value:d.produtosBaixos, note:'abaixo do mínimo', color:'var(--danger)'},
+    {label:'Próximo Horário', value:(d.agendaHoje[0]?d.agendaHoje[0].hora:'—'), note:'próximo atendimento', color:'var(--gold-600)'},
+  ];
+  return `
+    <div class="kpi-grid">
+      ${kpis.map(k=>`
+        <div class="kpi" style="--kpi-color:${k.color}">
+          <div class="kpi-label">${k.label}</div>
+          <div class="kpi-value">${k.value}</div>
+          <div class="kpi-note">${k.note}</div>
+        </div>`).join('')}
+    </div>
+    <div class="dash-grid">
+      <div class="card card-pad">
+        <div class="section-head"><div><h3>Agenda do Dia</h3><div class="ribbon"></div></div>
+          <button class="btn btn-outline btn-sm" onclick="navigate('agenda')">Ver agenda completa</button>
+        </div>
+        ${d.agendaHoje.length ? d.agendaHoje.sort((a,b)=>a.hora.localeCompare(b.hora)).map(a=>`
+          <div class="list-row">
+            <span class="dot ${a.status}"></span>
+            <div style="flex:1;">
+              <div style="font-weight:700;font-size:13.5px;">${a.hora} · ${nomeCli(a.clienteId)}</div>
+              <div class="cell-sub">com ${nomeProf(a.profissionalId)}</div>
+            </div>
+            <span class="tag tag-${a.status}">${capitalize(a.status)}</span>
+          </div>`).join('') : `<div class="empty-state"><div class="ico">🗓</div>Nenhum atendimento agendado para hoje.</div>`}
+      </div>
+      <div class="card card-pad">
+        <div class="section-head"><div><h3>Aniversariantes &amp; Alertas</h3><div class="ribbon"></div></div></div>
+        <div class="list-row"><span class="dot livre"></span><div style="flex:1;">
+          <div style="font-weight:700;font-size:13.5px;">Estoque baixo</div>
+          <div class="cell-sub">${d.produtosBaixos} produto(s) precisam de reposição</div></div>
+          <button class="btn btn-outline btn-sm" onclick="navigate('produtos')">Ver</button>
+        </div>
+        <div class="list-row"><span class="dot confirmado"></span><div style="flex:1;">
+          <div style="font-weight:700;font-size:13.5px;">Aniversariantes da semana</div>
+          <div class="cell-sub">${d.aniversariantes} cliente(s) — envie uma lembrança</div></div>
+          <button class="btn btn-outline btn-sm" onclick="navigate('clientes')">Ver</button>
+        </div>
+        <div class="list-row"><span class="dot andamento"></span><div style="flex:1;">
+          <div style="font-weight:700;font-size:13.5px;">Faturamento previsto hoje</div>
+          <div class="cell-sub">${fmtMoney(d.faturamentoHoje)} em atendimentos confirmados/finalizados</div></div>
+        </div>
+      </div>
+    </div>`;
+};
+function capitalize(s){ return s ? s[0].toUpperCase()+s.slice(1) : s; }
+
+/* ---------- AGENDA (shared by Administrador/Recepcionista "agenda",
+   and Profissional "minhaagenda" / "agendasemanal") ---------- */
+async function loadAgendaContext(){
+  const [agenda, profs, servicos, clientes] = await Promise.all([
+    api('listarAgenda'), api('listarProfissionais'), api('listarServicos'), api('listarClientes')
+  ]);
+  return {agenda, profs, servicos, clientes};
+}
+const STATUS_LIST = ['livre','confirmado','andamento','finalizado','cancelado'];
+const STATUS_LABEL = {livre:'Livre', confirmado:'Confirmado', andamento:'Em Atendimento', finalizado:'Finalizado', cancelado:'Cancelado'};
+// Formas de pagamento usadas tanto no Recibo quanto no Financeiro — mantidas
+// num único lugar para as duas telas ficarem sempre consistentes.
+const FORMA_PAGAMENTO_LABEL = {pix:'Pix', dinheiro:'Dinheiro', debito:'Débito', credito_avista:'Crédito à Vista', credito_parcelado:'Crédito Parcelado'};
+function formaPagamentoOptionsHtml(selecionado){
+  return Object.keys(FORMA_PAGAMENTO_LABEL).map(k=>`<option value="${k}" ${selecionado===k?'selected':''}>${FORMA_PAGAMENTO_LABEL[k]}</option>`).join('');
+}
+// Profissionais com estas especialidades têm o horário travado: não é possível
+// marcar dois atendimentos no mesmo horário para a mesma pessoa. Os demais
+// profissionais não sofrem esse bloqueio e podem atender mais de um serviço
+// no mesmo horário (ex.: cliente em coloração enquanto outra recebe make).
+const ESPECIALIDADES_COM_BLOQUEIO = ['manicure', 'pedicure', 'nail design'];
+function especialidadeTemBloqueio(especialidade){
+  const s = String(especialidade||'').toLowerCase();
+  return ESPECIALIDADES_COM_BLOQUEIO.some(e => s.includes(e));
+}
+function horaParaMinutos(hora){ const [h,m] = String(hora).split(':').map(Number); return h*60+(m||0); }
+// Verifica se um novo agendamento colide com outro já existente para o mesmo
+// profissional/data, considerando início e duração. excludeId ignora o próprio
+// registro quando estamos editando um agendamento existente.
+function encontrarConflitoAgenda(agendaList, profissionalId, data, hora, duracao, excludeId){
+  const inicio = horaParaMinutos(hora), fim = inicio + Number(duracao||0);
+  return agendaList.find(a=>{
+    if(a.id===excludeId) return false;
+    if(a.profissionalId!==profissionalId || a.data!==data) return false;
+    if(a.status==='cancelado') return false;
+    const aInicio = horaParaMinutos(a.hora), aFim = aInicio + Number(a.duracao||0);
+    return inicio < aFim && aInicio < fim;
+  });
+}
+
+RENDERERS.agenda = async function(){
+  const ctx = await loadAgendaContext();
+  const st = tableState('agenda');
+  if(!st.profFilter) st.profFilter=''; if(!st.servFilter) st.servFilter='';
+  const todayISO = new Date().toISOString().slice(0,10);
+  let list = ctx.agenda.filter(a=>a.data===todayISO);
+  if(st.profFilter) list = list.filter(a=>a.profissionalId===st.profFilter);
+  if(st.servFilter) list = list.filter(a=>a.servicoId===st.servFilter);
+  if(st.search){
+    const q=st.search.toLowerCase();
+    list = list.filter(a=>{
+      const c = ctx.clientes.find(x=>x.id===a.clienteId);
+      return c && c.nome.toLowerCase().includes(q);
+    });
+  }
+  list.sort((a,b)=>a.hora.localeCompare(b.hora));
+  const nomeCli=id=>(ctx.clientes.find(c=>c.id===id)||{}).nome||'—';
+  const nomeProf=id=>(ctx.profs.find(c=>c.id===id)||{}).nome||'—';
+  const nomeServ=id=>(ctx.servicos.find(c=>c.id===id)||{}).nome||'—';
+
+  return `
+    <div class="agenda-toolbar">
+      <div class="toolbar" style="margin-bottom:0;">
+        <div class="search-box"><span>🔎</span><input placeholder="Pesquisar cliente..." value="${st.search||''}" oninput="searchTable('agenda',this.value)"></div>
+        <select class="select-filter" onchange="setAgendaFilter('prof',this.value)">
+          <option value="">Todos profissionais</option>
+          ${ctx.profs.map(p=>`<option value="${p.id}" ${st.profFilter===p.id?'selected':''}>${p.nome}</option>`).join('')}
+        </select>
+        <select class="select-filter" onchange="setAgendaFilter('serv',this.value)">
+          <option value="">Todos serviços</option>
+          ${ctx.servicos.map(s=>`<option value="${s.id}" ${st.servFilter===s.id?'selected':''}>${s.nome}</option>`).join('')}
+        </select>
+      </div>
+      <button class="btn btn-gold" onclick="openAgendaModal()">+ Novo Agendamento</button>
+    </div>
+    <div class="legend">
+      <span><span class="dot livre"></span>Livre</span>
+      <span><span class="dot confirmado"></span>Confirmado</span>
+      <span><span class="dot andamento"></span>Em atendimento</span>
+      <span><span class="dot finalizado"></span>Finalizado</span>
+      <span><span class="dot cancelado"></span>Cancelado</span>
+    </div>
+    <div class="card card-pad">
+      <div class="agenda-day">
+        ${list.length ? list.map(a=>`
+          <div class="slot ${a.status}" onclick="openAgendaModal('${a.id}')">
+            <div class="time">${a.hora}</div>
+            <div class="info">
+              <div class="cli">${nomeCli(a.clienteId)} · ${nomeServ(a.servicoId)}</div>
+              <div class="meta">com ${nomeProf(a.profissionalId)} · ${a.duracao}min · ${fmtMoney(a.valor)}</div>
+            </div>
+            <span class="tag tag-${a.status}">${STATUS_LABEL[a.status]}</span>
+          </div>`).join('') : `<div class="empty-state"><div class="ico">📅</div>Nenhum horário encontrado para os filtros selecionados.</div>`}
+      </div>
+    </div>`;
+};
+function setAgendaFilter(kind,val){
+  const st=tableState('agenda');
+  if(kind==='prof') st.profFilter=val; else st.servFilter=val;
+  navigate(STATE.currentView);
+}
+
+RENDERERS.minhaagenda = async function(){
+  const ctx = await loadAgendaContext();
+  const myId = STATE.user.profissionalId;
+  const todayISO = new Date().toISOString().slice(0,10);
+  const list = ctx.agenda.filter(a=>a.profissionalId===myId && a.data===todayISO).sort((a,b)=>a.hora.localeCompare(b.hora));
+  const nomeCli=id=>(ctx.clientes.find(c=>c.id===id)||{}).nome||'—';
+  const nomeServ=id=>(ctx.servicos.find(c=>c.id===id)||{}).nome||'—';
+  return `
+    <div class="toolbar"><div style="flex:1;"></div>
+      <button class="btn btn-gold" onclick="openAgendaModal(null, '${myId}')">+ Novo Agendamento</button>
+    </div>
+    <div class="legend">
+      <span><span class="dot livre"></span>Livre</span><span><span class="dot confirmado"></span>Confirmado</span>
+      <span><span class="dot andamento"></span>Em atendimento</span><span><span class="dot finalizado"></span>Finalizado</span>
+      <span><span class="dot cancelado"></span>Cancelado</span>
+    </div>
+    <div class="card card-pad"><div class="agenda-day">
+      ${list.length ? list.map(a=>`
+        <div class="slot ${a.status}" onclick="openAgendaModal('${a.id}', '${myId}')">
+          <div class="time">${a.hora}</div>
+          <div class="info"><div class="cli">${nomeCli(a.clienteId)} · ${nomeServ(a.servicoId)}</div>
+          <div class="meta">${a.duracao}min · ${fmtMoney(a.valor)}</div></div>
+          <span class="tag tag-${a.status}">${STATUS_LABEL[a.status]}</span>
+        </div>`).join('') : `<div class="empty-state"><div class="ico">📅</div>Nenhum atendimento hoje. Aproveite para revisar sua agenda semanal ou agendar um novo cliente.</div>`}
+    </div></div>`;
+};
+RENDERERS.agendasemanal = async function(){
+  const ctx = await loadAgendaContext();
+  const myId = STATE.user.profissionalId;
+  const base = new Date(); base.setDate(base.getDate()-base.getDay());
+  const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const cols = [];
+  for(let i=0;i<7;i++){
+    const d = new Date(base); d.setDate(base.getDate()+i);
+    const iso = d.toISOString().slice(0,10);
+    cols.push({label:dias[i], date:d.getDate(), items: ctx.agenda.filter(a=>a.profissionalId===myId && a.data===iso).sort((a,b)=>a.hora.localeCompare(b.hora))});
+  }
+  const nomeCli=id=>(ctx.clientes.find(c=>c.id===id)||{}).nome||'—';
+  return `<div class="week-grid">
+    ${cols.map(c=>`
+      <div class="week-col">
+        <div class="wd">${c.label} ${c.date}</div>
+        ${c.items.length? c.items.map(a=>`
+          <div class="week-slot ${a.status}" style="border-color:var(--${a.status==='livre'?'success':a.status==='confirmado'?'info':a.status==='andamento'?'gold-600':a.status==='finalizado'?'ink-500':'danger'});background:var(--nude-50);">
+            <b>${a.hora}</b> ${nomeCli(a.clienteId)}
+          </div>`).join('') : `<div style="font-size:11px;color:var(--ink-500);text-align:center;padding-top:20px;">—</div>`}
+      </div>`).join('')}
+  </div>`;
+};
+RENDERERS.meuperfil = async function(){
+  const profs = await api('listarProfissionais');
+  const me = profs.find(p=>p.id===STATE.user.profissionalId) || {};
+  return `
+    <div class="card card-pad" style="max-width:480px;">
+      <div style="text-align:center;">
+        <div class="avatar-lg" style="margin:0 auto 12px;">${initials(STATE.user.nome)}</div>
+        <h3>${STATE.user.nome}</h3>
+        <div class="cell-sub">${me.especialidade||'—'}</div>
+      </div>
+      <div class="prof-card stats" style="margin-top:18px;border-top:1px dashed var(--nude-200);padding-top:14px;">
+        <div><b>${me.comissao||0}%</b>comissão</div>
+        <div><b>${me.atendimentosMes||0}</b>atend. no mês</div>
+      </div>
+    </div>`;
+};
+
+/* Agenda modal (create/edit). lockProfissionalId trava o campo Profissional
+   (usado quando uma Profissional agenda pela própria "Minha Agenda" — ela só
+   pode marcar horários para si mesma, nunca para outra pessoa da equipe). */
+async function openAgendaModal(id, lockProfissionalId){
+  const ctx = await loadAgendaContext();
+  const item = id ? ctx.agenda.find(a=>a.id===id) : null;
+  const profsDisponiveis = lockProfissionalId ? ctx.profs.filter(p=>p.id===lockProfissionalId) : ctx.profs;
+  const overlay = openModal(`
+    <div class="modal-head"><h3>${item?'Editar Agendamento':'Novo Agendamento'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field full"><label>Cliente</label>
+          <select id="ag-cliente">${ctx.clientes.map(c=>`<option value="${c.id}" ${item&&item.clienteId===c.id?'selected':''}>${c.nome}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>Serviço</label>
+          <select id="ag-servico" onchange="onAgendaServicoChange()">${ctx.servicos.map(s=>`<option value="${s.id}" data-preco="${s.preco}" data-duracao="${s.duracao}" ${item&&item.servicoId===s.id?'selected':''}>${s.nome}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>Profissional</label>
+          <select id="ag-profissional" ${lockProfissionalId?'disabled':''}>${profsDisponiveis.map(p=>`<option value="${p.id}" ${(item&&item.profissionalId===p.id)||(!item&&lockProfissionalId===p.id)?'selected':''}>${p.nome}</option>`).join('')}</select>
+          ${lockProfissionalId?'<div class="helper-text" style="margin-top:4px;">Você só pode agendar horários para você mesma.</div>':''}
+        </div>
+        <div class="field"><label>Data</label><input type="date" id="ag-data" value="${item?item.data:new Date().toISOString().slice(0,10)}"></div>
+        <div class="field"><label>Hora</label><input type="time" id="ag-hora" value="${item?item.hora:'09:00'}"></div>
+        <div class="field"><label>Duração (min)</label><input type="number" id="ag-duracao" value="${item?item.duracao:45}"></div>
+        <div class="field"><label>Valor (R$)</label><input type="number" step="0.01" id="ag-valor" value="${item?item.valor:90}"></div>
+        <div class="field full"><label>Status</label>
+          <select id="ag-status">${STATUS_LIST.map(s=>`<option value="${s}" ${item&&item.status===s?'selected':(!item&&s==='confirmado'?'selected':'')}>${STATUS_LABEL[s]}</option>`).join('')}</select>
+        </div>
+        <div class="field full"><label>Observações</label><input type="text" id="ag-obs" value="${item?escapeHtml(item.obs||''):''}"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteAgenda('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveAgenda('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+function onAgendaServicoChange(){
+  const sel = document.getElementById('ag-servico');
+  const opt = sel.selectedOptions[0];
+  document.getElementById('ag-valor').value = opt.dataset.preco;
+  document.getElementById('ag-duracao').value = opt.dataset.duracao;
+}
+async function saveAgenda(id){
+  const payload = {
+    id: id||undefined,
+    clienteId: document.getElementById('ag-cliente').value,
+    servicoId: document.getElementById('ag-servico').value,
+    profissionalId: document.getElementById('ag-profissional').value,
+    data: document.getElementById('ag-data').value,
+    hora: document.getElementById('ag-hora').value,
+    duracao: Number(document.getElementById('ag-duracao').value),
+    valor: Number(document.getElementById('ag-valor').value),
+    status: document.getElementById('ag-status').value,
+    obs: document.getElementById('ag-obs').value,
+  };
+  const [profs, agendaAtual] = await Promise.all([api('listarProfissionais'), api('listarAgenda')]);
+  const prof = profs.find(p=>p.id===payload.profissionalId);
+  if(prof && especialidadeTemBloqueio(prof.especialidade)){
+    const conflito = encontrarConflitoAgenda(agendaAtual, payload.profissionalId, payload.data, payload.hora, payload.duracao, id);
+    if(conflito){
+      toast(`Horário indisponível: ${prof.nome} já tem um atendimento marcado nesse período.`,'error');
+      return;
+    }
+  }
+  showLoader(true);
+  try{ await api('salvarAgendamento', payload); showLoader(false); closeModal(); toast('Agendamento salvo com sucesso.','success'); navigate('agenda'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar agendamento.','error'); }
+}
+async function deleteAgenda(id){
+  if(!confirm('Excluir este agendamento?')) return;
+  showLoader(true);
+  try{ await api('excluirAgendamento',{id}); showLoader(false); closeModal(); toast('Agendamento excluído.','success'); navigate('agenda'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+
+/* ---------- CLIENTES ---------- */
+RENDERERS.clientes = async function(){
+  const raw = await api('listarClientes');
+  const st = tableState('clientes');
+  const {pageData, total, pages} = applyTableControls('clientes', raw, {
+    searchKeys:['nome','telefone','cpf'],
+    customFilter:(data,st)=> st.filter==='vip' ? data.filter(c=>c.vip) : data
+  });
+  return `
+    <div class="toolbar">
+      <div class="search-box"><span>🔎</span><input placeholder="Pesquisar por nome, telefone ou CPF..." value="${st.search||''}" oninput="searchTable('clientes',this.value)"></div>
+      <select class="select-filter" onchange="filterTable('clientes',this.value)">
+        <option value="">Todos os clientes</option>
+        <option value="vip" ${st.filter==='vip'?'selected':''}>Grupo VIP</option>
+      </select>
+      <button class="btn btn-gold" onclick="openClienteModal()">+ Novo Cliente</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th onclick="sortTable('clientes','nome')">Cliente</th>
+          <th onclick="sortTable('clientes','telefone')">Telefone</th>
+          <th onclick="sortTable('clientes','ultimaVisita')">Última Visita</th>
+          <th>Status</th><th style="text-align:right;">Ações</th>
+        </tr></thead>
+        <tbody>
+          ${pageData.length ? pageData.map(c=>`
+            <tr>
+              <td><span class="avatar-mini">${initials(c.nome)}</span><span class="cell-name">${c.nome}</span></td>
+              <td>${c.telefone}</td>
+              <td>${fmtDate(c.ultimaVisita)}</td>
+              <td>${c.vip?'<span class="tag tag-vip">VIP</span>':'<span class="cell-sub">Regular</span>'}</td>
+              <td><div class="row-actions" style="justify-content:flex-end;">
+                <button class="btn btn-outline btn-icon btn-sm" title="WhatsApp" onclick="sendWhatsApp('${c.id}')">💬</button>
+                <button class="btn btn-outline btn-icon btn-sm" title="Anamnese" onclick="sendAnamnese('${c.id}')">📋</button>
+                <button class="btn btn-outline btn-icon btn-sm" title="Histórico" onclick="openHistorico('${c.id}')">🕒</button>
+                <button class="btn btn-outline btn-icon btn-sm" title="Editar" onclick="openClienteModal('${c.id}')">✎</button>
+                <button class="btn btn-danger-outline btn-icon btn-sm" title="Excluir" onclick="deleteCliente('${c.id}')">🗑</button>
+              </div></td>
+            </tr>`).join('') : `<tr><td colspan="5"><div class="empty-state"><div class="ico">👤</div>Nenhum cliente encontrado.</div></td></tr>`}
+        </tbody>
+      </table>
+      ${paginationHtml('clientes', total, pages)}
+    </div>`;
+};
+async function openClienteModal(id){
+  const list = await api('listarClientes');
+  const item = id ? list.find(c=>c.id===id) : null;
+  openModal(`
+    <div class="modal-head"><h3>${item?'Editar Cliente':'Novo Cliente'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field full"><label>Nome completo</label><input id="cl-nome" value="${item?escapeHtml(item.nome):''}"></div>
+        <div class="field"><label>Telefone</label><input id="cl-telefone" data-mask="phone" value="${item?item.telefone:''}" placeholder="(00) 00000-0000"></div>
+        <div class="field"><label>CPF</label><input id="cl-cpf" data-mask="cpf" value="${item?item.cpf:''}" placeholder="000.000.000-00"></div>
+        <div class="field"><label>Aniversário (MM-DD)</label><input id="cl-aniversario" value="${item?item.aniversario:''}" placeholder="07-15"></div>
+        <div class="field"><label>Grupo</label>
+          <select id="cl-vip"><option value="false" ${item&&!item.vip?'selected':''}>Regular</option><option value="true" ${item&&item.vip?'selected':''}>VIP</option></select>
+        </div>
+        <div class="field full"><label>Observações / Anamnese</label><input id="cl-obs" value="${item?escapeHtml(item.observacoes||''):''}"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteCliente('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveCliente('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+async function saveCliente(id){
+  const payload = {
+    id: id||undefined,
+    nome: document.getElementById('cl-nome').value.trim(),
+    telefone: document.getElementById('cl-telefone').value,
+    cpf: document.getElementById('cl-cpf').value,
+    aniversario: document.getElementById('cl-aniversario').value,
+    vip: document.getElementById('cl-vip').value==='true',
+    observacoes: document.getElementById('cl-obs').value,
+    ultimaVisita: (await api('listarClientes')).find(c=>c.id===id)?.ultimaVisita || new Date().toISOString().slice(0,10),
+  };
+  if(!payload.nome){ toast('Informe o nome do cliente.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarCliente',payload); showLoader(false); closeModal(); toast('Cliente salvo com sucesso.','success'); navigate('clientes'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar cliente.','error'); }
+}
+async function deleteCliente(id){
+  if(!confirm('Excluir este cliente?')) return;
+  showLoader(true);
+  try{ await api('excluirCliente',{id}); showLoader(false); closeModal(); toast('Cliente excluído.','success'); navigate('clientes'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+async function sendWhatsApp(id){
+  const c = (await api('listarClientes')).find(x=>x.id===id);
+  const phone = (c.telefone||'').replace(/\D/g,'');
+  window.open(`https://wa.me/55${phone}`,'_blank');
+}
+async function sendAnamnese(id){
+  const isConfigured = /^https?:\/\/.+/.test(ANAMNESE_FORM_URL) && !ANAMNESE_FORM_URL.startsWith('COLE_AQUI');
+  if(!isConfigured){
+    toast('Configure a constante ANAMNESE_FORM_URL no topo do index.html com o link do anamnese.html publicado.','error');
+    return;
+  }
+  // Abre a aba em branco IMEDIATAMENTE (ainda de forma síncrona ao clique), antes
+  // de qualquer await — navegadores bloqueiam window.open() como pop-up quando ele
+  // acontece depois de uma operação assíncrona (ex.: aguardar a API responder).
+  const janela = window.open('', '_blank');
+  const c = (await api('listarClientes')).find(x=>x.id===id);
+  if(!c){ if(janela) janela.close(); toast('Cliente não encontrado.','error'); return; }
+  const phone = (c.telefone||'').replace(/\D/g,'');
+  if(!phone){ if(janela) janela.close(); toast('Este cliente não tem telefone cadastrado — edite o cliente e adicione o telefone.','error'); return; }
+  const link = `${ANAMNESE_FORM_URL}?cliente=${encodeURIComponent(id)}`;
+  const mensagem = `Olá, ${c.nome}! Antes do seu atendimento na Sandra Júlia, por favor preencha sua ficha de anamnese pelo link: ${link}`;
+  const url = `https://wa.me/55${phone}?text=${encodeURIComponent(mensagem)}`;
+  if(janela) janela.location.href = url; else window.open(url,'_blank');
+  toast('WhatsApp aberto com o link da ficha de anamnese.','success');
+}
+async function openHistorico(id){
+  const [c, agenda, servicos, anamneses] = await Promise.all([
+    api('listarClientes').then(l=>l.find(x=>x.id===id)), api('listarAgenda'), api('listarServicos'), api('listarAnamneses')
+  ]);
+  const hist = agenda.filter(a=>a.clienteId===id).sort((a,b)=>b.data.localeCompare(a.data));
+  const nomeServ=id2=>(servicos.find(s=>s.id===id2)||{}).nome||'—';
+  const fichasCliente = anamneses.filter(a=>a.clienteId===id).sort((a,b)=>b.data.localeCompare(a.data));
+  const ultimaFicha = fichasCliente[0];
+  const simNao = v => v==='sim' ? 'Sim' : v==='nao' ? 'Não' : (v||'—');
+  openModal(`
+    <div class="modal-head"><h3>Histórico · ${c.nome}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <h4 style="font-size:14px;margin-bottom:10px;">Atendimentos</h4>
+      ${hist.length? hist.map(a=>`
+        <div class="list-row"><span class="dot ${a.status}"></span>
+          <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${nomeServ(a.servicoId)}</div>
+          <div class="cell-sub">${fmtDate(a.data)} às ${a.hora} · ${fmtMoney(a.valor)}</div></div>
+          <span class="tag tag-${a.status}">${STATUS_LABEL[a.status]}</span>
+        </div>`).join('') : `<div class="empty-state">Nenhum atendimento registrado ainda.</div>`}
+
+      <h4 style="font-size:14px;margin:18px 0 10px;border-top:1px dashed var(--nude-200);padding-top:16px;">Ficha de Anamnese</h4>
+      ${ultimaFicha ? `
+        <p class="cell-sub" style="margin-bottom:10px;">Preenchida em ${fmtDate(ultimaFicha.data)} · assinada por ${escapeHtml(ultimaFicha.assinatura||'')}</p>
+        <div class="list-row"><div style="flex:1;">Alergias</div><b>${simNao(ultimaFicha.alergia)}${ultimaFicha.alergiaDescricao?': '+escapeHtml(ultimaFicha.alergiaDescricao):''}</b></div>
+        <div class="list-row"><div style="flex:1;">Gestante/amamentando</div><b>${simNao(ultimaFicha.gestanteAmamentando)}</b></div>
+        <div class="list-row"><div style="flex:1;">Medicamentos contínuos</div><b>${simNao(ultimaFicha.medicamentos)}${ultimaFicha.medicamentosDescricao?': '+escapeHtml(ultimaFicha.medicamentosDescricao):''}</b></div>
+        <div class="list-row"><div style="flex:1;">Química recente</div><b>${simNao(ultimaFicha.quimicaRecente)}</b></div>
+        <div class="list-row"><div style="flex:1;">Problema de pele/couro cabeludo/unha</div><b>${simNao(ultimaFicha.problemaPele)}${ultimaFicha.problemaPeleDescricao?': '+escapeHtml(ultimaFicha.problemaPeleDescricao):''}</b></div>
+        <div class="list-row"><div style="flex:1;">Reação alérgica anterior</div><b>${simNao(ultimaFicha.reacaoAlergicaAnterior)}</b></div>
+        <div class="list-row"><div style="flex:1;">Autoriza uso de imagem</div><b>${simNao(ultimaFicha.autorizaImagem)}</b></div>
+        ${ultimaFicha.observacoes?`<div class="list-row"><div style="flex:1;">Observações</div><b>${escapeHtml(ultimaFicha.observacoes)}</b></div>`:''}
+      ` : `<div class="empty-state">Nenhuma ficha de anamnese preenchida ainda. Use o botão 💬📋 na lista de clientes para enviar o link pelo WhatsApp.</div>`}
+    </div>
+    <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Fechar</button></div>`);
+}
+
+/* ---------- PROFISSIONAIS ---------- */
+RENDERERS.profissionais = async function(){
+  const list = await api('listarProfissionais');
+  return `
+    <div class="toolbar"><div style="flex:1;"></div>
+      <button class="btn btn-gold" onclick="openProfissionalModal()">+ Novo Profissional</button>
+    </div>
+    <div class="profile-cards">
+      ${list.map(p=>`
+        <div class="prof-card">
+          <div class="avatar-lg">${initials(p.nome)}</div>
+          <h4>${p.nome}</h4>
+          <div class="spec">${p.especialidade}</div>
+          ${p.pix?`<div class="cell-sub" style="margin-bottom:6px;">Pix: ${escapeHtml(p.pix)}</div>`:''}
+          <div class="stats">
+            <div><b>${p.comissao}%</b>comissão</div>
+            <div><b>${p.atendimentosMes||0}</b>atend./mês</div>
+          </div>
+          <div class="row-actions" style="justify-content:center;margin-top:12px;flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" onclick="navigate('agenda')">Agenda</button>
+            <button class="btn btn-outline btn-sm" onclick="openReciboModal('${p.id}')">Recibo</button>
+            <button class="btn btn-outline btn-sm" title="Registrar consumo (desconta da comissão)" onclick="openConsumoProfissionalModal('${p.id}')">Consumo</button>
+            <button class="btn btn-outline btn-sm" onclick="openProfissionalModal('${p.id}')">Editar</button>
+          </div>
+        </div>`).join('')}
+    </div>`;
+};
+async function openConsumoProfissionalModal(profissionalId){
+  const [profs, cardapio, produtos] = await Promise.all([api('listarProfissionais'), api('listarCardapioConsumo'), api('listarProdutos')]);
+  const prof = profs.find(p=>p.id===profissionalId);
+  const consignados = produtos.filter(p=>p.consignado);
+  openModal(`<div class="modal-head"><h3>Registrar Consumo · ${escapeHtml(prof.nome)}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <p class="helper-text" style="margin-bottom:14px;">O valor registrado aqui é descontado da comissão a pagar para ${escapeHtml(prof.nome)}, visível no relatório "Comissão das Profissionais".</p>
+      <div class="form-grid">
+        <div class="field full"><label>Origem</label>
+          <select id="cp-origem" onchange="onOrigemConsumoChange()">
+            <option value="cardapio">Item do Cardápio de Consumação</option>
+            <option value="produto">Produto Consignado</option>
+          </select>
+        </div>
+        <div class="field" id="cp-item-cardapio-field">
+          <label>Item</label>
+          <select id="cp-item-cardapio" onchange="onItemConsumoChange()">
+            <option value="">Selecione...</option>
+            ${cardapio.map(c=>`<option value="${c.id}" data-preco="${c.preco}" data-nome="${escapeHtml(c.nome)}">${c.nome} (${fmtMoney(c.preco)})</option>`).join('')}
+          </select>
+        </div>
+        <div class="field" id="cp-item-produto-field" style="display:none;">
+          <label>Produto</label>
+          <select id="cp-item-produto" onchange="onItemConsumoChange()">
+            <option value="">Selecione...</option>
+            ${consignados.map(p=>`<option value="${p.id}" data-preco="${p.preco}" data-nome="${escapeHtml(p.nome)}">${p.nome} (${fmtMoney(p.preco)})</option>`).join('')}
+          </select>
+        </div>
+        <div class="field"><label>Quantidade</label><input id="cp-quantidade" type="number" min="1" value="1" oninput="onItemConsumoChange()"></div>
+        <div class="field full"><label>Valor total a descontar (R$)</label><input id="cp-valor" type="number" step="0.01" value="0"></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveConsumoProfissional('${profissionalId}')">Registrar Desconto</button></div>`);
+}
+function onOrigemConsumoChange(){
+  const origem = document.getElementById('cp-origem').value;
+  document.getElementById('cp-item-cardapio-field').style.display = origem==='cardapio' ? '' : 'none';
+  document.getElementById('cp-item-produto-field').style.display = origem==='produto' ? '' : 'none';
+  onItemConsumoChange();
+}
+function onItemConsumoChange(){
+  const origem = document.getElementById('cp-origem').value;
+  const sel = origem==='cardapio' ? document.getElementById('cp-item-cardapio') : document.getElementById('cp-item-produto');
+  const preco = sel.selectedOptions[0]?.dataset.preco;
+  const qtd = Number(document.getElementById('cp-quantidade').value||1);
+  if(preco) document.getElementById('cp-valor').value = (Number(preco)*qtd).toFixed(2);
+}
+async function saveConsumoProfissional(profissionalId){
+  const origem = document.getElementById('cp-origem').value;
+  const sel = origem==='cardapio' ? document.getElementById('cp-item-cardapio') : document.getElementById('cp-item-produto');
+  const nomeItem = sel.selectedOptions[0]?.dataset.nome || '';
+  const quantidade = Number(document.getElementById('cp-quantidade').value||1);
+  const valor = Number(document.getElementById('cp-valor').value||0);
+  if(!nomeItem || !valor){ toast('Selecione um item e confira o valor.','error'); return; }
+  showLoader(true);
+  try{
+    await api('salvarDescontoComissao', {
+      data: new Date().toISOString().slice(0,10), profissionalId,
+      descricao: `${nomeItem} x${quantidade}`, valor, origem: origem==='cardapio'?'consumo_cardapio':'consumo_produto',
+    });
+    if(origem==='produto'){
+      await api('registrarMovimentacaoEstoque', {produtoId:sel.value, tipo:'saida', quantidade, observacao:'Consumo do profissional', data:new Date().toISOString().slice(0,10)});
+    }
+    showLoader(false); closeModal(); toast('Consumo registrado e descontado da comissão.','success');
+  }catch(e){ showLoader(false); toast('Erro ao registrar consumo.','error'); }
+}
+async function openProfissionalModal(id){
+  const list = await api('listarProfissionais');
+  const item = id? list.find(p=>p.id===id): null;
+  openModal(`
+    <div class="modal-head"><h3>${item?'Editar Profissional':'Novo Profissional'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field full"><label>Nome</label><input id="pf-nome" value="${item?escapeHtml(item.nome):''}"></div>
+      <div class="field"><label>Especialidade</label><input id="pf-especialidade" value="${item?escapeHtml(item.especialidade):''}"></div>
+      <div class="field"><label>Comissão (%)</label><input id="pf-comissao" type="number" value="${item?item.comissao:30}"></div>
+      <div class="field full"><label>Pix para recebimento</label><input id="pf-pix" value="${item?escapeHtml(item.pix||''):''}" placeholder="Chave pix (CPF, e-mail, telefone ou aleatória)"></div>
+    </div></div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteProfissional('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveProfissional('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+async function saveProfissional(id){
+  const payload = {id:id||undefined, nome:document.getElementById('pf-nome').value.trim(),
+    especialidade:document.getElementById('pf-especialidade').value, comissao:Number(document.getElementById('pf-comissao').value),
+    pix:document.getElementById('pf-pix').value, ativo:true};
+  if(!payload.nome){ toast('Informe o nome do profissional.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarProfissional',payload); showLoader(false); closeModal(); toast('Profissional salvo.','success'); navigate('profissionais'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar.','error'); }
+}
+async function deleteProfissional(id){
+  if(!confirm('Excluir este profissional?')) return;
+  showLoader(true);
+  try{ await api('excluirProfissional',{id}); showLoader(false); closeModal(); toast('Profissional excluído.','success'); navigate('profissionais'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+
+/* ---------- RECIBOS ----------
+   Reproduz digitalmente o bloco de recibo físico do salão: dados do cliente,
+   até 5 linhas de Atendente/Serviço/Comissão/Valor, Café/Consumo, Produtos/
+   Vendas, Crédito e Total Recebido — com opção de imprimir em um formato
+   compatível com a folha do talão. ---------- */
+RENDERERS.recibos = async function(){
+  const raw = await api('listarRecibos');
+  const st = tableState('recibos');
+  const {pageData,total,pages} = applyTableControls('recibos', raw, {searchKeys:['clienteNome','cpf']});
+  return `
+    <div class="toolbar">
+      <div class="search-box"><span>🔎</span><input placeholder="Pesquisar por cliente ou CPF..." value="${st.search||''}" oninput="searchTable('recibos',this.value)"></div>
+      <button class="btn btn-gold" onclick="openReciboModal()">+ Novo Recibo</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th onclick="sortTable('recibos','data')">Data</th><th onclick="sortTable('recibos','clienteNome')">Cliente</th><th>Total Recebido</th><th style="text-align:right;">Ações</th></tr></thead>
+      <tbody>${pageData.length?pageData.slice().sort((a,b)=>b.data.localeCompare(a.data)).map(r=>`
+        <tr><td>${fmtDate(r.data)}</td><td class="cell-name">${r.clienteNome||'—'}</td><td>${fmtMoney(r.totalRecebido)}</td>
+        <td><div class="row-actions" style="justify-content:flex-end;">
+          <button class="btn btn-outline btn-sm" onclick="printRecibo('${r.id}')">🖨 Imprimir</button>
+        </div></td></tr>`).join(''):`<tr><td colspan="4"><div class="empty-state"><div class="ico">🧾</div>Nenhum recibo emitido ainda.</div></td></tr>`}
+      </tbody></table>${paginationHtml('recibos',total,pages)}</div>`;
+};
+
+// Estado das listas dinâmicas do recibo em edição (comanda de consumação e
+// produtos consignados vendidos) — arrays simples de {itemId, quantidade}.
+let _reciboComanda = [];
+let _reciboConsignados = [];
+
+async function openReciboModal(prefillProfissionalId){
+  const [clientes, profs, servicos, comissoesServico, cardapio, produtos] = await Promise.all([
+    api('listarClientes'), api('listarProfissionais'), api('listarServicos'), api('listarComissoesServico'),
+    api('listarCardapioConsumo'), api('listarProdutos')
+  ]);
+  window._comissoesServicoCache = comissoesServico;
+  window._clientesCache = clientes;
+  window._cardapioCache = cardapio;
+  window._produtosConsignadosCache = produtos.filter(p=>p.consignado);
+  _reciboComanda = [];
+  _reciboConsignados = [];
+
+  const clienteOptions = `<option value="">Selecione um cliente...</option>` +
+    clientes.map(c=>`<option value="${c.id}" data-telefone="${c.telefone||''}" data-aniversario="${c.aniversario||''}" data-cpf="${c.cpf||''}" data-saldo="${c.saldoCredito||0}">${c.nome}</option>`).join('') +
+    `<option value="__novo__">+ Cadastrar Novo Cliente</option>`;
+  const profOptions = `<option value="">—</option>` + profs.map(p=>`<option value="${p.id}" data-comissao="${p.comissao}" ${p.id===prefillProfissionalId?'selected':''}>${p.nome}</option>`).join('');
+  const servOptions = `<option value="">—</option>` + servicos.map(s=>`<option value="${s.id}" data-preco="${s.preco}">${s.nome}</option>`).join('');
+  const rows = [0,1,2,3,4].map(i=>`
+    <tr>
+      <td><select class="rc-atendente" data-row="${i}" onchange="reciboRecalcRow(${i})">${profOptions}</select></td>
+      <td><select class="rc-servico" data-row="${i}" onchange="reciboRecalcRow(${i})">${servOptions}</select></td>
+      <td><input class="rc-comissao" data-row="${i}" type="number" step="0.01" placeholder="0,00" oninput="reciboRecalcTotal()"></td>
+      <td><input class="rc-valor" data-row="${i}" type="number" step="0.01" placeholder="0,00" oninput="reciboRecalcTotal()"></td>
+    </tr>`).join('');
+  openModal(`
+    <div class="modal-head"><h3>Novo Recibo</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field full"><label>Cliente</label>
+          <select id="rc-cliente-select" onchange="onClienteReciboChange()">${clienteOptions}</select>
+        </div>
+        <div class="field full" id="rc-novo-cliente-field" style="display:none;">
+          <label>Nome do Novo Cliente</label>
+          <input id="rc-novo-cliente-nome" placeholder="Nome completo">
+          <div class="helper">Será cadastrado automaticamente em Clientes ao salvar o recibo.</div>
+        </div>
+        <div class="field"><label>Telefone</label><input id="rc-telefone" data-mask="phone" placeholder="(00) 00000-0000"></div>
+        <div class="field"><label>Data Aniv.</label><input id="rc-aniversario" placeholder="DD/MM"></div>
+        <div class="field"><label>Instagram</label><input id="rc-instagram" placeholder="@usuario"></div>
+        <div class="field"><label>CPF</label><input id="rc-cpf" data-mask="cpf" placeholder="000.000.000-00"></div>
+      </div>
+      <div class="card card-pad" id="rc-saldo-credito-box" style="background:var(--nude-50);margin-bottom:16px;display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div><label style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--ink-500);">Saldo de crédito de loja deste cliente</label>
+          <div id="rc-saldo-credito-valor" style="font-family:var(--font-display);font-size:22px;">R$ 0,00</div></div>
+        </div>
+      </div>
+
+      <div class="table-wrap" style="margin-top:16px;">
+        <table><thead><tr><th>Atendente</th><th>Serviço</th><th>Comissão</th><th>Valor</th></tr></thead>
+        <tbody>${rows}</tbody></table>
+      </div>
+
+      <div class="section-head" style="margin-top:18px;"><div><h3 style="font-size:16px;">Comanda de Consumação</h3><div class="ribbon"></div></div>
+        <button class="btn btn-outline btn-sm" onclick="addComandaRow()">+ Adicionar Item</button></div>
+      <div id="rc-comanda-container"></div>
+      <div style="text-align:right;font-size:13px;font-weight:700;margin-top:6px;">Subtotal Consumação: <span id="rc-comanda-total">R$ 0,00</span></div>
+
+      <div class="section-head" style="margin-top:18px;"><div><h3 style="font-size:16px;">Produtos Consignados Vendidos</h3><div class="ribbon"></div></div>
+        <button class="btn btn-outline btn-sm" onclick="addConsignadoRow()">+ Adicionar Produto</button></div>
+      <div id="rc-consignado-container"></div>
+      <div style="text-align:right;font-size:13px;font-weight:700;margin-top:6px;">Subtotal Produtos: <span id="rc-consignado-total">R$ 0,00</span></div>
+
+      <div class="form-grid" style="margin-top:18px;">
+        <div class="field"><label>Desconto Manual (R$)</label><input id="rc-desconto-manual" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"><div class="helper">Desconto avulso, sem relação com o saldo de crédito.</div></div>
+        <div class="field"><label>Usar Crédito da Loja (R$)</label><input id="rc-credito-utilizado" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"><div class="helper">Abate do saldo já existente do cliente.</div></div>
+        <div class="field full"><label>Adicionar Crédito à Loja (R$)</label><input id="rc-credito-gerado" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"><div class="helper">Ex.: cliente paga a mais hoje para usar em uma próxima visita — soma ao saldo dela.</div></div>
+        <div class="field full"><label>Forma de Pagamento</label><select id="rc-forma-pagamento">${formaPagamentoOptionsHtml('pix')}</select></div>
+      </div>
+      <div class="card card-pad" style="margin-top:6px;background:var(--nude-50);">
+        <label style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-500);">Total Recebido</label>
+        <div id="rc-total" style="font-family:var(--font-display);font-size:32px;margin-top:4px;">R$ 0,00</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveRecibo()">Salvar e Imprimir</button>
+    </div>`);
+  renderComandaRows();
+  renderConsignadoRows();
+}
+function onClienteReciboChange(){
+  const sel = document.getElementById('rc-cliente-select');
+  const opt = sel.selectedOptions[0];
+  const box = document.getElementById('rc-saldo-credito-box');
+  const novoField = document.getElementById('rc-novo-cliente-field');
+  if(sel.value === '__novo__'){
+    novoField.style.display = 'block';
+    document.getElementById('rc-telefone').value = '';
+    document.getElementById('rc-aniversario').value = '';
+    document.getElementById('rc-cpf').value = '';
+    box.style.display = 'none';
+    reciboRecalcTotal();
+    return;
+  }
+  novoField.style.display = 'none';
+  if(!sel.value){ box.style.display='none'; reciboRecalcTotal(); return; }
+  document.getElementById('rc-telefone').value = opt.dataset.telefone || '';
+  document.getElementById('rc-aniversario').value = opt.dataset.aniversario || '';
+  document.getElementById('rc-cpf').value = opt.dataset.cpf || '';
+  const saldo = Number(opt.dataset.saldo||0);
+  document.getElementById('rc-saldo-credito-valor').textContent = fmtMoney(saldo);
+  box.style.display='block';
+  reciboRecalcTotal();
+}
+/* ---- Comanda de Consumação (itens do cardápio) ---- */
+function addComandaRow(){ _reciboComanda.push({itemId:'', quantidade:1}); renderComandaRows(); }
+function removeComandaRow(idx){ _reciboComanda.splice(idx,1); renderComandaRows(); }
+function onComandaRowChange(idx, field, value){ _reciboComanda[idx][field] = field==='quantidade'?Number(value||0):value; renderComandaRows(); }
+function renderComandaRows(){
+  const cardapio = window._cardapioCache || [];
+  const container = document.getElementById('rc-comanda-container');
+  if(!container) return;
+  container.innerHTML = _reciboComanda.length ? _reciboComanda.map((row,idx)=>{
+    const item = cardapio.find(c=>c.id===row.itemId);
+    const subtotal = item ? item.preco*row.quantidade : 0;
+    return `<div class="list-row">
+      <select style="flex:2;" onchange="onComandaRowChange(${idx},'itemId',this.value)">
+        <option value="">Selecione um item...</option>
+        ${cardapio.map(c=>`<option value="${c.id}" ${row.itemId===c.id?'selected':''}>${c.nome} (${fmtMoney(c.preco)})</option>`).join('')}
+      </select>
+      <input type="number" min="1" value="${row.quantidade}" style="width:70px;padding:8px;border-radius:8px;border:1.5px solid var(--nude-200);text-align:center;" onchange="onComandaRowChange(${idx},'quantidade',this.value)">
+      <div style="width:90px;text-align:right;font-weight:700;">${fmtMoney(subtotal)}</div>
+      <button class="btn btn-danger-outline btn-icon btn-sm" onclick="removeComandaRow(${idx})">🗑</button>
+    </div>`;
+  }).join('') : '<div class="empty-state" style="padding:16px;">Nenhum item adicionado.</div>';
+  const total = _reciboComanda.reduce((s,row)=>{ const item=cardapio.find(c=>c.id===row.itemId); return s + (item?item.preco*row.quantidade:0); },0);
+  document.getElementById('rc-comanda-total').textContent = fmtMoney(total);
+  reciboRecalcTotal();
+}
+/* ---- Produtos Consignados Vendidos ---- */
+function addConsignadoRow(){ _reciboConsignados.push({produtoId:'', quantidade:1}); renderConsignadoRows(); }
+function removeConsignadoRow(idx){ _reciboConsignados.splice(idx,1); renderConsignadoRows(); }
+function onConsignadoRowChange(idx, field, value){ _reciboConsignados[idx][field] = field==='quantidade'?Number(value||0):value; renderConsignadoRows(); }
+function renderConsignadoRows(){
+  const produtos = window._produtosConsignadosCache || [];
+  const container = document.getElementById('rc-consignado-container');
+  if(!container) return;
+  if(!produtos.length){ container.innerHTML = '<div class="empty-state" style="padding:16px;">Nenhum produto marcado como consignado ainda (marque em Produtos).</div>'; document.getElementById('rc-consignado-total').textContent = fmtMoney(0); reciboRecalcTotal(); return; }
+  container.innerHTML = _reciboConsignados.length ? _reciboConsignados.map((row,idx)=>{
+    const prod = produtos.find(p=>p.id===row.produtoId);
+    const subtotal = prod ? prod.preco*row.quantidade : 0;
+    return `<div class="list-row">
+      <select style="flex:2;" onchange="onConsignadoRowChange(${idx},'produtoId',this.value)">
+        <option value="">Selecione um produto...</option>
+        ${produtos.map(p=>`<option value="${p.id}" ${row.produtoId===p.id?'selected':''}>${p.nome} (${fmtMoney(p.preco)}) · estoque: ${p.estoque}</option>`).join('')}
+      </select>
+      <input type="number" min="1" value="${row.quantidade}" style="width:70px;padding:8px;border-radius:8px;border:1.5px solid var(--nude-200);text-align:center;" onchange="onConsignadoRowChange(${idx},'quantidade',this.value)">
+      <div style="width:90px;text-align:right;font-weight:700;">${fmtMoney(subtotal)}</div>
+      <button class="btn btn-danger-outline btn-icon btn-sm" onclick="removeConsignadoRow(${idx})">🗑</button>
+    </div>`;
+  }).join('') : '<div class="empty-state" style="padding:16px;">Nenhum produto adicionado.</div>';
+  const total = _reciboConsignados.reduce((s,row)=>{ const prod=produtos.find(p=>p.id===row.produtoId); return s + (prod?prod.preco*row.quantidade:0); },0);
+  document.getElementById('rc-consignado-total').textContent = fmtMoney(total);
+  reciboRecalcTotal();
+}
+function reciboRecalcRow(i){
+  const servSel = document.querySelector(`.rc-servico[data-row="${i}"]`);
+  const atdSel = document.querySelector(`.rc-atendente[data-row="${i}"]`);
+  const valorInp = document.querySelector(`.rc-valor[data-row="${i}"]`);
+  const comInp = document.querySelector(`.rc-comissao[data-row="${i}"]`);
+  const preco = servSel.selectedOptions[0]?.dataset.preco;
+  const comissaoPctPadrao = atdSel.selectedOptions[0]?.dataset.comissao;
+  if(preco && !valorInp.value) valorInp.value = Number(preco).toFixed(2);
+  // Comissão específica do profissional para este serviço tem prioridade sobre a comissão padrão dele.
+  const overrides = window._comissoesServicoCache || [];
+  const override = overrides.find(c=>c.servicoId===servSel.value && c.profissionalId===atdSel.value);
+  const comissaoPct = override ? override.comissao : comissaoPctPadrao;
+  if(comissaoPct && valorInp.value) comInp.value = (Number(valorInp.value) * Number(comissaoPct) / 100).toFixed(2);
+  reciboRecalcTotal();
+}
+function reciboRecalcTotal(){
+  let total = 0;
+  document.querySelectorAll('.rc-valor').forEach(inp=> total += Number(inp.value||0));
+  const cardapio = window._cardapioCache || [];
+  const produtos = window._produtosConsignadosCache || [];
+  total += _reciboComanda.reduce((s,row)=>{ const item=cardapio.find(c=>c.id===row.itemId); return s + (item?item.preco*row.quantidade:0); },0);
+  total += _reciboConsignados.reduce((s,row)=>{ const prod=produtos.find(p=>p.id===row.produtoId); return s + (prod?prod.preco*row.quantidade:0); },0);
+  total -= Number(document.getElementById('rc-desconto-manual')?.value||0);
+  total -= Number(document.getElementById('rc-credito-utilizado')?.value||0);
+  total += Number(document.getElementById('rc-credito-gerado')?.value||0);
+  const totalEl = document.getElementById('rc-total');
+  if(totalEl) totalEl.textContent = fmtMoney(total);
+}
+async function saveRecibo(){
+  const itens = [];
+  for(let i=0;i<5;i++){
+    const atd = document.querySelector(`.rc-atendente[data-row="${i}"]`);
+    const srv = document.querySelector(`.rc-servico[data-row="${i}"]`);
+    const com = document.querySelector(`.rc-comissao[data-row="${i}"]`);
+    const val = document.querySelector(`.rc-valor[data-row="${i}"]`);
+    if(atd.value || srv.value || val.value){
+      itens.push({
+        atendente: atd.selectedOptions[0]?.textContent || '',
+        servico: srv.selectedOptions[0]?.textContent || '',
+        comissao: Number(com.value||0),
+        valor: Number(val.value||0),
+      });
+    }
+  }
+  const cardapio = window._cardapioCache || [];
+  const produtosConsig = window._produtosConsignadosCache || [];
+  const comandaConsumo = _reciboComanda.filter(r=>r.itemId).map(r=>{
+    const item = cardapio.find(c=>c.id===r.itemId);
+    return {item:item?item.nome:'', quantidade:r.quantidade, preco:item?item.preco:0, subtotal: item?item.preco*r.quantidade:0};
+  });
+  const produtosConsignadosVendidos = _reciboConsignados.filter(r=>r.produtoId).map(r=>{
+    const prod = produtosConsig.find(p=>p.id===r.produtoId);
+    return {produtoId:r.produtoId, nome:prod?prod.nome:'', quantidade:r.quantidade, preco:prod?prod.preco:0, subtotal: prod?prod.preco*r.quantidade:0};
+  });
+  const cafeConsumo = comandaConsumo.reduce((s,i)=>s+i.subtotal,0);
+  const produtosVendas = produtosConsignadosVendidos.reduce((s,i)=>s+i.subtotal,0);
+  const descontoManual = Number(document.getElementById('rc-desconto-manual').value||0);
+  const creditoUtilizado = Number(document.getElementById('rc-credito-utilizado').value||0);
+  const creditoGerado = Number(document.getElementById('rc-credito-gerado').value||0);
+  const formaPagamento = document.getElementById('rc-forma-pagamento').value;
+  const clienteSel = document.getElementById('rc-cliente-select');
+  const clienteSelValue = clienteSel.value;
+  const isNovoCliente = clienteSelValue === '__novo__';
+  const novoClienteNome = isNovoCliente ? document.getElementById('rc-novo-cliente-nome').value.trim() : '';
+  if(isNovoCliente && !novoClienteNome){ toast('Informe o nome do novo cliente.','error'); return; }
+  let clienteId = isNovoCliente ? '' : clienteSelValue;
+  const clienteNome = isNovoCliente ? novoClienteNome : (clienteId ? clienteSel.selectedOptions[0].textContent : 'Cliente avulso');
+  const totalRecebido = itens.reduce((s,i)=>s+i.valor,0) + cafeConsumo + produtosVendas + creditoGerado - creditoUtilizado - descontoManual;
+
+  if(clienteId && !isNovoCliente){
+    const saldoAtual = Number(clienteSel.selectedOptions[0].dataset.saldo||0);
+    if(creditoUtilizado > saldoAtual){
+      toast(`Este cliente só tem ${fmtMoney(saldoAtual)} de crédito disponível.`,'error'); return;
+    }
+  } else if(!clienteId && !isNovoCliente && (creditoUtilizado>0 || creditoGerado>0)){
+    toast('Selecione ou cadastre um cliente para usar ou gerar crédito de loja.','error'); return;
+  }
+
+  showLoader(true);
+  try{
+    // Se a opção "+ Cadastrar Novo Cliente" foi escolhida, cria o registro em
+    // Clientes primeiro, para o recibo (e o crédito de loja, se houver) já
+    // ficarem vinculados a um cliente de verdade.
+    if(isNovoCliente){
+      const novoCliente = await api('salvarCliente', {
+        nome: novoClienteNome,
+        telefone: document.getElementById('rc-telefone').value,
+        aniversario: document.getElementById('rc-aniversario').value,
+        cpf: document.getElementById('rc-cpf').value,
+        vip: false, saldoCredito: 0, ultimaVisita: new Date().toISOString().slice(0,10), observacoes: '',
+      });
+      clienteId = novoCliente.id;
+    }
+
+    const payload = {
+      data: new Date().toISOString().slice(0,10),
+      clienteId, clienteNome,
+      telefone: document.getElementById('rc-telefone').value,
+      aniversario: document.getElementById('rc-aniversario').value,
+      instagram: document.getElementById('rc-instagram').value,
+      cpf: document.getElementById('rc-cpf').value,
+      itens: JSON.stringify(itens),
+      cafeConsumo, comandaConsumo: JSON.stringify(comandaConsumo),
+      produtosVendas, produtosConsignadosVendidos: JSON.stringify(produtosConsignadosVendidos),
+      descontoManual, credito: descontoManual, creditoUtilizado, creditoGerado,
+      totalRecebido, formaPagamento,
+    };
+    const saved = await api('salvarRecibo', payload);
+    // Sincroniza o saldo de crédito de loja do cliente, se houve uso ou geração.
+    if(clienteId && (creditoUtilizado>0 || creditoGerado>0)){
+      await api('ajustarSaldoCredito', {clienteId, delta: creditoGerado - creditoUtilizado});
+    }
+    // Dá baixa automática no estoque de cada produto consignado vendido.
+    for(const item of produtosConsignadosVendidos){
+      await api('registrarMovimentacaoEstoque', {produtoId:item.produtoId, tipo:'saida', quantidade:item.quantidade, observacao:'Venda via Recibo', data:payload.data});
+    }
+    // Gera automaticamente o lançamento correspondente no Fluxo de Caixa,
+    // já com a forma de pagamento escolhida — assim o Financeiro reflete o Recibo sem digitação dupla.
+    if(totalRecebido>0){
+      await api('salvarLancamentoFinanceiro', {
+        tipo:'entrada', forma:formaPagamento, valor:totalRecebido,
+        descricao:'Recibo - '+(clienteNome||'Cliente'), data:payload.data,
+      });
+    }
+    showLoader(false); closeModal(); toast(isNovoCliente?'Cliente cadastrado e recibo salvo com sucesso.':'Recibo salvo e lançado no Fluxo de Caixa.','success');
+    navigate('recibos');
+    printRecibo(null, saved);
+  }catch(e){ showLoader(false); toast('Erro ao salvar recibo: '+(e.message||'motivo desconhecido'),'error'); }
+}
+async function printRecibo(id, preloaded){
+  const recibo = preloaded || (await api('listarRecibos')).find(r=>r.id===id);
+  if(!recibo){ toast('Recibo não encontrado.','error'); return; }
+  let itens = []; try{ itens = JSON.parse(recibo.itens||'[]'); }catch(e){ itens = []; }
+  let comanda = []; try{ comanda = JSON.parse(recibo.comandaConsumo||'[]'); }catch(e){ comanda = []; }
+  let consignados = []; try{ consignados = JSON.parse(recibo.produtosConsignadosVendidos||'[]'); }catch(e){ consignados = []; }
+  const rowsHtml = itens.map(i=>`<tr><td>${escapeHtml(i.atendente)}</td><td>${escapeHtml(i.servico)}</td><td>${fmtMoney(i.comissao)}</td><td>${fmtMoney(i.valor)}</td></tr>`).join('')
+    + Array(Math.max(0,5-itens.length)).fill('<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>').join('');
+  const comandaHtml = comanda.length ? comanda.map(i=>`<div class="line">${escapeHtml(i.item)} x${i.quantidade} — ${fmtMoney(i.subtotal)}</div>`).join('') : '';
+  const consignadosHtml = consignados.length ? consignados.map(i=>`<div class="line">${escapeHtml(i.nome)} x${i.quantidade} — ${fmtMoney(i.subtotal)}</div>`).join('') : '';
+  const win = window.open('', '_blank', 'width=420,height=680');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Recibo</title>
+  <style>
+    body{font-family:Georgia,serif; padding:22px; color:#241E1C;}
+    h2{text-align:center;letter-spacing:1px;margin-bottom:0;}
+    .sub{text-align:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#B8892E;margin-bottom:18px;}
+    table{width:100%;border-collapse:collapse;margin:14px 0;}
+    th,td{border:1px solid #ccc;padding:6px 8px;font-size:12.5px;text-align:left;}
+    .line{margin:8px 0;font-size:13px;border-bottom:1px dotted #999;padding-bottom:4px;}
+    .total{margin-top:16px;border:2px solid #241E1C;padding:10px;font-weight:bold;font-size:16px;text-align:right;}
+  </style></head><body>
+    <h2>Sandra Júlia</h2>
+    <div class="sub">Cabelo &amp; Maquiagem · Salão · Spa · Estética</div>
+    <div class="line"><b>Cliente:</b> ${escapeHtml(recibo.clienteNome||'')}</div>
+    <div class="line"><b>Telefone:</b> ${escapeHtml(recibo.telefone||'')} &nbsp;&nbsp; <b>Data Aniv.:</b> ${escapeHtml(recibo.aniversario||'')}</div>
+    <div class="line"><b>Instagram:</b> ${escapeHtml(recibo.instagram||'')} &nbsp;&nbsp; <b>CPF:</b> ${escapeHtml(recibo.cpf||'')}</div>
+    <table><thead><tr><th>Atendente</th><th>Serviço</th><th>Comissão</th><th>Valor</th></tr></thead><tbody>${rowsHtml}</tbody></table>
+    ${comandaHtml?`<div class="line"><b>Comanda de Consumação:</b></div>${comandaHtml}`:''}
+    ${consignadosHtml?`<div class="line"><b>Produtos Consignados:</b></div>${consignadosHtml}`:''}
+    <div class="line"><b>Café / Consumo:</b> ${fmtMoney(recibo.cafeConsumo)}</div>
+    <div class="line"><b>Produtos / Vendas:</b> ${fmtMoney(recibo.produtosVendas)}</div>
+    <div class="line"><b>Desconto Manual:</b> ${fmtMoney(recibo.descontoManual||recibo.credito)}</div>
+    ${recibo.creditoUtilizado?`<div class="line"><b>Crédito de Loja Utilizado:</b> ${fmtMoney(recibo.creditoUtilizado)}</div>`:''}
+    ${recibo.creditoGerado?`<div class="line"><b>Crédito de Loja Gerado:</b> ${fmtMoney(recibo.creditoGerado)}</div>`:''}
+    <div class="line"><b>Forma de Pagamento:</b> ${escapeHtml(FORMA_PAGAMENTO_LABEL[recibo.formaPagamento]||recibo.formaPagamento||'—')}</div>
+    <div class="total">TOTAL RECEBIDO: ${fmtMoney(recibo.totalRecebido)}</div>
+    <script>window.onload=()=>window.print();<\/script>
+  </body></html>`);
+  win.document.close();
+}
+
+/* ---------- SERVIÇOS ---------- */
+RENDERERS.servicos = async function(){
+  const raw = await api('listarServicos');
+  const st = tableState('servicos');
+  const {pageData,total,pages} = applyTableControls('servicos', raw, {searchKeys:['nome','categoria']});
+  const isRO = STATE.user.perfil==='Profissional';
+  return `
+    <div class="toolbar">
+      <div class="search-box"><span>🔎</span><input placeholder="Pesquisar serviço..." value="${st.search||''}" oninput="searchTable('servicos',this.value)"></div>
+      ${isRO?'':'<button class="btn btn-gold" onclick="openServicoModal()">+ Novo Serviço</button>'}
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th onclick="sortTable('servicos','nome')">Serviço</th><th onclick="sortTable('servicos','categoria')">Categoria</th>
+        <th onclick="sortTable('servicos','duracao')">Duração</th><th onclick="sortTable('servicos','preco')">Preço</th>${isRO?'':'<th style="text-align:right;">Ações</th>'}</tr></thead>
+      <tbody>${pageData.length?pageData.map(s=>`
+        <tr><td class="cell-name">${s.nome}</td><td>${s.categoria}</td><td>${s.duracao} min</td><td>${fmtMoney(s.preco)}</td>
+        ${isRO?'':`<td><div class="row-actions" style="justify-content:flex-end;">
+          <button class="btn btn-outline btn-sm" title="Comissão por profissional" onclick="openComissoesModal('${s.id}')">% Comissões</button>
+          <button class="btn btn-outline btn-icon btn-sm" onclick="openServicoModal('${s.id}')">✎</button>
+          <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteServico('${s.id}')">🗑</button>
+        </div></td>`}</tr>`).join(''):`<tr><td colspan="${isRO?4:5}"><div class="empty-state">Nenhum serviço cadastrado.</div></td></tr>`}
+      </tbody></table>${paginationHtml('servicos',total,pages)}</div>`;
+};
+async function openComissoesModal(servicoId){
+  const [servicos, profs, comissoes] = await Promise.all([api('listarServicos'), api('listarProfissionais'), api('listarComissoesServico')]);
+  const servico = servicos.find(s=>s.id===servicoId);
+  const linhas = profs.map(p=>{
+    const override = comissoes.find(c=>c.servicoId===servicoId && c.profissionalId===p.id);
+    return `<div class="list-row">
+      <div style="flex:1;">${p.nome}<div class="cell-sub">Padrão: ${p.comissao}%</div></div>
+      <input type="number" step="0.1" class="cs-comissao" data-prof="${p.id}" placeholder="${p.comissao}"
+        value="${override?override.comissao:''}" style="width:90px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--nude-200);text-align:right;">
+    </div>`;
+  }).join('');
+  openModal(`<div class="modal-head"><h3>Comissões · ${escapeHtml(servico.nome)}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <p class="helper-text" style="margin-bottom:12px;">Deixe em branco para usar a comissão padrão do profissional. Preencha só para sobrescrever, especificamente para este serviço.</p>
+      ${linhas}
+    </div>
+    <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveComissoes('${servicoId}')">Salvar</button></div>`);
+}
+async function saveComissoes(servicoId){
+  const inputs = document.querySelectorAll('.cs-comissao');
+  showLoader(true);
+  try{
+    for(const inp of inputs){
+      if(inp.value.trim()===''){ continue; }
+      await api('salvarComissaoServico', {servicoId, profissionalId:inp.dataset.prof, comissao:Number(inp.value)});
+    }
+    showLoader(false); closeModal(); toast('Comissões atualizadas.','success');
+  }catch(e){ showLoader(false); toast('Erro ao salvar comissões.','error'); }
+}
+async function openServicoModal(id){
+  const list = await api('listarServicos'); const item = id?list.find(s=>s.id===id):null;
+  openModal(`<div class="modal-head"><h3>${item?'Editar Serviço':'Novo Serviço'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field full"><label>Nome</label><input id="sv-nome" value="${item?escapeHtml(item.nome):''}"></div>
+      <div class="field"><label>Categoria</label><input id="sv-categoria" value="${item?escapeHtml(item.categoria):''}"></div>
+      <div class="field"><label>Duração (min)</label><input id="sv-duracao" type="number" value="${item?item.duracao:45}"></div>
+      <div class="field"><label>Preço (R$)</label><input id="sv-preco" type="number" step="0.01" value="${item?item.preco:0}"></div>
+    </div></div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteServico('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveServico('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+async function saveServico(id){
+  try{
+    const payload={id:id||undefined, nome:document.getElementById('sv-nome').value.trim(), categoria:document.getElementById('sv-categoria').value,
+      duracao:Number(document.getElementById('sv-duracao').value), preco:Number(document.getElementById('sv-preco').value)};
+    if(!payload.nome){ toast('Informe o nome do serviço.','error'); return; }
+    showLoader(true);
+    await api('salvarServico',payload);
+    showLoader(false); closeModal(); toast('Serviço salvo.','success'); navigate('servicos');
+  }catch(e){
+    showLoader(false);
+    toast('Erro ao salvar: '+(e.message||'motivo desconhecido'),'error');
+  }
+}
+async function deleteServico(id){
+  if(!confirm('Excluir este serviço?')) return;
+  showLoader(true);
+  try{ await api('excluirServico',{id}); showLoader(false); toast('Serviço excluído.','success'); navigate('servicos'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+
+/* ---------- PRODUTOS ---------- */
+RENDERERS.produtos = async function(){
+  const [raw, fornecedores, movimentacoes] = await Promise.all([api('listarProdutos'), api('listarFornecedores'), api('listarMovimentacoesEstoque')]);
+  const st = tableState('produtos');
+  const {pageData,total,pages} = applyTableControls('produtos', raw, {searchKeys:['nome','categoria']});
+  const isRO = STATE.user.perfil==='Recepcionista';
+  const nomeForn=id=>(fornecedores.find(f=>f.id===id)||{}).nome||'—';
+  const nomeProd=id=>(raw.find(p=>p.id===id)||{}).nome||'—';
+  const chartRows = raw.map(p=>({label:p.nome, value:p.estoque, low:p.estoque<=p.minimo}))
+    .sort((a,b)=>a.value-b.value);
+  const maxEstoque = Math.max(...chartRows.map(r=>r.value),1);
+  const chartHtml = chartRows.length ? chartRows.map(r=>`
+      <div class="report-bar-row">
+        <div class="label" title="${escapeHtml(r.label)}">${escapeHtml(r.label)}</div>
+        <div class="report-bar-track"><div class="report-bar-fill" style="width:${(r.value/maxEstoque*100).toFixed(0)}%;${r.low?'background:var(--danger);':''}"></div></div>
+        <div class="report-bar-val">${r.value} un</div>
+      </div>`).join('') : '<div class="empty-state">Sem produtos cadastrados.</div>';
+  const movRecentes = movimentacoes.slice().sort((a,b)=>b.data.localeCompare(a.data)).slice(0,8);
+  return `
+    <div class="card card-pad" style="margin-bottom:20px;">
+      <div class="section-head"><div><h3>Nível de Estoque</h3><div class="ribbon"></div></div></div>
+      ${chartHtml}
+    </div>
+    <div class="toolbar">
+      <div class="search-box"><span>🔎</span><input placeholder="Pesquisar produto..." value="${st.search||''}" oninput="searchTable('produtos',this.value)"></div>
+      ${isRO?'':'<button class="btn btn-gold" onclick="openProdutoModal()">+ Novo Produto</button>'}
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th onclick="sortTable('produtos','nome')">Produto</th><th>Fornecedor</th><th onclick="sortTable('produtos','estoque')">Estoque</th><th>Preço (compra / venda / fracionado)</th>${isRO?'':'<th style="text-align:right;">Ações</th>'}</tr></thead>
+      <tbody>${pageData.length?pageData.map(p=>{
+        const pct = Math.min(100, Math.round((p.estoque/(p.minimo*2))*100));
+        const low = p.estoque<=p.minimo;
+        return `<tr>
+          <td class="cell-name">${p.nome}${p.consignado?' <span class="tag tag-vip">Consignado</span>':''}<div class="cell-sub">${p.categoria}</div></td>
+          <td>${nomeForn(p.fornecedorId)}</td>
+          <td style="min-width:150px;">${p.estoque} un (unit.) ${p.estoqueFracionado?' + '+p.estoqueFracionado+' frac.':''} ${low?'<span class="tag tag-cancelado">Baixo</span>':''}
+            <div class="stock-bar"><div style="width:${pct}%;background:${low?'var(--danger)':'var(--success)'}"></div></div></td>
+          <td class="cell-sub">Compra: ${fmtMoney(p.precoCompra||0)}${p.formaPagamento?' ('+escapeHtml(p.formaPagamento)+')':''}<br>Venda: ${fmtMoney(p.preco)}${p.precoFracionado?'<br>Fracionado: '+fmtMoney(p.precoFracionado):''}</td>
+          ${isRO?'':`<td><div class="row-actions" style="justify-content:flex-end;">
+            <button class="btn btn-outline btn-icon btn-sm" title="Movimentar estoque" onclick="openMovimentacaoModal('${p.id}')">↕</button>
+            <button class="btn btn-outline btn-icon btn-sm" onclick="openProdutoModal('${p.id}')">✎</button>
+            <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteProduto('${p.id}')">🗑</button>
+          </div></td>`}
+        </tr>`;
+      }).join(''):`<tr><td colspan="5"><div class="empty-state">Nenhum produto cadastrado.</div></td></tr>`}
+      </tbody></table>${paginationHtml('produtos',total,pages)}</div>
+    ${isRO?'':`
+    <div class="card card-pad" style="margin-top:20px;">
+      <div class="section-head"><div><h3>Movimentações Recentes</h3><div class="ribbon"></div></div></div>
+      ${movRecentes.length ? movRecentes.map(m=>`
+        <div class="list-row"><span class="dot ${m.tipo==='entrada'?'livre':'cancelado'}"></span>
+          <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${nomeProd(m.produtoId)}</div>
+          <div class="cell-sub">${fmtDate(m.data)} · ${m.observacao||''}</div></div>
+          <div style="font-weight:800;color:${m.tipo==='entrada'?'var(--success)':'var(--danger)'};">${m.tipo==='entrada'?'+':'-'} ${m.quantidade} un</div>
+        </div>`).join('') : '<div class="empty-state">Nenhuma movimentação registrada ainda.</div>'}
+    </div>`}`;
+};
+async function openMovimentacaoModal(produtoId){
+  const produtos = await api('listarProdutos');
+  const produto = produtos.find(p=>p.id===produtoId);
+  openModal(`<div class="modal-head"><h3>Movimentar Estoque · ${escapeHtml(produto.nome)}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <p class="helper-text" style="margin-bottom:12px;">Estoque atual: <b>${produto.estoque} un</b> (mínimo ${produto.minimo} un)</p>
+      <div class="form-grid">
+        <div class="field"><label>Tipo</label><select id="mv-tipo"><option value="entrada">Entrada</option><option value="saida">Saída</option></select></div>
+        <div class="field"><label>Quantidade</label><input id="mv-quantidade" type="number" min="1" value="1"></div>
+        <div class="field full"><label>Observação</label><input id="mv-obs" placeholder="Ex: Compra do fornecedor / Uso em atendimento"></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveMovimentacao('${produtoId}')">Registrar</button></div>`);
+}
+async function saveMovimentacao(produtoId){
+  const payload = {produtoId, tipo:document.getElementById('mv-tipo').value,
+    quantidade:Number(document.getElementById('mv-quantidade').value||0),
+    observacao:document.getElementById('mv-obs').value, data:new Date().toISOString().slice(0,10)};
+  if(!payload.quantidade || payload.quantidade<=0){ toast('Informe uma quantidade válida.','error'); return; }
+  showLoader(true);
+  try{ await api('registrarMovimentacaoEstoque',payload); showLoader(false); closeModal(); toast('Movimentação registrada.','success'); navigate('produtos'); }
+  catch(e){ showLoader(false); toast('Erro ao registrar movimentação.','error'); }
+}
+async function openProdutoModal(id){
+  const [list, fornecedores] = await Promise.all([api('listarProdutos'), api('listarFornecedores')]);
+  const item = id?list.find(p=>p.id===id):null;
+  const formasUsadas = [...new Set(list.map(p=>p.formaPagamento).filter(Boolean))];
+  const formasOptions = [...new Set([...FORMAS_CONTA_PADRAO, ...formasUsadas])];
+  openModal(`<div class="modal-head"><h3>${item?'Editar Produto':'Novo Produto'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field full"><label>Nome do Produto</label><input id="pd-nome" value="${item?escapeHtml(item.nome):''}"></div>
+      <div class="field"><label>Categoria</label><input id="pd-categoria" value="${item?escapeHtml(item.categoria):''}"></div>
+      <div class="field"><label>Nome do Fornecedor</label><select id="pd-fornecedor">${fornecedores.map(f=>`<option value="${f.id}" ${item&&item.fornecedorId===f.id?'selected':''}>${f.nome}</option>`).join('')}</select></div>
+      <div class="field"><label>Estoque Unitário</label><input id="pd-estoque" type="number" value="${item?item.estoque:0}"></div>
+      <div class="field"><label>Estoque Fracionado</label><input id="pd-estoque-fracionado" type="number" value="${item?(item.estoqueFracionado||0):0}"><div class="helper">Ex.: doses/ml restantes de um produto já aberto.</div></div>
+      <div class="field"><label>Estoque mínimo</label><input id="pd-minimo" type="number" value="${item?item.minimo:5}"></div>
+      <div class="field"><label>Preço de Compra (R$)</label><input id="pd-preco-compra" type="number" step="0.01" value="${item?(item.precoCompra||0):0}"></div>
+      <div class="field">
+        <label>Forma de Pagamento</label>
+        <input id="pd-forma-pagamento" list="pd-forma-list" placeholder="Selecione ou digite uma nova" value="${item?escapeHtml(item.formaPagamento||''):''}">
+        <datalist id="pd-forma-list">${formasOptions.map(f=>`<option value="${escapeHtml(f)}">`).join('')}</datalist>
+      </div>
+      <div class="field"><label>Preço de Venda — unitário (R$)</label><input id="pd-preco" type="number" step="0.01" value="${item?item.preco:0}"></div>
+      <div class="field full"><label>Preço Fracionado (R$)</label><input id="pd-preco-fracionado" type="number" step="0.01" value="${item?(item.precoFracionado||0):0}"><div class="helper">Preço cobrado por dose/fração, quando aplicável.</div></div>
+      <div class="field full"><div class="checkbox-row" style="display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" id="pd-consignado" ${item&&item.consignado?'checked':''}>
+        <label for="pd-consignado" style="margin:0;">Produto consignado</label>
+      </div></div>
+    </div></div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteProduto('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveProduto('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+async function saveProduto(id){
+  const payload={id:id||undefined, nome:document.getElementById('pd-nome').value.trim(), categoria:document.getElementById('pd-categoria').value,
+    fornecedorId:document.getElementById('pd-fornecedor').value, estoque:Number(document.getElementById('pd-estoque').value),
+    estoqueFracionado:Number(document.getElementById('pd-estoque-fracionado').value||0),
+    minimo:Number(document.getElementById('pd-minimo').value), preco:Number(document.getElementById('pd-preco').value),
+    precoCompra:Number(document.getElementById('pd-preco-compra').value||0),
+    precoFracionado:Number(document.getElementById('pd-preco-fracionado').value||0),
+    formaPagamento:document.getElementById('pd-forma-pagamento').value.trim(),
+    consignado:document.getElementById('pd-consignado').checked};
+  if(!payload.nome){ toast('Informe o nome do produto.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarProduto',payload); showLoader(false); closeModal(); toast('Produto salvo.','success'); navigate('produtos'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar.','error'); }
+}
+async function deleteProduto(id){
+  if(!confirm('Excluir este produto?')) return;
+  showLoader(true);
+  try{ await api('excluirProduto',{id}); showLoader(false); toast('Produto excluído.','success'); navigate('produtos'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+
+/* ---------- FORNECEDORES ---------- */
+RENDERERS.fornecedores = async function(){
+  const raw = await api('listarFornecedores');
+  const st = tableState('fornecedores');
+  const {pageData,total,pages} = applyTableControls('fornecedores', raw, {searchKeys:['nome','categoria','contato','representante','vendedor']});
+  return `
+    <div class="toolbar">
+      <div class="search-box"><span>🔎</span><input placeholder="Pesquisar fornecedor..." value="${st.search||''}" oninput="searchTable('fornecedores',this.value)"></div>
+      <button class="btn btn-gold" onclick="openFornecedorModal()">+ Novo Fornecedor</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th onclick="sortTable('fornecedores','nome')">Nome da Empresa</th><th>Representante</th><th>Telefone</th><th>Vendedor</th><th style="text-align:right;">Ações</th></tr></thead>
+      <tbody>${pageData.length?pageData.map(f=>`
+        <tr><td class="cell-name">${f.nome}<div class="cell-sub">${f.categoria||''}</div></td><td>${f.representante||'—'}</td><td>${f.contato||'—'}</td><td>${f.vendedor||'—'}</td>
+        <td><div class="row-actions" style="justify-content:flex-end;">
+          <button class="btn btn-outline btn-icon btn-sm" onclick="openFornecedorModal('${f.id}')">✎</button>
+          <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteFornecedor('${f.id}')">🗑</button>
+        </div></td></tr>`).join(''):`<tr><td colspan="5"><div class="empty-state">Nenhum fornecedor cadastrado.</div></td></tr>`}
+      </tbody></table>${paginationHtml('fornecedores',total,pages)}</div>`;
+};
+async function openFornecedorModal(id){
+  const list = await api('listarFornecedores'); const item=id?list.find(f=>f.id===id):null;
+  openModal(`<div class="modal-head"><h3>${item?'Editar Fornecedor':'Novo Fornecedor'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field full"><label>Nome da Empresa</label><input id="fn-nome" value="${item?escapeHtml(item.nome):''}"></div>
+      <div class="field"><label>Representante</label><input id="fn-representante" value="${item?escapeHtml(item.representante||''):''}"></div>
+      <div class="field"><label>Telefone</label><input id="fn-contato" data-mask="phone" value="${item?item.contato:''}"></div>
+      <div class="field"><label>Vendedor</label><input id="fn-vendedor" value="${item?escapeHtml(item.vendedor||''):''}"></div>
+      <div class="field"><label>Categoria</label><input id="fn-categoria" value="${item?escapeHtml(item.categoria||''):''}"></div>
+    </div></div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteFornecedor('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveFornecedor('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+async function saveFornecedor(id){
+  const payload={id:id||undefined, nome:document.getElementById('fn-nome').value.trim(), categoria:document.getElementById('fn-categoria').value,
+    contato:document.getElementById('fn-contato').value, representante:document.getElementById('fn-representante').value,
+    vendedor:document.getElementById('fn-vendedor').value};
+  if(!payload.nome){ toast('Informe o nome da empresa.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarFornecedor',payload); showLoader(false); closeModal(); toast('Fornecedor salvo.','success'); navigate('fornecedores'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar.','error'); }
+}
+async function deleteFornecedor(id){
+  if(!confirm('Excluir este fornecedor?')) return;
+  showLoader(true);
+  try{ await api('excluirFornecedor',{id}); showLoader(false); toast('Fornecedor excluído.','success'); navigate('fornecedores'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+
+/* ---------- FINANCEIRO ---------- */
+RENDERERS.financeiro = async function(){
+  const st = tableState('financeiro');
+  if(!st.periodo) st.periodo='diario';
+  if(st.periodo==='contaspagar') return await renderContasPagar();
+  const lanc = await api('listarFinanceiro');
+  const todayISO = new Date().toISOString().slice(0,10);
+  const mesAtual = todayISO.slice(0,7);
+  const semanaAtras = new Date(); semanaAtras.setDate(semanaAtras.getDate()-6);
+  const semanaAtrasISO = semanaAtras.toISOString().slice(0,10);
+  const filtered = st.periodo==='diario' ? lanc.filter(f=>f.data===todayISO)
+    : st.periodo==='semanal' ? lanc.filter(f=>f.data>=semanaAtrasISO && f.data<=todayISO)
+    : lanc.filter(f=>f.data.startsWith(mesAtual));
+  const entradas = filtered.filter(f=>f.tipo==='entrada').reduce((s,f)=>s+f.valor,0);
+  const saidas = filtered.filter(f=>f.tipo==='saida').reduce((s,f)=>s+f.valor,0);
+  const porForma = {};
+  filtered.filter(f=>f.tipo==='entrada').forEach(f=>{ porForma[f.forma]=(porForma[f.forma]||0)+f.valor; });
+  return `
+    ${financeiroTabsHtml(st.periodo)}
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="kpi" style="--kpi-color:var(--success)"><div class="kpi-label">Entradas</div><div class="kpi-value">${fmtMoney(entradas)}</div></div>
+      <div class="kpi" style="--kpi-color:var(--danger)"><div class="kpi-label">Saídas</div><div class="kpi-value">${fmtMoney(saidas)}</div></div>
+      <div class="kpi" style="--kpi-color:var(--gold-600)"><div class="kpi-label">Saldo</div><div class="kpi-value">${fmtMoney(entradas-saidas)}</div></div>
+    </div>
+    <div class="dash-grid">
+      <div class="card card-pad">
+        <div class="section-head"><div><h3>Lançamentos</h3><div class="ribbon"></div></div>
+          <button class="btn btn-gold btn-sm" onclick="openLancamentoModal()">+ Receber / Lançar</button>
+        </div>
+        ${filtered.length?filtered.sort((a,b)=>b.data.localeCompare(a.data)).map(f=>`
+          <div class="list-row"><span class="dot ${f.tipo==='entrada'?'livre':'cancelado'}"></span>
+            <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${f.descricao}</div>
+            <div class="cell-sub">${fmtDate(f.data)} · ${FORMA_PAGAMENTO_LABEL[f.forma]||f.forma}</div></div>
+            <div style="font-weight:800;color:${f.tipo==='entrada'?'var(--success)':'var(--danger)'};">${f.tipo==='entrada'?'+':'-'} ${fmtMoney(f.valor)}</div>
+          </div>`).join(''):`<div class="empty-state">Nenhum lançamento no período.</div>`}
+      </div>
+      <div class="card card-pad">
+        <div class="section-head"><div><h3>Por Forma de Pagamento</h3><div class="ribbon"></div></div></div>
+        ${Object.keys(porForma).length? Object.entries(porForma).map(([k,v])=>`<span class="chip-payment">${FORMA_PAGAMENTO_LABEL[k]||k}: ${fmtMoney(v)}</span>`).join(''):'<div class="empty-state">Sem entradas no período.</div>'}
+      </div>
+    </div>`;
+};
+function financeiroTabsHtml(periodoAtivo){
+  return `<div class="tabs">
+      <button class="${periodoAtivo==='diario'?'active':''}" onclick="setFinPeriodo('diario')">Fluxo Diário</button>
+      <button class="${periodoAtivo==='semanal'?'active':''}" onclick="setFinPeriodo('semanal')">Fluxo Semanal</button>
+      <button class="${periodoAtivo==='mensal'?'active':''}" onclick="setFinPeriodo('mensal')">Fluxo Mensal</button>
+      <button class="${periodoAtivo==='contaspagar'?'active':''}" onclick="setFinPeriodo('contaspagar')">Contas a Pagar</button>
+    </div>`;
+}
+function setFinPeriodo(p){ tableState('financeiro').periodo=p; navigate('financeiro'); }
+async function renderContasPagar(){
+  const [contas, fornecedores, profs] = await Promise.all([api('listarContasPagar'), api('listarFornecedores'), api('listarProfissionais')]);
+  const nomeForn = id => (fornecedores.find(f=>f.id===id)||{}).nome || '—';
+  const nomeProf = id => (profs.find(p=>p.id===id)||{}).nome || '—';
+  const hojeISO = new Date().toISOString().slice(0,10);
+  const pendentes = contas.filter(c=>!c.pago).sort((a,b)=>(a.vencimento||'').localeCompare(b.vencimento||''));
+  const pagas = contas.filter(c=>c.pago).sort((a,b)=>(b.dataPagamento||'').localeCompare(a.dataPagamento||''));
+  const referenciaLinha = c => {
+    if(c.categoria==='Fornecedor' && c.fornecedorId) return nomeForn(c.fornecedorId);
+    if(c.categoria==='Profissional' && c.profissionalId) return nomeProf(c.profissionalId);
+    return c.categoria || '—';
+  };
+  return `
+    ${financeiroTabsHtml('contaspagar')}
+    <div class="toolbar"><div style="flex:1;"></div>
+      <button class="btn btn-gold" onclick="openContaPagarModal()">+ Nova Conta a Pagar</button>
+    </div>
+    <div class="card card-pad" style="margin-bottom:20px;">
+      <div class="section-head"><div><h3>Pendentes</h3><div class="ribbon"></div></div></div>
+      ${pendentes.length ? pendentes.map(c=>{
+        const vencida = c.vencimento && c.vencimento < hojeISO;
+        return `<div class="list-row"><span class="dot ${vencida?'cancelado':'confirmado'}"></span>
+          <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${escapeHtml(c.descricao)} ${c.categoria?'<span class="tag tag-confirmado">'+escapeHtml(c.categoria)+'</span>':''}</div>
+          <div class="cell-sub">${referenciaLinha(c)} · ${escapeHtml(c.formaPagamento||'')} · Vencimento: ${fmtDate(c.vencimento)} ${vencida?'<span class="tag tag-cancelado">Vencida</span>':''}</div></div>
+          <div style="font-weight:800;">${fmtMoney(c.valor)}</div>
+          <div class="row-actions">
+            <button class="btn btn-outline btn-sm" onclick="marcarContaPaga('${c.id}')">Marcar Paga</button>
+            <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteContaPagar('${c.id}')">🗑</button>
+          </div>
+        </div>`;
+      }).join('') : '<div class="empty-state">Nenhuma conta pendente.</div>'}
+    </div>
+    <div class="card card-pad">
+      <div class="section-head"><div><h3>Pagas</h3><div class="ribbon"></div></div></div>
+      ${pagas.length ? pagas.slice(0,10).map(c=>`
+        <div class="list-row"><span class="dot livre"></span>
+          <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">${escapeHtml(c.descricao)} ${c.categoria?'<span class="tag tag-livre">'+escapeHtml(c.categoria)+'</span>':''}</div>
+          <div class="cell-sub">${referenciaLinha(c)} · Pago em ${fmtDate(c.dataPagamento)}</div></div>
+          <div style="font-weight:800;">${fmtMoney(c.valor)}</div>
+          <div class="row-actions">
+            <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteContaPagar('${c.id}')">🗑</button>
+          </div>
+        </div>`).join('') : '<div class="empty-state">Nenhuma conta paga ainda.</div>'}
+    </div>`;
+}
+const CATEGORIAS_CONTA_PADRAO = ['Fornecedor','Profissional','Aluguel','Energia','Telefone','Internet','Marketing'];
+const FORMAS_CONTA_PADRAO = ['Duplicata','Mensal Fixo','Manual','Pix','Cartão à Vista','Cartão Parcelado','Débito','Dinheiro'];
+async function openContaPagarModal(){
+  const [fornecedores, profs, contasExistentes] = await Promise.all([api('listarFornecedores'), api('listarProfissionais'), api('listarContasPagar')]);
+  // Junta as opções padrão com quaisquer categorias/formas personalizadas que já
+  // tenham sido digitadas antes — uma forma nova criada uma vez fica disponível
+  // para reutilizar depois, sem precisar mexer em código.
+  const categoriasUsadas = [...new Set(contasExistentes.map(c=>c.categoria).filter(Boolean))];
+  const formasUsadas = [...new Set(contasExistentes.map(c=>c.formaPagamento).filter(Boolean))];
+  const categoriasOptions = [...new Set([...CATEGORIAS_CONTA_PADRAO, ...categoriasUsadas])];
+  const formasOptions = [...new Set([...FORMAS_CONTA_PADRAO, ...formasUsadas])];
+  openModal(`<div class="modal-head"><h3>Nova Conta a Pagar</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field full"><label>Descrição</label><input id="cp-descricao" placeholder="Ex: Compra de produtos, aluguel do mês..."></div>
+      <div class="field">
+        <label>Categoria</label>
+        <input id="cp-categoria" list="cp-categoria-list" placeholder="Selecione ou digite uma nova" onchange="onCategoriaContaChange()">
+        <datalist id="cp-categoria-list">${categoriasOptions.map(c=>`<option value="${escapeHtml(c)}">`).join('')}</datalist>
+      </div>
+      <div class="field">
+        <label>Forma de Pagamento</label>
+        <input id="cp-forma" list="cp-forma-list" placeholder="Selecione ou digite uma nova">
+        <datalist id="cp-forma-list">${formasOptions.map(f=>`<option value="${escapeHtml(f)}">`).join('')}</datalist>
+      </div>
+      <div class="field" id="cp-fornecedor-field" style="display:none;">
+        <label>Fornecedor</label>
+        <select id="cp-fornecedor"><option value="">—</option>${fornecedores.map(f=>`<option value="${f.id}">${f.nome}</option>`).join('')}</select>
+      </div>
+      <div class="field" id="cp-profissional-field" style="display:none;">
+        <label>Profissional</label>
+        <select id="cp-profissional" onchange="onProfissionalContaChange()"><option value="">—</option>${profs.map(p=>`<option value="${p.id}" data-comissao="${p.comissao}">${p.nome} (comissão padrão: ${p.comissao}%)</option>`).join('')}</select>
+      </div>
+      <div class="field"><label>Valor (R$)</label><input id="cp-valor" type="number" step="0.01"></div>
+      <div class="field full"><label>Vencimento</label><input id="cp-vencimento" type="date"></div>
+    </div></div>
+    <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-gold" onclick="saveContaPagar()">Salvar</button></div>`);
+}
+function onCategoriaContaChange(){
+  const cat = document.getElementById('cp-categoria').value;
+  document.getElementById('cp-fornecedor-field').style.display = cat==='Fornecedor' ? '' : 'none';
+  document.getElementById('cp-profissional-field').style.display = cat==='Profissional' ? '' : 'none';
+}
+function onProfissionalContaChange(){
+  const sel = document.getElementById('cp-profissional');
+  const comissao = sel.selectedOptions[0]?.dataset.comissao;
+  const nome = sel.selectedOptions[0]?.textContent.split(' (')[0];
+  const descricaoEl = document.getElementById('cp-descricao');
+  if(comissao && !descricaoEl.value) descricaoEl.value = `Comissão - ${nome} (${comissao}%)`;
+}
+async function saveContaPagar(){
+  const payload = {
+    descricao: document.getElementById('cp-descricao').value.trim(),
+    categoria: document.getElementById('cp-categoria').value.trim(),
+    formaPagamento: document.getElementById('cp-forma').value.trim(),
+    fornecedorId: document.getElementById('cp-fornecedor-field').style.display!=='none' ? document.getElementById('cp-fornecedor').value : '',
+    profissionalId: document.getElementById('cp-profissional-field').style.display!=='none' ? document.getElementById('cp-profissional').value : '',
+    valor: Number(document.getElementById('cp-valor').value||0),
+    vencimento: document.getElementById('cp-vencimento').value,
+    pago: false,
+  };
+  if(!payload.descricao || !payload.valor){ toast('Informe a descrição e o valor.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarContaPagar',payload); showLoader(false); closeModal(); toast('Conta a pagar registrada.','success'); tableState('financeiro').periodo='contaspagar'; navigate('financeiro'); }
+  catch(e){ showLoader(false); toast('Erro ao registrar.','error'); }
+}
+async function marcarContaPaga(id){
+  const contas = await api('listarContasPagar');
+  const conta = contas.find(c=>c.id===id);
+  if(!conta) return;
+  conta.pago = true; conta.dataPagamento = new Date().toISOString().slice(0,10);
+  showLoader(true);
+  try{ await api('salvarContaPagar',conta); showLoader(false); toast('Conta marcada como paga.','success'); navigate('financeiro'); }
+  catch(e){ showLoader(false); toast('Erro ao atualizar.','error'); }
+}
+async function deleteContaPagar(id){
+  if(!confirm('Excluir esta conta a pagar?')) return;
+  showLoader(true);
+  try{ await api('excluirContaPagar',{id}); showLoader(false); toast('Conta excluída.','success'); navigate('financeiro'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+async function openLancamentoModal(){
+  openModal(`<div class="modal-head"><h3>Novo Lançamento</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field"><label>Tipo</label><select id="fi-tipo"><option value="entrada">Entrada (Receber)</option><option value="saida">Saída</option></select></div>
+      <div class="field"><label>Forma</label><select id="fi-forma">${formaPagamentoOptionsHtml('pix')}</select></div>
+      <div class="field"><label>Valor (R$)</label><input id="fi-valor" type="number" step="0.01"></div>
+      <div class="field"><label>Desconto (R$)</label><input id="fi-desconto" type="number" step="0.01" value="0"></div>
+      <div class="field full"><label>Descrição</label><input id="fi-descricao" placeholder="Ex: Corte - Nome do Cliente"></div>
+    </div></div>
+    <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-gold" onclick="saveLancamento()">Salvar</button></div>`);
+}
+async function saveLancamento(){
+  const valor = Number(document.getElementById('fi-valor').value) - Number(document.getElementById('fi-desconto').value||0);
+  const payload = {tipo:document.getElementById('fi-tipo').value, forma:document.getElementById('fi-forma').value,
+    valor, descricao:document.getElementById('fi-descricao').value||'Lançamento manual', data:new Date().toISOString().slice(0,10)};
+  showLoader(true);
+  try{ await api('salvarLancamentoFinanceiro',payload); showLoader(false); closeModal(); toast('Lançamento registrado.','success'); navigate('financeiro'); }
+  catch(e){ showLoader(false); toast('Erro ao registrar.','error'); }
+}
+
+/* ---------- RELATÓRIOS ---------- */
+RENDERERS.relatorios = async function(){
+  const st = tableState('relatorios'); if(!st.tab) st.tab='clientesFrequentes';
+  const [clientes, profs, servicos, agenda, financeiro, recibos, produtos, movimentacoes, contasPagar, fornecedores, descontosComissao] = await Promise.all([
+    api('listarClientes'), api('listarProfissionais'), api('listarServicos'), api('listarAgenda'), api('listarFinanceiro'),
+    api('listarRecibos'), api('listarProdutos'), api('listarMovimentacoesEstoque'), api('listarContasPagar'), api('listarFornecedores'),
+    api('listarDescontosComissao')
+  ]);
+  const tabs = [
+    ['clientesFrequentes','Clientes Frequentes'], ['aniversariantes','Aniversariantes'],
+    ['servicosMaisVendidos','Serviços Mais Vendidos'], ['profissionalProdutivo','Profissional Mais Produtivo'],
+    ['produtosUtilizados','Produtos Mais Utilizados'], ['faturamento','Faturamento'],
+    ['contasAPagar','Contas a Pagar'], ['comissaoProfissionais','Comissão das Profissionais'],
+    ['vendasDiarias','Vendas Diárias'], ['vendasMensais','Vendas Mensais'],
+    ['comparativoMensal','Comparativo Mensal/Anual'], ['produtosConsignados','Produtos Consignados'],
+  ];
+  const countBy = (arr,key)=>{ const m={}; arr.forEach(x=>{ m[x[key]]=(m[x[key]]||0)+1; }); return m; };
+  const nomeCli = id=>(clientes.find(c=>c.id===id)||{}).nome||'—';
+  const nomeProf = id=>(profs.find(p=>p.id===id)||{}).nome||'—';
+  const nomeServ = id=>(servicos.find(s=>s.id===id)||{}).nome||'—';
+  const nomeProd = id=>(produtos.find(p=>p.id===id)||{}).nome||'—';
+  const nomeForn = id=>(fornecedores.find(f=>f.id===id)||{}).nome||'—';
+  const hojeISO = new Date().toISOString().slice(0,10);
+
+  let body='';
+  if(st.tab==='clientesFrequentes'){
+    const m = countBy(agenda,'clienteId');
+    const rows = Object.entries(m).map(([id,c])=>({label:nomeCli(id), value:c})).sort((a,b)=>b.value-a.value);
+    body = barList(rows,'atend.');
+  } else if(st.tab==='aniversariantes'){
+    body = `<div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Data</th></tr></thead><tbody>
+      ${clientes.map(c=>`<tr><td class="cell-name">${c.nome}</td><td>${c.aniversario}</td></tr>`).join('')}
+      </tbody></table></div>`;
+  } else if(st.tab==='servicosMaisVendidos'){
+    const m = countBy(agenda,'servicoId');
+    const rows = Object.entries(m).map(([id,c])=>({label:nomeServ(id), value:c})).sort((a,b)=>b.value-a.value);
+    body = barList(rows,'vendas');
+  } else if(st.tab==='profissionalProdutivo'){
+    const m = countBy(agenda,'profissionalId');
+    const rows = Object.entries(m).map(([id,c])=>({label:nomeProf(id), value:c})).sort((a,b)=>b.value-a.value);
+    body = barList(rows,'atend.');
+  } else if(st.tab==='produtosUtilizados'){
+    const rows = produtos.map(p=>({label:p.nome, value:p.minimo*3-p.estoque>0?p.minimo*3-p.estoque:1})).sort((a,b)=>b.value-a.value);
+    body = barList(rows,'uso');
+  } else if(st.tab==='faturamento'){
+    const total = financeiro.filter(f=>f.tipo==='entrada').reduce((s,f)=>s+f.valor,0);
+    const porDia = {};
+    financeiro.filter(f=>f.tipo==='entrada').forEach(f=>{ porDia[f.data]=(porDia[f.data]||0)+f.valor; });
+    const rows = Object.entries(porDia).map(([d,v])=>({label:fmtDate(d), value:v})).sort((a,b)=>b.value-a.value);
+    body = `<div class="kpi" style="--kpi-color:var(--gold-600);max-width:280px;margin-bottom:18px;"><div class="kpi-label">Faturamento total (período)</div><div class="kpi-value">${fmtMoney(total)}</div></div>` + barList(rows,'R$', v=>fmtMoney(v));
+  } else if(st.tab==='contasAPagar'){
+    const pendentes = contasPagar.filter(c=>!c.pago).sort((a,b)=>(a.vencimento||'').localeCompare(b.vencimento||''));
+    const totalPendente = pendentes.reduce((s,c)=>s+Number(c.valor||0),0);
+    body = `<div class="kpi" style="--kpi-color:var(--danger);max-width:280px;margin-bottom:18px;"><div class="kpi-label">Total pendente</div><div class="kpi-value">${fmtMoney(totalPendente)}</div></div>
+      <div class="table-wrap"><table><thead><tr><th>Descrição</th><th>Categoria</th><th>Vencimento</th><th>Valor</th></tr></thead><tbody>
+      ${pendentes.length?pendentes.map(c=>{
+        const vencida = c.vencimento && c.vencimento < hojeISO;
+        return `<tr><td class="cell-name">${escapeHtml(c.descricao)}</td><td>${escapeHtml(c.categoria||'—')}</td><td>${fmtDate(c.vencimento)} ${vencida?'<span class="tag tag-cancelado">Vencida</span>':''}</td><td>${fmtMoney(c.valor)}</td></tr>`;
+      }).join(''):'<tr><td colspan="4"><div class="empty-state">Nenhuma conta pendente.</div></td></tr>'}
+      </tbody></table></div>
+      <p class="helper-text" style="margin-top:12px;">Para cadastrar ou marcar contas como pagas, use a aba "Contas a Pagar" dentro de Financeiro.</p>`;
+  } else if(st.tab==='comissaoProfissionais'){
+    const comissaoBrutaPorProf = {};
+    recibos.forEach(r=>{
+      let itens = []; try{ itens = JSON.parse(r.itens||'[]'); }catch(e){}
+      itens.forEach(i=>{ if(i.atendente){ comissaoBrutaPorProf[i.atendente] = (comissaoBrutaPorProf[i.atendente]||0) + Number(i.comissao||0); } });
+    });
+    const descontoPorProfId = {};
+    descontosComissao.forEach(d=>{ descontoPorProfId[d.profissionalId] = (descontoPorProfId[d.profissionalId]||0) + Number(d.valor||0); });
+    const nomes = new Set([...Object.keys(comissaoBrutaPorProf), ...profs.map(p=>p.nome)]);
+    const rows = [...nomes].map(nome=>{
+      const prof = profs.find(p=>p.nome===nome);
+      const bruta = comissaoBrutaPorProf[nome] || 0;
+      const desconto = prof ? (descontoPorProfId[prof.id] || 0) : 0;
+      return {nome, bruta, desconto, liquida: bruta - desconto};
+    }).filter(r=>r.bruta>0 || r.desconto>0).sort((a,b)=>b.liquida-a.liquida);
+    body = rows.length ? `<div class="table-wrap"><table><thead><tr><th>Profissional</th><th>Comissão Bruta</th><th>Descontos (consumo)</th><th>Comissão Líquida a Pagar</th></tr></thead><tbody>
+      ${rows.map(r=>`<tr><td class="cell-name">${escapeHtml(r.nome)}</td><td>${fmtMoney(r.bruta)}</td><td style="color:var(--danger);">${r.desconto?'- '+fmtMoney(r.desconto):fmtMoney(0)}</td><td style="font-weight:800;">${fmtMoney(r.liquida)}</td></tr>`).join('')}
+      </tbody></table></div>`
+      : '<div class="empty-state">Nenhuma comissão registrada ainda — a comissão é calculada a partir dos Recibos emitidos.</div>';
+  } else if(st.tab==='vendasDiarias'){
+    const porDia = {};
+    financeiro.filter(f=>f.tipo==='entrada').forEach(f=>{ porDia[f.data]=(porDia[f.data]||0)+f.valor; });
+    const dias = Object.keys(porDia).sort().slice(-14);
+    const rows = dias.map(d=>({label:fmtDate(d), value:porDia[d]}));
+    body = rows.length ? barList(rows,'R$', v=>fmtMoney(v)) : '<div class="empty-state">Sem vendas registradas ainda.</div>';
+  } else if(st.tab==='vendasMensais'){
+    const porMes = {};
+    financeiro.filter(f=>f.tipo==='entrada').forEach(f=>{ const m=f.data.slice(0,7); porMes[m]=(porMes[m]||0)+f.valor; });
+    const meses = Object.keys(porMes).sort().slice(-12);
+    const rows = meses.map(m=>({label:m, value:porMes[m]}));
+    body = rows.length ? barList(rows,'R$', v=>fmtMoney(v)) : '<div class="empty-state">Sem vendas registradas ainda.</div>';
+  } else if(st.tab==='comparativoMensal'){
+    const porMes = {};
+    financeiro.filter(f=>f.tipo==='entrada').forEach(f=>{ const m=f.data.slice(0,7); porMes[m]=(porMes[m]||0)+f.valor; });
+    const meses = Object.keys(porMes).sort();
+    const porAno = {};
+    meses.forEach(m=>{ const ano=m.slice(0,4); porAno[ano]=(porAno[ano]||0)+porMes[m]; });
+    const rowsMensal = meses.map(m=>({label:m, value:porMes[m]}));
+    const rowsAnual = Object.entries(porAno).map(([a,v])=>({label:a, value:v}));
+    body = `<h4 style="font-size:14px;margin-bottom:10px;">Comparativo Mensal</h4>
+      ${rowsMensal.length?barList(rowsMensal,'R$', v=>fmtMoney(v)):'<div class="empty-state">Sem dados mensais ainda.</div>'}
+      <h4 style="font-size:14px;margin:20px 0 10px;border-top:1px dashed var(--nude-200);padding-top:16px;">Comparativo Anual</h4>
+      ${rowsAnual.length>1?barList(rowsAnual,'R$', v=>fmtMoney(v)):'<div class="empty-state">Ainda há dados de apenas um ano — o comparativo anual aparece quando houver mais de um ano de histórico.</div>'}`;
+  } else if(st.tab==='produtosConsignados'){
+    const consignados = produtos.filter(p=>p.consignado);
+    const vendidoPor = id => movimentacoes.filter(m=>m.produtoId===id && m.tipo==='saida').reduce((s,m)=>s+Number(m.quantidade||0),0);
+    body = consignados.length ? `<div class="table-wrap"><table><thead><tr><th>Produto</th><th>Fornecedor</th><th>Estoque Atual</th><th>Unidades Vendidas (saídas registradas)</th></tr></thead><tbody>
+      ${consignados.map(p=>`<tr><td class="cell-name">${p.nome}</td><td>${nomeForn(p.fornecedorId)}</td><td>${p.estoque}</td><td>${vendidoPor(p.id)}</td></tr>`).join('')}
+      </tbody></table></div>
+      <p class="helper-text" style="margin-top:10px;">"Unidades vendidas" é calculado a partir das saídas de estoque registradas para cada produto — marque um produto como Consignado no cadastro de Produtos para ele aparecer aqui.</p>`
+      : '<div class="empty-state">Nenhum produto marcado como consignado ainda. Marque essa opção ao cadastrar ou editar um produto.</div>';
+  }
+  return `
+    <div class="tabs">${tabs.map(([k,l])=>`<button class="${st.tab===k?'active':''}" onclick="setReportTab('${k}')">${l}</button>`).join('')}</div>
+    <div class="card card-pad">${body || '<div class="empty-state">Sem dados suficientes para este relatório ainda.</div>'}</div>`;
+};
+function barList(rows, unit, fmt){
+  if(!rows.length) return '<div class="empty-state">Sem dados para exibir.</div>';
+  const max = Math.max(...rows.map(r=>r.value),1);
+  return rows.map(r=>`
+    <div class="report-bar-row">
+      <div class="label" title="${escapeHtml(r.label)}">${escapeHtml(r.label)}</div>
+      <div class="report-bar-track"><div class="report-bar-fill" style="width:${(r.value/max*100).toFixed(0)}%;"></div></div>
+      <div class="report-bar-val">${fmt?fmt(r.value):r.value+' '+unit}</div>
+    </div>`).join('');
+}
+function setReportTab(t){ tableState('relatorios').tab=t; navigate('relatorios'); }
+
+/* ---------- CONFIGURAÇÕES ---------- */
+RENDERERS.configuracoes = async function(){
+  const cardapio = await api('listarCardapioConsumo');
+  const porCategoria = {};
+  cardapio.forEach(c=>{ (porCategoria[c.categoria||'Outros'] = porCategoria[c.categoria||'Outros']||[]).push(c); });
+  return `
+    <div class="card card-pad" style="max-width:640px;margin-bottom:20px;">
+      <h3>Conexão com o Backend</h3><div class="ribbon"></div>
+      <p class="helper-text" style="margin-top:12px;font-size:12.5px;">
+        ${USE_REMOTE_API
+          ? 'Modo conectado — o sistema está gravando na sua planilha do Google Sheets através da API em <code>'+escapeHtml(APPS_SCRIPT_URL)+'</code>.'
+          : 'Modo demonstração — nenhuma URL de API configurada ainda. Os dados exibidos são fictícios e não são salvos. Cole a URL do seu Apps Script na constante <code>APPS_SCRIPT_URL</code>, no topo do &lt;script&gt; do index.html.'}
+      </p>
+      <p class="helper-text" style="margin-top:8px;font-size:12.5px;">
+        ${/^https?:\/\/.+/.test(ANAMNESE_FORM_URL) && !ANAMNESE_FORM_URL.startsWith('COLE_AQUI')
+          ? 'Formulário de anamnese configurado em <code>'+escapeHtml(ANAMNESE_FORM_URL)+'</code>.'
+          : 'Ficha de anamnese ainda não configurada — publique o arquivo <code>anamnese.html</code> junto com o index.html e cole o link na constante <code>ANAMNESE_FORM_URL</code>.'}
+      </p>
+      <div style="margin-top:14px;"><button class="btn btn-outline btn-sm" onclick="testarConexaoAPI()">Testar Conexão</button></div>
+    </div>
+    <div class="card card-pad" style="max-width:720px;margin-bottom:20px;">
+      <div class="section-head"><div><h3>Cardápio de Consumação</h3><div class="ribbon"></div></div>
+        <button class="btn btn-gold btn-sm" onclick="openItemCardapioModal()">+ Novo Item</button>
+      </div>
+      <p class="helper-text" style="margin-bottom:14px;">Itens e preços usados na "Comanda de Consumação" dentro do Recibo.</p>
+      ${Object.keys(porCategoria).length ? Object.entries(porCategoria).map(([cat,itens])=>`
+        <h4 style="font-size:13px;margin:14px 0 6px;color:var(--gold-600);">${escapeHtml(cat)}</h4>
+        ${itens.map(c=>`<div class="list-row"><div style="flex:1;">${escapeHtml(c.nome)}</div><div style="font-weight:700;margin-right:10px;">${fmtMoney(c.preco)}</div>
+          <div class="row-actions">
+            <button class="btn btn-outline btn-icon btn-sm" onclick="openItemCardapioModal('${c.id}')">✎</button>
+            <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteItemCardapio('${c.id}')">🗑</button>
+          </div></div>`).join('')}
+      `).join('') : '<div class="empty-state">Nenhum item cadastrado ainda.</div>'}
+    </div>
+    <div class="card card-pad" style="max-width:640px;">
+      <h3>Dados do Salão</h3><div class="ribbon"></div>
+      <div class="form-grid" style="margin-top:16px;">
+        <div class="field full"><label>Nome do Salão</label><input value="Sandra Júlia Cabelo &amp; Maquiagem"></div>
+        <div class="field"><label>Horário de Abertura</label><input type="time" value="09:00"></div>
+        <div class="field"><label>Horário de Fechamento</label><input type="time" value="20:00"></div>
+        <div class="field full"><label>Telefone / WhatsApp do Salão</label><input data-mask="phone" value="(61) 99000-0000"></div>
+      </div>
+      <div style="margin-top:18px;"><button class="btn btn-gold" onclick="toast('Configurações salvas.','success')">Salvar Configurações</button></div>
+      <hr style="margin:26px 0;border:none;border-top:1px solid var(--nude-200);">
+      <h3>Integrações Futuras</h3><div class="ribbon"></div>
+      <p class="helper-text" style="margin-top:12px;font-size:12.5px;">
+        Espaços reservados para expansão: WhatsApp Business API, emissão de nota fiscal eletrônica,
+        programa de fidelidade, campanhas de marketing automatizado, recomendações por IA e aplicativo móvel do cliente.
+      </p>
+    </div>`;
+};
+async function openItemCardapioModal(id){
+  const list = await api('listarCardapioConsumo');
+  const item = id?list.find(c=>c.id===id):null;
+  const categoriasUsadas = [...new Set(list.map(c=>c.categoria).filter(Boolean))];
+  openModal(`<div class="modal-head"><h3>${item?'Editar Item':'Novo Item do Cardápio'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field full"><label>Nome</label><input id="cd-nome" value="${item?escapeHtml(item.nome):''}"></div>
+      <div class="field"><label>Categoria</label><input id="cd-categoria" list="cd-categoria-list" value="${item?escapeHtml(item.categoria||''):''}" placeholder="Ex: Bebidas, Lanches...">
+        <datalist id="cd-categoria-list">${categoriasUsadas.map(c=>`<option value="${escapeHtml(c)}">`).join('')}</datalist>
+      </div>
+      <div class="field"><label>Preço (R$)</label><input id="cd-preco" type="number" step="0.01" value="${item?item.preco:0}"></div>
+    </div></div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteItemCardapio('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveItemCardapio('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+async function saveItemCardapio(id){
+  const payload = {id:id||undefined, nome:document.getElementById('cd-nome').value.trim(),
+    categoria:document.getElementById('cd-categoria').value.trim(), preco:Number(document.getElementById('cd-preco').value||0)};
+  if(!payload.nome){ toast('Informe o nome do item.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarItemCardapio',payload); showLoader(false); closeModal(); toast('Item salvo.','success'); navigate('configuracoes'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar.','error'); }
+}
+async function deleteItemCardapio(id){
+  if(!confirm('Excluir este item do cardápio?')) return;
+  showLoader(true);
+  try{ await api('excluirItemCardapio',{id}); showLoader(false); closeModal(); toast('Item excluído.','success'); navigate('configuracoes'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+async function testarConexaoAPI(){
+  if(!USE_REMOTE_API){ toast('Nenhuma URL de API configurada — sistema em modo demonstração.','error'); return; }
+  showLoader(true);
+  try{
+    const r = await fetch(APPS_SCRIPT_URL, {method:'GET'});
+    const json = await r.json();
+    showLoader(false);
+    if(json.ok) toast('Conexão bem-sucedida com a API! Status: online.','success');
+    else toast('A API respondeu, mas com erro: '+(json.error||'desconhecido'),'error');
+  }catch(e){
+    showLoader(false);
+    toast('Não foi possível conectar à API. Verifique a URL e a implantação.','error');
+  }
+}
+
+/* ---------- USUÁRIOS ---------- */
+RENDERERS.usuarios = async function(){
+  const raw = await api('listarUsuarios');
+  const st = tableState('usuarios');
+  const {pageData,total,pages} = applyTableControls('usuarios', raw, {searchKeys:['nome','usuario','perfil']});
+  return `
+    <div class="toolbar">
+      <div class="search-box"><span>🔎</span><input placeholder="Pesquisar usuário..." value="${st.search||''}" oninput="searchTable('usuarios',this.value)"></div>
+      <button class="btn btn-gold" onclick="openUsuarioModal()">+ Novo Usuário</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th onclick="sortTable('usuarios','nome')">Nome</th><th>Usuário</th><th>Perfil</th><th>Status</th><th style="text-align:right;">Ações</th></tr></thead>
+      <tbody>${pageData.length?pageData.map(u=>`
+        <tr><td class="cell-name">${u.nome}</td><td>${u.usuario}</td><td><span class="tag tag-confirmado">${u.perfil}</span></td>
+        <td>${u.ativo?'<span class="tag tag-livre">Ativo</span>':'<span class="tag tag-cancelado">Inativo</span>'}</td>
+        <td><div class="row-actions" style="justify-content:flex-end;">
+          <button class="btn btn-outline btn-icon btn-sm" onclick="openUsuarioModal('${u.id}')">✎</button>
+          <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteUsuario('${u.id}')">🗑</button>
+        </div></td></tr>`).join(''):`<tr><td colspan="5"><div class="empty-state">Nenhum usuário cadastrado.</div></td></tr>`}
+      </tbody></table>${paginationHtml('usuarios',total,pages)}</div>`;
+};
+async function openUsuarioModal(id){
+  const [list, profs] = await Promise.all([api('listarUsuarios'), api('listarProfissionais')]);
+  const item = id?list.find(u=>u.id===id):null;
+  openModal(`<div class="modal-head"><h3>${item?'Editar Usuário':'Novo Usuário'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field full"><label>Nome</label><input id="us-nome" value="${item?escapeHtml(item.nome):''}"></div>
+      <div class="field"><label>Usuário</label><input id="us-usuario" value="${item?item.usuario:''}"></div>
+      <div class="field"><label>Senha</label><input id="us-senha" type="text" value="${item?item.senha:''}"></div>
+      <div class="field"><label>Perfil</label><select id="us-perfil" onchange="onUsuarioPerfilChange()">
+        <option value="Administrador" ${item&&item.perfil==='Administrador'?'selected':''}>Administrador</option>
+        <option value="Recepcionista" ${item&&item.perfil==='Recepcionista'?'selected':''}>Recepcionista</option>
+        <option value="Profissional" ${item&&item.perfil==='Profissional'?'selected':''}>Profissional</option>
+      </select></div>
+      <div class="field full" id="us-prof-field" style="${item&&item.perfil!=='Profissional'?'display:none;':''}">
+        <label>Vincular ao Profissional</label>
+        <select id="us-profissionalId">${profs.map(p=>`<option value="${p.id}" ${item&&item.profissionalId===p.id?'selected':''}>${p.nome}</option>`).join('')}</select>
+      </div>
+    </div></div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteUsuario('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveUsuario('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+function onUsuarioPerfilChange(){
+  document.getElementById('us-prof-field').style.display = document.getElementById('us-perfil').value==='Profissional' ? '' : 'none';
+}
+async function saveUsuario(id){
+  const perfil = document.getElementById('us-perfil').value;
+  const payload = {id:id||undefined, nome:document.getElementById('us-nome').value.trim(), usuario:document.getElementById('us-usuario').value.trim(),
+    senha:document.getElementById('us-senha').value, perfil, ativo:true,
+    profissionalId: perfil==='Profissional' ? document.getElementById('us-profissionalId').value : undefined};
+  if(!payload.nome || !payload.usuario || !payload.senha){ toast('Preencha nome, usuário e senha.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarUsuario',payload); showLoader(false); closeModal(); toast('Usuário salvo.','success'); navigate('usuarios'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar.','error'); }
+}
+async function deleteUsuario(id){
+  if(!confirm('Excluir este usuário?')) return;
+  showLoader(true);
+  try{ await api('excluirUsuario',{id}); showLoader(false); toast('Usuário excluído.','success'); navigate('usuarios'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
+</script>
+</body>
+</html>
