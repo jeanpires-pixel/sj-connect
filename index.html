@@ -596,11 +596,11 @@ function seedDB(){
       {id:'u3', nome:'Marcos Lima', usuario:'profissional', senha:'profissional', perfil:'Profissional', profissionalId:'p1', ativo:true},
     ],
     clientes:[
-      {id:'c1', nome:'Juliana Prado', telefone:'(61) 99123-4567', cpf:'123.456.789-00', aniversario:'07-18', vip:true, ultimaVisita:'2026-07-02', observacoes:'Prefere tintura sem amônia.'},
-      {id:'c2', nome:'Renata Alves', telefone:'(61) 98844-2231', cpf:'234.567.890-11', aniversario:'07-15', vip:false, ultimaVisita:'2026-06-28', observacoes:''},
-      {id:'c3', nome:'Camila Duarte', telefone:'(61) 99911-0022', cpf:'345.678.901-22', aniversario:'11-02', vip:true, ultimaVisita:'2026-07-10', observacoes:'Alergia a alguns esmaltes.'},
-      {id:'c4', nome:'Patrícia Nunes', telefone:'(61) 99700-1234', cpf:'456.789.012-33', aniversario:'07-15', vip:false, ultimaVisita:'2026-05-20', observacoes:''},
-      {id:'c5', nome:'Fernanda Ribeiro', telefone:'(61) 98123-9988', cpf:'567.890.123-44', aniversario:'03-09', vip:false, ultimaVisita:'2026-07-08', observacoes:''},
+      {id:'c1', nome:'Juliana Prado', telefone:'(61) 99123-4567', cpf:'123.456.789-00', aniversario:'07-18', vip:true, ultimaVisita:'2026-07-02', observacoes:'Prefere tintura sem amônia.', saldoCredito:35},
+      {id:'c2', nome:'Renata Alves', telefone:'(61) 98844-2231', cpf:'234.567.890-11', aniversario:'07-15', vip:false, ultimaVisita:'2026-06-28', observacoes:'', saldoCredito:0},
+      {id:'c3', nome:'Camila Duarte', telefone:'(61) 99911-0022', cpf:'345.678.901-22', aniversario:'11-02', vip:true, ultimaVisita:'2026-07-10', observacoes:'Alergia a alguns esmaltes.', saldoCredito:0},
+      {id:'c4', nome:'Patrícia Nunes', telefone:'(61) 99700-1234', cpf:'456.789.012-33', aniversario:'07-15', vip:false, ultimaVisita:'2026-05-20', observacoes:'', saldoCredito:0},
+      {id:'c5', nome:'Fernanda Ribeiro', telefone:'(61) 98123-9988', cpf:'567.890.123-44', aniversario:'03-09', vip:false, ultimaVisita:'2026-07-08', observacoes:'', saldoCredito:0},
     ],
     profissionais:[
       {id:'p1', nome:'Marcos Lima', especialidade:'Colorista', comissao:35, ativo:true, atendimentosMes:64, pix:'marcos.lima@email.com'},
@@ -644,6 +644,15 @@ function seedDB(){
     anamneses:[],
     comissoesServico:[],
     contasPagar:[],
+    cardapioConsumo:[
+      {id:'cd1', nome:'Cappuccino', categoria:'Bebidas', preco:12},
+      {id:'cd2', nome:'Água s/ Gás', categoria:'Bebidas', preco:3},
+      {id:'cd3', nome:'Suco Detox', categoria:'Suco Natural', preco:8},
+      {id:'cd4', nome:'Pão de Queijo', categoria:'Lanches', preco:4},
+      {id:'cd5', nome:'Tapioca Completa', categoria:'Lanches', preco:10},
+      {id:'cd6', nome:'Crepe com Frango', categoria:'Crepes', preco:15},
+    ],
+    descontosComissao:[],
   };
 }
 function uid(prefix){ return prefix + Math.random().toString(36).slice(2,9); }
@@ -754,6 +763,24 @@ function demoAPI(action, payload){
       u.senha = payload.novaSenha;
       return {ok:true};
     }
+
+    case 'listarCardapioConsumo': return clone(DB.cardapioConsumo);
+    case 'salvarItemCardapio': {
+      if(payload.id){ const i=DB.cardapioConsumo.findIndex(c=>c.id===payload.id); DB.cardapioConsumo[i]=payload; }
+      else { payload.id = uid('cd'); DB.cardapioConsumo.push(payload); }
+      return clone(payload);
+    }
+    case 'excluirItemCardapio': DB.cardapioConsumo = DB.cardapioConsumo.filter(c=>c.id!==payload.id); return {ok:true};
+
+    case 'ajustarSaldoCredito': {
+      const c = DB.clientes.find(x=>x.id===payload.clienteId);
+      if(!c) throw new Error('Cliente não encontrado.');
+      c.saldoCredito = Number(c.saldoCredito||0) + Number(payload.delta||0);
+      return {ok:true, saldoCredito:c.saldoCredito};
+    }
+
+    case 'listarDescontosComissao': return clone(DB.descontosComissao);
+    case 'salvarDescontoComissao': { payload.id = uid('dc'); DB.descontosComissao.push(payload); return clone(payload); }
 
     case 'listarUsuarios': return clone(DB.usuarios);
     case 'salvarUsuario': {
@@ -894,6 +921,7 @@ const MENUS = {
   'Profissional':[
     {view:'minhaagenda', label:'Minha Agenda', ico:'📅'},
     {view:'agendasemanal', label:'Agenda Semanal', ico:'🗓'},
+    {view:'servicos', label:'Tabela de Serviços', ico:'✂', readonly:true},
     {view:'meuperfil', label:'Meu Perfil', ico:'👤'},
   ],
 };
@@ -1245,6 +1273,9 @@ RENDERERS.minhaagenda = async function(){
   const nomeCli=id=>(ctx.clientes.find(c=>c.id===id)||{}).nome||'—';
   const nomeServ=id=>(ctx.servicos.find(c=>c.id===id)||{}).nome||'—';
   return `
+    <div class="toolbar"><div style="flex:1;"></div>
+      <button class="btn btn-gold" onclick="openAgendaModal(null, '${myId}')">+ Novo Agendamento</button>
+    </div>
     <div class="legend">
       <span><span class="dot livre"></span>Livre</span><span><span class="dot confirmado"></span>Confirmado</span>
       <span><span class="dot andamento"></span>Em atendimento</span><span><span class="dot finalizado"></span>Finalizado</span>
@@ -1252,12 +1283,12 @@ RENDERERS.minhaagenda = async function(){
     </div>
     <div class="card card-pad"><div class="agenda-day">
       ${list.length ? list.map(a=>`
-        <div class="slot ${a.status}">
+        <div class="slot ${a.status}" onclick="openAgendaModal('${a.id}', '${myId}')">
           <div class="time">${a.hora}</div>
           <div class="info"><div class="cli">${nomeCli(a.clienteId)} · ${nomeServ(a.servicoId)}</div>
           <div class="meta">${a.duracao}min · ${fmtMoney(a.valor)}</div></div>
           <span class="tag tag-${a.status}">${STATUS_LABEL[a.status]}</span>
-        </div>`).join('') : `<div class="empty-state"><div class="ico">📅</div>Nenhum atendimento hoje. Aproveite para revisar sua agenda semanal.</div>`}
+        </div>`).join('') : `<div class="empty-state"><div class="ico">📅</div>Nenhum atendimento hoje. Aproveite para revisar sua agenda semanal ou agendar um novo cliente.</div>`}
     </div></div>`;
 };
 RENDERERS.agendasemanal = async function(){
@@ -1300,10 +1331,13 @@ RENDERERS.meuperfil = async function(){
     </div>`;
 };
 
-/* Agenda modal (create/edit) */
-async function openAgendaModal(id){
+/* Agenda modal (create/edit). lockProfissionalId trava o campo Profissional
+   (usado quando uma Profissional agenda pela própria "Minha Agenda" — ela só
+   pode marcar horários para si mesma, nunca para outra pessoa da equipe). */
+async function openAgendaModal(id, lockProfissionalId){
   const ctx = await loadAgendaContext();
   const item = id ? ctx.agenda.find(a=>a.id===id) : null;
+  const profsDisponiveis = lockProfissionalId ? ctx.profs.filter(p=>p.id===lockProfissionalId) : ctx.profs;
   const overlay = openModal(`
     <div class="modal-head"><h3>${item?'Editar Agendamento':'Novo Agendamento'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="modal-body">
@@ -1315,7 +1349,8 @@ async function openAgendaModal(id){
           <select id="ag-servico" onchange="onAgendaServicoChange()">${ctx.servicos.map(s=>`<option value="${s.id}" data-preco="${s.preco}" data-duracao="${s.duracao}" ${item&&item.servicoId===s.id?'selected':''}>${s.nome}</option>`).join('')}</select>
         </div>
         <div class="field"><label>Profissional</label>
-          <select id="ag-profissional">${ctx.profs.map(p=>`<option value="${p.id}" ${item&&item.profissionalId===p.id?'selected':''}>${p.nome}</option>`).join('')}</select>
+          <select id="ag-profissional" ${lockProfissionalId?'disabled':''}>${profsDisponiveis.map(p=>`<option value="${p.id}" ${(item&&item.profissionalId===p.id)||(!item&&lockProfissionalId===p.id)?'selected':''}>${p.nome}</option>`).join('')}</select>
+          ${lockProfissionalId?'<div class="helper-text" style="margin-top:4px;">Você só pode agendar horários para você mesma.</div>':''}
         </div>
         <div class="field"><label>Data</label><input type="date" id="ag-data" value="${item?item.data:new Date().toISOString().slice(0,10)}"></div>
         <div class="field"><label>Hora</label><input type="time" id="ag-hora" value="${item?item.hora:'09:00'}"></div>
@@ -1544,11 +1579,79 @@ RENDERERS.profissionais = async function(){
           <div class="row-actions" style="justify-content:center;margin-top:12px;flex-wrap:wrap;">
             <button class="btn btn-outline btn-sm" onclick="navigate('agenda')">Agenda</button>
             <button class="btn btn-outline btn-sm" onclick="openReciboModal('${p.id}')">Recibo</button>
+            <button class="btn btn-outline btn-sm" title="Registrar consumo (desconta da comissão)" onclick="openConsumoProfissionalModal('${p.id}')">Consumo</button>
             <button class="btn btn-outline btn-sm" onclick="openProfissionalModal('${p.id}')">Editar</button>
           </div>
         </div>`).join('')}
     </div>`;
 };
+async function openConsumoProfissionalModal(profissionalId){
+  const [profs, cardapio, produtos] = await Promise.all([api('listarProfissionais'), api('listarCardapioConsumo'), api('listarProdutos')]);
+  const prof = profs.find(p=>p.id===profissionalId);
+  const consignados = produtos.filter(p=>p.consignado);
+  openModal(`<div class="modal-head"><h3>Registrar Consumo · ${escapeHtml(prof.nome)}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <p class="helper-text" style="margin-bottom:14px;">O valor registrado aqui é descontado da comissão a pagar para ${escapeHtml(prof.nome)}, visível no relatório "Comissão das Profissionais".</p>
+      <div class="form-grid">
+        <div class="field full"><label>Origem</label>
+          <select id="cp-origem" onchange="onOrigemConsumoChange()">
+            <option value="cardapio">Item do Cardápio de Consumação</option>
+            <option value="produto">Produto Consignado</option>
+          </select>
+        </div>
+        <div class="field" id="cp-item-cardapio-field">
+          <label>Item</label>
+          <select id="cp-item-cardapio" onchange="onItemConsumoChange()">
+            <option value="">Selecione...</option>
+            ${cardapio.map(c=>`<option value="${c.id}" data-preco="${c.preco}" data-nome="${escapeHtml(c.nome)}">${c.nome} (${fmtMoney(c.preco)})</option>`).join('')}
+          </select>
+        </div>
+        <div class="field" id="cp-item-produto-field" style="display:none;">
+          <label>Produto</label>
+          <select id="cp-item-produto" onchange="onItemConsumoChange()">
+            <option value="">Selecione...</option>
+            ${consignados.map(p=>`<option value="${p.id}" data-preco="${p.preco}" data-nome="${escapeHtml(p.nome)}">${p.nome} (${fmtMoney(p.preco)})</option>`).join('')}
+          </select>
+        </div>
+        <div class="field"><label>Quantidade</label><input id="cp-quantidade" type="number" min="1" value="1" oninput="onItemConsumoChange()"></div>
+        <div class="field full"><label>Valor total a descontar (R$)</label><input id="cp-valor" type="number" step="0.01" value="0"></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveConsumoProfissional('${profissionalId}')">Registrar Desconto</button></div>`);
+}
+function onOrigemConsumoChange(){
+  const origem = document.getElementById('cp-origem').value;
+  document.getElementById('cp-item-cardapio-field').style.display = origem==='cardapio' ? '' : 'none';
+  document.getElementById('cp-item-produto-field').style.display = origem==='produto' ? '' : 'none';
+  onItemConsumoChange();
+}
+function onItemConsumoChange(){
+  const origem = document.getElementById('cp-origem').value;
+  const sel = origem==='cardapio' ? document.getElementById('cp-item-cardapio') : document.getElementById('cp-item-produto');
+  const preco = sel.selectedOptions[0]?.dataset.preco;
+  const qtd = Number(document.getElementById('cp-quantidade').value||1);
+  if(preco) document.getElementById('cp-valor').value = (Number(preco)*qtd).toFixed(2);
+}
+async function saveConsumoProfissional(profissionalId){
+  const origem = document.getElementById('cp-origem').value;
+  const sel = origem==='cardapio' ? document.getElementById('cp-item-cardapio') : document.getElementById('cp-item-produto');
+  const nomeItem = sel.selectedOptions[0]?.dataset.nome || '';
+  const quantidade = Number(document.getElementById('cp-quantidade').value||1);
+  const valor = Number(document.getElementById('cp-valor').value||0);
+  if(!nomeItem || !valor){ toast('Selecione um item e confira o valor.','error'); return; }
+  showLoader(true);
+  try{
+    await api('salvarDescontoComissao', {
+      data: new Date().toISOString().slice(0,10), profissionalId,
+      descricao: `${nomeItem} x${quantidade}`, valor, origem: origem==='cardapio'?'consumo_cardapio':'consumo_produto',
+    });
+    if(origem==='produto'){
+      await api('registrarMovimentacaoEstoque', {produtoId:sel.value, tipo:'saida', quantidade, observacao:'Consumo do profissional', data:new Date().toISOString().slice(0,10)});
+    }
+    showLoader(false); closeModal(); toast('Consumo registrado e descontado da comissão.','success');
+  }catch(e){ showLoader(false); toast('Erro ao registrar consumo.','error'); }
+}
 async function openProfissionalModal(id){
   const list = await api('listarProfissionais');
   const item = id? list.find(p=>p.id===id): null;
@@ -1606,9 +1709,25 @@ RENDERERS.recibos = async function(){
       </tbody></table>${paginationHtml('recibos',total,pages)}</div>`;
 };
 
+// Estado das listas dinâmicas do recibo em edição (comanda de consumação e
+// produtos consignados vendidos) — arrays simples de {itemId, quantidade}.
+let _reciboComanda = [];
+let _reciboConsignados = [];
+
 async function openReciboModal(prefillProfissionalId){
-  const [profs, servicos, comissoesServico] = await Promise.all([api('listarProfissionais'), api('listarServicos'), api('listarComissoesServico')]);
-  window._comissoesServicoCache = comissoesServico; // usado por reciboRecalcRow, evita refazer a chamada a cada linha
+  const [clientes, profs, servicos, comissoesServico, cardapio, produtos] = await Promise.all([
+    api('listarClientes'), api('listarProfissionais'), api('listarServicos'), api('listarComissoesServico'),
+    api('listarCardapioConsumo'), api('listarProdutos')
+  ]);
+  window._comissoesServicoCache = comissoesServico;
+  window._clientesCache = clientes;
+  window._cardapioCache = cardapio;
+  window._produtosConsignadosCache = produtos.filter(p=>p.consignado);
+  _reciboComanda = [];
+  _reciboConsignados = [];
+
+  const clienteOptions = `<option value="">Cliente avulso (sem cadastro)</option>` +
+    clientes.map(c=>`<option value="${c.id}" data-telefone="${c.telefone||''}" data-aniversario="${c.aniversario||''}" data-cpf="${c.cpf||''}" data-saldo="${c.saldoCredito||0}">${c.nome}</option>`).join('');
   const profOptions = `<option value="">—</option>` + profs.map(p=>`<option value="${p.id}" data-comissao="${p.comissao}" ${p.id===prefillProfissionalId?'selected':''}>${p.nome}</option>`).join('');
   const servOptions = `<option value="">—</option>` + servicos.map(s=>`<option value="${s.id}" data-preco="${s.preco}">${s.nome}</option>`).join('');
   const rows = [0,1,2,3,4].map(i=>`
@@ -1622,21 +1741,41 @@ async function openReciboModal(prefillProfissionalId){
     <div class="modal-head"><h3>Novo Recibo</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="modal-body">
       <div class="form-grid">
-        <div class="field full"><label>Cliente</label><input id="rc-cliente" placeholder="Nome do cliente"></div>
+        <div class="field full"><label>Cliente</label>
+          <select id="rc-cliente-select" onchange="onClienteReciboChange()">${clienteOptions}</select>
+        </div>
         <div class="field"><label>Telefone</label><input id="rc-telefone" data-mask="phone" placeholder="(00) 00000-0000"></div>
         <div class="field"><label>Data Aniv.</label><input id="rc-aniversario" placeholder="DD/MM"></div>
         <div class="field"><label>Instagram</label><input id="rc-instagram" placeholder="@usuario"></div>
         <div class="field"><label>CPF</label><input id="rc-cpf" data-mask="cpf" placeholder="000.000.000-00"></div>
       </div>
+      <div class="card card-pad" id="rc-saldo-credito-box" style="background:var(--nude-50);margin-bottom:16px;display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div><label style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--ink-500);">Saldo de crédito de loja deste cliente</label>
+          <div id="rc-saldo-credito-valor" style="font-family:var(--font-display);font-size:22px;">R$ 0,00</div></div>
+        </div>
+      </div>
+
       <div class="table-wrap" style="margin-top:16px;">
         <table><thead><tr><th>Atendente</th><th>Serviço</th><th>Comissão</th><th>Valor</th></tr></thead>
         <tbody>${rows}</tbody></table>
       </div>
-      <div class="form-grid" style="margin-top:16px;">
-        <div class="field"><label>Café / Consumo (R$)</label><input id="rc-cafe" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"></div>
-        <div class="field"><label>Produtos / Vendas (R$)</label><input id="rc-produtos" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"></div>
-        <div class="field"><label>Crédito (desconto já pago) (R$)</label><input id="rc-credito" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"></div>
-        <div class="field"><label>Forma de Pagamento</label><select id="rc-forma-pagamento">${formaPagamentoOptionsHtml('pix')}</select></div>
+
+      <div class="section-head" style="margin-top:18px;"><div><h3 style="font-size:16px;">Comanda de Consumação</h3><div class="ribbon"></div></div>
+        <button class="btn btn-outline btn-sm" onclick="addComandaRow()">+ Adicionar Item</button></div>
+      <div id="rc-comanda-container"></div>
+      <div style="text-align:right;font-size:13px;font-weight:700;margin-top:6px;">Subtotal Consumação: <span id="rc-comanda-total">R$ 0,00</span></div>
+
+      <div class="section-head" style="margin-top:18px;"><div><h3 style="font-size:16px;">Produtos Consignados Vendidos</h3><div class="ribbon"></div></div>
+        <button class="btn btn-outline btn-sm" onclick="addConsignadoRow()">+ Adicionar Produto</button></div>
+      <div id="rc-consignado-container"></div>
+      <div style="text-align:right;font-size:13px;font-weight:700;margin-top:6px;">Subtotal Produtos: <span id="rc-consignado-total">R$ 0,00</span></div>
+
+      <div class="form-grid" style="margin-top:18px;">
+        <div class="field"><label>Desconto Manual (R$)</label><input id="rc-desconto-manual" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"><div class="helper">Desconto avulso, sem relação com o saldo de crédito.</div></div>
+        <div class="field"><label>Usar Crédito da Loja (R$)</label><input id="rc-credito-utilizado" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"><div class="helper">Abate do saldo já existente do cliente.</div></div>
+        <div class="field full"><label>Adicionar Crédito à Loja (R$)</label><input id="rc-credito-gerado" type="number" step="0.01" value="0" oninput="reciboRecalcTotal()"><div class="helper">Ex.: cliente paga a mais hoje para usar em uma próxima visita — soma ao saldo dela.</div></div>
+        <div class="field full"><label>Forma de Pagamento</label><select id="rc-forma-pagamento">${formaPagamentoOptionsHtml('pix')}</select></div>
       </div>
       <div class="card card-pad" style="margin-top:6px;background:var(--nude-50);">
         <label style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-500);">Total Recebido</label>
@@ -1647,6 +1786,72 @@ async function openReciboModal(prefillProfissionalId){
       <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
       <button class="btn btn-gold" onclick="saveRecibo()">Salvar e Imprimir</button>
     </div>`);
+  renderComandaRows();
+  renderConsignadoRows();
+}
+function onClienteReciboChange(){
+  const sel = document.getElementById('rc-cliente-select');
+  const opt = sel.selectedOptions[0];
+  const box = document.getElementById('rc-saldo-credito-box');
+  if(!sel.value){ box.style.display='none'; reciboRecalcTotal(); return; }
+  document.getElementById('rc-telefone').value = opt.dataset.telefone || '';
+  document.getElementById('rc-aniversario').value = opt.dataset.aniversario || '';
+  document.getElementById('rc-cpf').value = opt.dataset.cpf || '';
+  const saldo = Number(opt.dataset.saldo||0);
+  document.getElementById('rc-saldo-credito-valor').textContent = fmtMoney(saldo);
+  box.style.display='block';
+  reciboRecalcTotal();
+}
+/* ---- Comanda de Consumação (itens do cardápio) ---- */
+function addComandaRow(){ _reciboComanda.push({itemId:'', quantidade:1}); renderComandaRows(); }
+function removeComandaRow(idx){ _reciboComanda.splice(idx,1); renderComandaRows(); }
+function onComandaRowChange(idx, field, value){ _reciboComanda[idx][field] = field==='quantidade'?Number(value||0):value; renderComandaRows(); }
+function renderComandaRows(){
+  const cardapio = window._cardapioCache || [];
+  const container = document.getElementById('rc-comanda-container');
+  if(!container) return;
+  container.innerHTML = _reciboComanda.length ? _reciboComanda.map((row,idx)=>{
+    const item = cardapio.find(c=>c.id===row.itemId);
+    const subtotal = item ? item.preco*row.quantidade : 0;
+    return `<div class="list-row">
+      <select style="flex:2;" onchange="onComandaRowChange(${idx},'itemId',this.value)">
+        <option value="">Selecione um item...</option>
+        ${cardapio.map(c=>`<option value="${c.id}" ${row.itemId===c.id?'selected':''}>${c.nome} (${fmtMoney(c.preco)})</option>`).join('')}
+      </select>
+      <input type="number" min="1" value="${row.quantidade}" style="width:70px;padding:8px;border-radius:8px;border:1.5px solid var(--nude-200);text-align:center;" onchange="onComandaRowChange(${idx},'quantidade',this.value)">
+      <div style="width:90px;text-align:right;font-weight:700;">${fmtMoney(subtotal)}</div>
+      <button class="btn btn-danger-outline btn-icon btn-sm" onclick="removeComandaRow(${idx})">🗑</button>
+    </div>`;
+  }).join('') : '<div class="empty-state" style="padding:16px;">Nenhum item adicionado.</div>';
+  const total = _reciboComanda.reduce((s,row)=>{ const item=cardapio.find(c=>c.id===row.itemId); return s + (item?item.preco*row.quantidade:0); },0);
+  document.getElementById('rc-comanda-total').textContent = fmtMoney(total);
+  reciboRecalcTotal();
+}
+/* ---- Produtos Consignados Vendidos ---- */
+function addConsignadoRow(){ _reciboConsignados.push({produtoId:'', quantidade:1}); renderConsignadoRows(); }
+function removeConsignadoRow(idx){ _reciboConsignados.splice(idx,1); renderConsignadoRows(); }
+function onConsignadoRowChange(idx, field, value){ _reciboConsignados[idx][field] = field==='quantidade'?Number(value||0):value; renderConsignadoRows(); }
+function renderConsignadoRows(){
+  const produtos = window._produtosConsignadosCache || [];
+  const container = document.getElementById('rc-consignado-container');
+  if(!container) return;
+  if(!produtos.length){ container.innerHTML = '<div class="empty-state" style="padding:16px;">Nenhum produto marcado como consignado ainda (marque em Produtos).</div>'; document.getElementById('rc-consignado-total').textContent = fmtMoney(0); reciboRecalcTotal(); return; }
+  container.innerHTML = _reciboConsignados.length ? _reciboConsignados.map((row,idx)=>{
+    const prod = produtos.find(p=>p.id===row.produtoId);
+    const subtotal = prod ? prod.preco*row.quantidade : 0;
+    return `<div class="list-row">
+      <select style="flex:2;" onchange="onConsignadoRowChange(${idx},'produtoId',this.value)">
+        <option value="">Selecione um produto...</option>
+        ${produtos.map(p=>`<option value="${p.id}" ${row.produtoId===p.id?'selected':''}>${p.nome} (${fmtMoney(p.preco)}) · estoque: ${p.estoque}</option>`).join('')}
+      </select>
+      <input type="number" min="1" value="${row.quantidade}" style="width:70px;padding:8px;border-radius:8px;border:1.5px solid var(--nude-200);text-align:center;" onchange="onConsignadoRowChange(${idx},'quantidade',this.value)">
+      <div style="width:90px;text-align:right;font-weight:700;">${fmtMoney(subtotal)}</div>
+      <button class="btn btn-danger-outline btn-icon btn-sm" onclick="removeConsignadoRow(${idx})">🗑</button>
+    </div>`;
+  }).join('') : '<div class="empty-state" style="padding:16px;">Nenhum produto adicionado.</div>';
+  const total = _reciboConsignados.reduce((s,row)=>{ const prod=produtos.find(p=>p.id===row.produtoId); return s + (prod?prod.preco*row.quantidade:0); },0);
+  document.getElementById('rc-consignado-total').textContent = fmtMoney(total);
+  reciboRecalcTotal();
 }
 function reciboRecalcRow(i){
   const servSel = document.querySelector(`.rc-servico[data-row="${i}"]`);
@@ -1666,10 +1871,15 @@ function reciboRecalcRow(i){
 function reciboRecalcTotal(){
   let total = 0;
   document.querySelectorAll('.rc-valor').forEach(inp=> total += Number(inp.value||0));
-  total += Number(document.getElementById('rc-cafe').value||0);
-  total += Number(document.getElementById('rc-produtos').value||0);
-  total -= Number(document.getElementById('rc-credito').value||0);
-  document.getElementById('rc-total').textContent = fmtMoney(total);
+  const cardapio = window._cardapioCache || [];
+  const produtos = window._produtosConsignadosCache || [];
+  total += _reciboComanda.reduce((s,row)=>{ const item=cardapio.find(c=>c.id===row.itemId); return s + (item?item.preco*row.quantidade:0); },0);
+  total += _reciboConsignados.reduce((s,row)=>{ const prod=produtos.find(p=>p.id===row.produtoId); return s + (prod?prod.preco*row.quantidade:0); },0);
+  total -= Number(document.getElementById('rc-desconto-manual')?.value||0);
+  total -= Number(document.getElementById('rc-credito-utilizado')?.value||0);
+  total += Number(document.getElementById('rc-credito-gerado')?.value||0);
+  const totalEl = document.getElementById('rc-total');
+  if(totalEl) totalEl.textContent = fmtMoney(total);
 }
 async function saveRecibo(){
   const itens = [];
@@ -1687,25 +1897,60 @@ async function saveRecibo(){
       });
     }
   }
-  const cafe = Number(document.getElementById('rc-cafe').value||0);
-  const produtos = Number(document.getElementById('rc-produtos').value||0);
-  const credito = Number(document.getElementById('rc-credito').value||0);
+  const cardapio = window._cardapioCache || [];
+  const produtosConsig = window._produtosConsignadosCache || [];
+  const comandaConsumo = _reciboComanda.filter(r=>r.itemId).map(r=>{
+    const item = cardapio.find(c=>c.id===r.itemId);
+    return {item:item?item.nome:'', quantidade:r.quantidade, preco:item?item.preco:0, subtotal: item?item.preco*r.quantidade:0};
+  });
+  const produtosConsignadosVendidos = _reciboConsignados.filter(r=>r.produtoId).map(r=>{
+    const prod = produtosConsig.find(p=>p.id===r.produtoId);
+    return {produtoId:r.produtoId, nome:prod?prod.nome:'', quantidade:r.quantidade, preco:prod?prod.preco:0, subtotal: prod?prod.preco*r.quantidade:0};
+  });
+  const cafeConsumo = comandaConsumo.reduce((s,i)=>s+i.subtotal,0);
+  const produtosVendas = produtosConsignadosVendidos.reduce((s,i)=>s+i.subtotal,0);
+  const descontoManual = Number(document.getElementById('rc-desconto-manual').value||0);
+  const creditoUtilizado = Number(document.getElementById('rc-credito-utilizado').value||0);
+  const creditoGerado = Number(document.getElementById('rc-credito-gerado').value||0);
   const formaPagamento = document.getElementById('rc-forma-pagamento').value;
-  const totalRecebido = itens.reduce((s,i)=>s+i.valor,0) + cafe + produtos - credito;
-  const clienteNome = document.getElementById('rc-cliente').value.trim();
+  const clienteId = document.getElementById('rc-cliente-select').value;
+  const clienteSel = document.getElementById('rc-cliente-select');
+  const clienteNome = clienteId ? clienteSel.selectedOptions[0].textContent : (document.getElementById('rc-telefone').value ? 'Cliente avulso' : 'Cliente avulso');
+  const totalRecebido = itens.reduce((s,i)=>s+i.valor,0) + cafeConsumo + produtosVendas + creditoGerado - creditoUtilizado - descontoManual;
+
+  if(clienteId){
+    const saldoAtual = Number(clienteSel.selectedOptions[0].dataset.saldo||0);
+    if(creditoUtilizado > saldoAtual){
+      toast(`Este cliente só tem ${fmtMoney(saldoAtual)} de crédito disponível.`,'error'); return;
+    }
+  } else if(creditoUtilizado>0 || creditoGerado>0){
+    toast('Selecione um cliente cadastrado para usar ou gerar crédito de loja.','error'); return;
+  }
+
   const payload = {
     data: new Date().toISOString().slice(0,10),
-    clienteNome,
+    clienteId, clienteNome,
     telefone: document.getElementById('rc-telefone').value,
     aniversario: document.getElementById('rc-aniversario').value,
     instagram: document.getElementById('rc-instagram').value,
     cpf: document.getElementById('rc-cpf').value,
     itens: JSON.stringify(itens),
-    cafeConsumo: cafe, produtosVendas: produtos, credito, totalRecebido, formaPagamento,
+    cafeConsumo, comandaConsumo: JSON.stringify(comandaConsumo),
+    produtosVendas, produtosConsignadosVendidos: JSON.stringify(produtosConsignadosVendidos),
+    descontoManual, credito: descontoManual, creditoUtilizado, creditoGerado,
+    totalRecebido, formaPagamento,
   };
   showLoader(true);
   try{
     const saved = await api('salvarRecibo', payload);
+    // Sincroniza o saldo de crédito de loja do cliente, se houve uso ou geração.
+    if(clienteId && (creditoUtilizado>0 || creditoGerado>0)){
+      await api('ajustarSaldoCredito', {clienteId, delta: creditoGerado - creditoUtilizado});
+    }
+    // Dá baixa automática no estoque de cada produto consignado vendido.
+    for(const item of produtosConsignadosVendidos){
+      await api('registrarMovimentacaoEstoque', {produtoId:item.produtoId, tipo:'saida', quantidade:item.quantidade, observacao:'Venda via Recibo', data:payload.data});
+    }
     // Gera automaticamente o lançamento correspondente no Fluxo de Caixa,
     // já com a forma de pagamento escolhida — assim o Financeiro reflete o Recibo sem digitação dupla.
     if(totalRecebido>0){
@@ -1722,10 +1967,13 @@ async function saveRecibo(){
 async function printRecibo(id, preloaded){
   const recibo = preloaded || (await api('listarRecibos')).find(r=>r.id===id);
   if(!recibo){ toast('Recibo não encontrado.','error'); return; }
-  let itens = [];
-  try{ itens = JSON.parse(recibo.itens||'[]'); }catch(e){ itens = []; }
+  let itens = []; try{ itens = JSON.parse(recibo.itens||'[]'); }catch(e){ itens = []; }
+  let comanda = []; try{ comanda = JSON.parse(recibo.comandaConsumo||'[]'); }catch(e){ comanda = []; }
+  let consignados = []; try{ consignados = JSON.parse(recibo.produtosConsignadosVendidos||'[]'); }catch(e){ consignados = []; }
   const rowsHtml = itens.map(i=>`<tr><td>${escapeHtml(i.atendente)}</td><td>${escapeHtml(i.servico)}</td><td>${fmtMoney(i.comissao)}</td><td>${fmtMoney(i.valor)}</td></tr>`).join('')
     + Array(Math.max(0,5-itens.length)).fill('<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>').join('');
+  const comandaHtml = comanda.length ? comanda.map(i=>`<div class="line">${escapeHtml(i.item)} x${i.quantidade} — ${fmtMoney(i.subtotal)}</div>`).join('') : '';
+  const consignadosHtml = consignados.length ? consignados.map(i=>`<div class="line">${escapeHtml(i.nome)} x${i.quantidade} — ${fmtMoney(i.subtotal)}</div>`).join('') : '';
   const win = window.open('', '_blank', 'width=420,height=680');
   win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Recibo</title>
   <style>
@@ -1743,9 +1991,13 @@ async function printRecibo(id, preloaded){
     <div class="line"><b>Telefone:</b> ${escapeHtml(recibo.telefone||'')} &nbsp;&nbsp; <b>Data Aniv.:</b> ${escapeHtml(recibo.aniversario||'')}</div>
     <div class="line"><b>Instagram:</b> ${escapeHtml(recibo.instagram||'')} &nbsp;&nbsp; <b>CPF:</b> ${escapeHtml(recibo.cpf||'')}</div>
     <table><thead><tr><th>Atendente</th><th>Serviço</th><th>Comissão</th><th>Valor</th></tr></thead><tbody>${rowsHtml}</tbody></table>
+    ${comandaHtml?`<div class="line"><b>Comanda de Consumação:</b></div>${comandaHtml}`:''}
+    ${consignadosHtml?`<div class="line"><b>Produtos Consignados:</b></div>${consignadosHtml}`:''}
     <div class="line"><b>Café / Consumo:</b> ${fmtMoney(recibo.cafeConsumo)}</div>
     <div class="line"><b>Produtos / Vendas:</b> ${fmtMoney(recibo.produtosVendas)}</div>
-    <div class="line"><b>Crédito:</b> ${fmtMoney(recibo.credito)}</div>
+    <div class="line"><b>Desconto Manual:</b> ${fmtMoney(recibo.descontoManual||recibo.credito)}</div>
+    ${recibo.creditoUtilizado?`<div class="line"><b>Crédito de Loja Utilizado:</b> ${fmtMoney(recibo.creditoUtilizado)}</div>`:''}
+    ${recibo.creditoGerado?`<div class="line"><b>Crédito de Loja Gerado:</b> ${fmtMoney(recibo.creditoGerado)}</div>`:''}
     <div class="line"><b>Forma de Pagamento:</b> ${escapeHtml(FORMA_PAGAMENTO_LABEL[recibo.formaPagamento]||recibo.formaPagamento||'—')}</div>
     <div class="total">TOTAL RECEBIDO: ${fmtMoney(recibo.totalRecebido)}</div>
     <script>window.onload=()=>window.print();<\/script>
@@ -1758,21 +2010,22 @@ RENDERERS.servicos = async function(){
   const raw = await api('listarServicos');
   const st = tableState('servicos');
   const {pageData,total,pages} = applyTableControls('servicos', raw, {searchKeys:['nome','categoria']});
+  const isRO = STATE.user.perfil==='Profissional';
   return `
     <div class="toolbar">
       <div class="search-box"><span>🔎</span><input placeholder="Pesquisar serviço..." value="${st.search||''}" oninput="searchTable('servicos',this.value)"></div>
-      <button class="btn btn-gold" onclick="openServicoModal()">+ Novo Serviço</button>
+      ${isRO?'':'<button class="btn btn-gold" onclick="openServicoModal()">+ Novo Serviço</button>'}
     </div>
     <div class="table-wrap"><table>
       <thead><tr><th onclick="sortTable('servicos','nome')">Serviço</th><th onclick="sortTable('servicos','categoria')">Categoria</th>
-        <th onclick="sortTable('servicos','duracao')">Duração</th><th onclick="sortTable('servicos','preco')">Preço</th><th style="text-align:right;">Ações</th></tr></thead>
+        <th onclick="sortTable('servicos','duracao')">Duração</th><th onclick="sortTable('servicos','preco')">Preço</th>${isRO?'':'<th style="text-align:right;">Ações</th>'}</tr></thead>
       <tbody>${pageData.length?pageData.map(s=>`
         <tr><td class="cell-name">${s.nome}</td><td>${s.categoria}</td><td>${s.duracao} min</td><td>${fmtMoney(s.preco)}</td>
-        <td><div class="row-actions" style="justify-content:flex-end;">
+        ${isRO?'':`<td><div class="row-actions" style="justify-content:flex-end;">
           <button class="btn btn-outline btn-sm" title="Comissão por profissional" onclick="openComissoesModal('${s.id}')">% Comissões</button>
           <button class="btn btn-outline btn-icon btn-sm" onclick="openServicoModal('${s.id}')">✎</button>
           <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteServico('${s.id}')">🗑</button>
-        </div></td></tr>`).join(''):`<tr><td colspan="5"><div class="empty-state">Nenhum serviço cadastrado.</div></td></tr>`}
+        </div></td>`}</tr>`).join(''):`<tr><td colspan="${isRO?4:5}"><div class="empty-state">Nenhum serviço cadastrado.</div></td></tr>`}
       </tbody></table>${paginationHtml('servicos',total,pages)}</div>`;
 };
 async function openComissoesModal(servicoId){
@@ -2217,9 +2470,10 @@ async function saveLancamento(){
 /* ---------- RELATÓRIOS ---------- */
 RENDERERS.relatorios = async function(){
   const st = tableState('relatorios'); if(!st.tab) st.tab='clientesFrequentes';
-  const [clientes, profs, servicos, agenda, financeiro, recibos, produtos, movimentacoes, contasPagar, fornecedores] = await Promise.all([
+  const [clientes, profs, servicos, agenda, financeiro, recibos, produtos, movimentacoes, contasPagar, fornecedores, descontosComissao] = await Promise.all([
     api('listarClientes'), api('listarProfissionais'), api('listarServicos'), api('listarAgenda'), api('listarFinanceiro'),
-    api('listarRecibos'), api('listarProdutos'), api('listarMovimentacoesEstoque'), api('listarContasPagar'), api('listarFornecedores')
+    api('listarRecibos'), api('listarProdutos'), api('listarMovimentacoesEstoque'), api('listarContasPagar'), api('listarFornecedores'),
+    api('listarDescontosComissao')
   ]);
   const tabs = [
     ['clientesFrequentes','Clientes Frequentes'], ['aniversariantes','Aniversariantes'],
@@ -2275,13 +2529,24 @@ RENDERERS.relatorios = async function(){
       </tbody></table></div>
       <p class="helper-text" style="margin-top:12px;">Para cadastrar ou marcar contas como pagas, use a aba "Contas a Pagar" dentro de Financeiro.</p>`;
   } else if(st.tab==='comissaoProfissionais'){
-    const comissaoPorAtendente = {};
+    const comissaoBrutaPorProf = {};
     recibos.forEach(r=>{
       let itens = []; try{ itens = JSON.parse(r.itens||'[]'); }catch(e){}
-      itens.forEach(i=>{ if(i.atendente){ comissaoPorAtendente[i.atendente] = (comissaoPorAtendente[i.atendente]||0) + Number(i.comissao||0); } });
+      itens.forEach(i=>{ if(i.atendente){ comissaoBrutaPorProf[i.atendente] = (comissaoBrutaPorProf[i.atendente]||0) + Number(i.comissao||0); } });
     });
-    const rows = Object.entries(comissaoPorAtendente).map(([nome,v])=>({label:nome, value:v})).sort((a,b)=>b.value-a.value);
-    body = rows.length ? barList(rows,'R$', v=>fmtMoney(v)) : '<div class="empty-state">Nenhuma comissão registrada ainda — a comissão é calculada a partir dos Recibos emitidos.</div>';
+    const descontoPorProfId = {};
+    descontosComissao.forEach(d=>{ descontoPorProfId[d.profissionalId] = (descontoPorProfId[d.profissionalId]||0) + Number(d.valor||0); });
+    const nomes = new Set([...Object.keys(comissaoBrutaPorProf), ...profs.map(p=>p.nome)]);
+    const rows = [...nomes].map(nome=>{
+      const prof = profs.find(p=>p.nome===nome);
+      const bruta = comissaoBrutaPorProf[nome] || 0;
+      const desconto = prof ? (descontoPorProfId[prof.id] || 0) : 0;
+      return {nome, bruta, desconto, liquida: bruta - desconto};
+    }).filter(r=>r.bruta>0 || r.desconto>0).sort((a,b)=>b.liquida-a.liquida);
+    body = rows.length ? `<div class="table-wrap"><table><thead><tr><th>Profissional</th><th>Comissão Bruta</th><th>Descontos (consumo)</th><th>Comissão Líquida a Pagar</th></tr></thead><tbody>
+      ${rows.map(r=>`<tr><td class="cell-name">${escapeHtml(r.nome)}</td><td>${fmtMoney(r.bruta)}</td><td style="color:var(--danger);">${r.desconto?'- '+fmtMoney(r.desconto):fmtMoney(0)}</td><td style="font-weight:800;">${fmtMoney(r.liquida)}</td></tr>`).join('')}
+      </tbody></table></div>`
+      : '<div class="empty-state">Nenhuma comissão registrada ainda — a comissão é calculada a partir dos Recibos emitidos.</div>';
   } else if(st.tab==='vendasDiarias'){
     const porDia = {};
     financeiro.filter(f=>f.tipo==='entrada').forEach(f=>{ porDia[f.data]=(porDia[f.data]||0)+f.valor; });
@@ -2333,6 +2598,9 @@ function setReportTab(t){ tableState('relatorios').tab=t; navigate('relatorios')
 
 /* ---------- CONFIGURAÇÕES ---------- */
 RENDERERS.configuracoes = async function(){
+  const cardapio = await api('listarCardapioConsumo');
+  const porCategoria = {};
+  cardapio.forEach(c=>{ (porCategoria[c.categoria||'Outros'] = porCategoria[c.categoria||'Outros']||[]).push(c); });
   return `
     <div class="card card-pad" style="max-width:640px;margin-bottom:20px;">
       <h3>Conexão com o Backend</h3><div class="ribbon"></div>
@@ -2347,6 +2615,20 @@ RENDERERS.configuracoes = async function(){
           : 'Ficha de anamnese ainda não configurada — publique o arquivo <code>anamnese.html</code> junto com o index.html e cole o link na constante <code>ANAMNESE_FORM_URL</code>.'}
       </p>
       <div style="margin-top:14px;"><button class="btn btn-outline btn-sm" onclick="testarConexaoAPI()">Testar Conexão</button></div>
+    </div>
+    <div class="card card-pad" style="max-width:720px;margin-bottom:20px;">
+      <div class="section-head"><div><h3>Cardápio de Consumação</h3><div class="ribbon"></div></div>
+        <button class="btn btn-gold btn-sm" onclick="openItemCardapioModal()">+ Novo Item</button>
+      </div>
+      <p class="helper-text" style="margin-bottom:14px;">Itens e preços usados na "Comanda de Consumação" dentro do Recibo.</p>
+      ${Object.keys(porCategoria).length ? Object.entries(porCategoria).map(([cat,itens])=>`
+        <h4 style="font-size:13px;margin:14px 0 6px;color:var(--gold-600);">${escapeHtml(cat)}</h4>
+        ${itens.map(c=>`<div class="list-row"><div style="flex:1;">${escapeHtml(c.nome)}</div><div style="font-weight:700;margin-right:10px;">${fmtMoney(c.preco)}</div>
+          <div class="row-actions">
+            <button class="btn btn-outline btn-icon btn-sm" onclick="openItemCardapioModal('${c.id}')">✎</button>
+            <button class="btn btn-danger-outline btn-icon btn-sm" onclick="deleteItemCardapio('${c.id}')">🗑</button>
+          </div></div>`).join('')}
+      `).join('') : '<div class="empty-state">Nenhum item cadastrado ainda.</div>'}
     </div>
     <div class="card card-pad" style="max-width:640px;">
       <h3>Dados do Salão</h3><div class="ribbon"></div>
@@ -2365,6 +2647,38 @@ RENDERERS.configuracoes = async function(){
       </p>
     </div>`;
 };
+async function openItemCardapioModal(id){
+  const list = await api('listarCardapioConsumo');
+  const item = id?list.find(c=>c.id===id):null;
+  const categoriasUsadas = [...new Set(list.map(c=>c.categoria).filter(Boolean))];
+  openModal(`<div class="modal-head"><h3>${item?'Editar Item':'Novo Item do Cardápio'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body"><div class="form-grid">
+      <div class="field full"><label>Nome</label><input id="cd-nome" value="${item?escapeHtml(item.nome):''}"></div>
+      <div class="field"><label>Categoria</label><input id="cd-categoria" list="cd-categoria-list" value="${item?escapeHtml(item.categoria||''):''}" placeholder="Ex: Bebidas, Lanches...">
+        <datalist id="cd-categoria-list">${categoriasUsadas.map(c=>`<option value="${escapeHtml(c)}">`).join('')}</datalist>
+      </div>
+      <div class="field"><label>Preço (R$)</label><input id="cd-preco" type="number" step="0.01" value="${item?item.preco:0}"></div>
+    </div></div>
+    <div class="modal-foot">
+      ${item?`<button class="btn btn-danger-outline" onclick="deleteItemCardapio('${item.id}')">Excluir</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveItemCardapio('${item?item.id:''}')">Salvar</button>
+    </div>`);
+}
+async function saveItemCardapio(id){
+  const payload = {id:id||undefined, nome:document.getElementById('cd-nome').value.trim(),
+    categoria:document.getElementById('cd-categoria').value.trim(), preco:Number(document.getElementById('cd-preco').value||0)};
+  if(!payload.nome){ toast('Informe o nome do item.','error'); return; }
+  showLoader(true);
+  try{ await api('salvarItemCardapio',payload); showLoader(false); closeModal(); toast('Item salvo.','success'); navigate('configuracoes'); }
+  catch(e){ showLoader(false); toast('Erro ao salvar.','error'); }
+}
+async function deleteItemCardapio(id){
+  if(!confirm('Excluir este item do cardápio?')) return;
+  showLoader(true);
+  try{ await api('excluirItemCardapio',{id}); showLoader(false); closeModal(); toast('Item excluído.','success'); navigate('configuracoes'); }
+  catch(e){ showLoader(false); toast('Erro ao excluir.','error'); }
+}
 async function testarConexaoAPI(){
   if(!USE_REMOTE_API){ toast('Nenhuma URL de API configurada — sistema em modo demonstração.','error'); return; }
   showLoader(true);
