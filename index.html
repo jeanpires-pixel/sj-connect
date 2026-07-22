@@ -517,6 +517,15 @@ window.addEventListener('error', function(e){
       + `${(e.error&&e.error.message)||e.message||'ver console (F12) para detalhes'}</div>`;
   }
 });
+// Erros assíncronos não tratados (ex.: dentro de uma função async chamada por um
+// botão de um modal) não disparam o listener 'error' acima — sem isso, um clique
+// em "Salvar" podia falhar silenciosamente, sem nenhuma mensagem visível.
+window.addEventListener('unhandledrejection', function(e){
+  console.error('Erro assíncrono não tratado:', e.reason);
+  if(typeof toast === 'function'){
+    toast('Ocorreu um erro: '+((e.reason&&e.reason.message)||String(e.reason)||'ver console (F12) para detalhes'), 'error');
+  }
+});
 
 // Emblema da marca — lótus minimalista em traço único, inspirado na identidade
 // visual do salão (SPA Sandra Julia), redesenhado em SVG para reaproveitar as
@@ -2074,12 +2083,17 @@ async function openServicoModal(id){
     </div>`);
 }
 async function saveServico(id){
-  const payload={id:id||undefined, nome:document.getElementById('sv-nome').value.trim(), categoria:document.getElementById('sv-categoria').value,
-    duracao:Number(document.getElementById('sv-duracao').value), preco:Number(document.getElementById('sv-preco').value)};
-  if(!payload.nome){ toast('Informe o nome do serviço.','error'); return; }
-  showLoader(true);
-  try{ await api('salvarServico',payload); showLoader(false); closeModal(); toast('Serviço salvo.','success'); navigate('servicos'); }
-  catch(e){ showLoader(false); toast('Erro ao salvar.','error'); }
+  try{
+    const payload={id:id||undefined, nome:document.getElementById('sv-nome').value.trim(), categoria:document.getElementById('sv-categoria').value,
+      duracao:Number(document.getElementById('sv-duracao').value), preco:Number(document.getElementById('sv-preco').value)};
+    if(!payload.nome){ toast('Informe o nome do serviço.','error'); return; }
+    showLoader(true);
+    await api('salvarServico',payload);
+    showLoader(false); closeModal(); toast('Serviço salvo.','success'); navigate('servicos');
+  }catch(e){
+    showLoader(false);
+    toast('Erro ao salvar: '+(e.message||'motivo desconhecido'),'error');
+  }
 }
 async function deleteServico(id){
   if(!confirm('Excluir este serviço?')) return;
